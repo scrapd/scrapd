@@ -1,0 +1,6 @@
+[run]
+omit =
+    *__init__.py
+    scrapd/main.py
+    scrapd/tests/*
+    scrapd/cli/cli.py

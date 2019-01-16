@@ -1,0 +1,14 @@
+pull_request_rules:
+- actions:
+    merge:
+      method: squash
+      rebase_fallback: merge
+  conditions:
+  - label!=no-mergify
+  - '#approved-reviews-by>=1'
+  - 'status-success=ci/circleci: docs'
+  - 'status-success=ci/circleci: format'
+  - 'status-success=ci/circleci: lint'
+  - 'status-success=ci/circleci: prepare'
+  - 'status-success=ci/circleci: test'
+  name: master

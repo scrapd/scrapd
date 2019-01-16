@@ -1,0 +1,90 @@
+working_directory: &working_directory
+  ~/project
+
+defaults: &defaults
+  docker:
+    - image: circleci/python:3.7.0-stretch-node
+  working_directory: *working_directory
+
+repo_cache_key: &repo_cache_key
+  deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+
+version: 2
+jobs:
+  prepare:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys: *repo_cache_key
+      - run:
+          name: prepare environment
+          command: make venv
+      - save_cache:
+          paths:
+            - ./venv
+          key: *repo_cache_key
+      - persist_to_workspace:
+          root: *working_directory
+          paths: venv/*
+
+  format:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: *working_directory
+      - run:
+          name: check formatter
+          command: make lint-format
+
+  lint:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: *working_directory
+      - run:
+          name: run linters
+          command: make lint
+
+  docs:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: *working_directory
+      - run:
+          name: run doc tests
+          command: make docs
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: *working_directory
+      - run:
+          name: run unit tests
+          command: |
+            make test
+      - store_test_results:
+          path: test-results
+
+workflows:
+  version: 2
+  gates:
+    jobs:
+      - prepare
+      - format:
+          requires:
+            - prepare
+      - lint:
+          requires:
+            - prepare
+      - docs:
+          requires:
+            - prepare
+      - test:
+          requires:
+            - prepare
