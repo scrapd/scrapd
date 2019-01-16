@@ -1,7 +1,7 @@
 scrapd
-================
+======
 
-Extract data from APD news site
+Extract data from APD news site.
 
 Quickstart
 ----------
