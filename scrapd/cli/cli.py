@@ -1,6 +1,8 @@
 """Define the top-level cli command."""
+import asyncio
 import logging
 import os
+import pprint
 import sys
 
 import click
@@ -9,6 +11,7 @@ from loguru import logger
 from scrapd import config
 from scrapd.cli.base import AbstractCommand
 from scrapd.core.version import detect_from_metadata
+from scrapd.core import apd
 
 # Set the project name.
 APP_NAME = 'scrapd'
@@ -62,27 +65,22 @@ def cli(ctx, verbose):
 
 
 @click.command()
-def hello_world():
-    """Greet the world."""
-    click.echo('Hello World!')
-
-
-@click.command()
-@click.option('--name')
 @click.pass_context
-def hello(ctx, name):
+def retrieve(ctx):
     """Greet somebody."""
-    command = Hello(ctx.params, ctx.obj)
+    command = Retrieve(ctx.params, ctx.obj)
     command.execute()
 
 
-class Hello(AbstractCommand):
+class Retrieve(AbstractCommand):
     """Greet somebody."""
 
     def _execute(self):
         """Define the internal execution of the command."""
-        click.echo('Hey {}!'.format(self.args['name']))
+        res = asyncio.run(apd.async_retrieve())
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(res)
+        print(f'Total: {len(res)}')
 
 
-cli.add_command(hello)
-cli.add_command(hello_world)
+cli.add_command(retrieve)
