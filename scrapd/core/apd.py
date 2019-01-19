@@ -165,9 +165,12 @@ def sanitize_fatality_entity(d):
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
+    # All values must be strings.
     for k, v in d.items():
         if isinstance(v, list):
             d[k] = ' '.join(v)
+
+    # The 'Deceased' field is unnecessary.
     if d.get('Deceased'):
         del d['Deceased']
 
@@ -186,13 +189,20 @@ def parse_deaceased_field(deceased_field):
     :rtype: dict
     """
     d = {}
+    dob_index = -1
     try:
         dob_index = deceased_field.index(Fields.DOB)
     except ValueError:
-        pass
-    else:
+        try:
+            dob_index = deceased_field.index('D.O.B.')
+        except ValueError:
+            pass
+
+    if dob_index >= 0:
         d[Fields.DOB] = deceased_field[dob_index + 1]
-        d[Fields.NOTES] = ' '.join(deceased_field[dob_index + 2:])
+        notes = deceased_field[dob_index + 2:]
+        if notes:
+            d[Fields.NOTES] = ' '.join(notes)
 
         # `fleg` stands for First, Last, Ethnicity, Gender. It represents the info stored before the DOB.
         fleg = deceased_field[:dob_index]
@@ -204,7 +214,7 @@ def parse_deaceased_field(deceased_field):
     return d
 
 
-def parse_detail_page(detail_page):
+def parse_page_content(detail_page):
     """
     Parse the detail page to extract fatality information.
 
@@ -214,11 +224,11 @@ def parse_detail_page(detail_page):
     """
     d = {}
     searches = [
-        (Fields.CASE, re.compile(r'Case:.*</strong>\s*([0-9\-]+)')),
-        (Fields.DATE, re.compile(r'Date:.*</strong>\s*([^<]+)')),
-        (Fields.TIME, re.compile(r'Time:.*</strong>\s*([^<]+)')),
-        (Fields.LOCATION, re.compile(r'Location:.*</strong>\s*([^<]+)')),
-        (Fields.DECEASED, re.compile(r'Deceased:.*</strong>\s*([^<]+)')),
+        (Fields.CASE, re.compile(r'Case:.*\s([0-9\-]+)<')),
+        (Fields.DATE, re.compile(r'>Date:.*\s{2,}([^<]*)</')),
+        (Fields.TIME, re.compile(r'>Time:.*>\s{2,}([^<]+)')),
+        (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}([^<]+)')),
+        (Fields.DECEASED, re.compile(r'>Deceased:.*\s{2,}([^<]*\d)<')),
     ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
     for search in searches:
@@ -237,12 +247,11 @@ def parse_detail_page(detail_page):
     return sanitize_fatality_entity(d)
 
 
-async def parse_page_details(session, url):
+def parse_twitter_fields(page):
     """
-    Parse a details page from a URL.
+    Parse the Twitter fields on a detail page.
 
-    :param aiohttp.ClientSession session: aiohttp session
-    :param str url: detail page URL
+    :param str page: the content of the fatality page
     :return: a dictionary representing a fatality.
     :rtype: dict
     """
@@ -250,9 +259,6 @@ async def parse_page_details(session, url):
     TWITTER_DESCRIPTION_XPATH = '/html/head/meta[@name="twitter:description"]'
     twitter_title = ''
     twitter_description = ''
-
-    # Retrieve the page.
-    page = await fetch_text(session, url)
 
     # Collect the elements.
     html_ = html.fromstring(page)
@@ -266,11 +272,45 @@ async def parse_page_details(session, url):
     # Parse the elements.
     title_d = parse_twitter_title(twitter_title)
     desc_d = parse_twitter_description(twitter_description)
-    page_d = parse_detail_page(page)
+    d = {**title_d, **desc_d}
+    return d
+
+
+def parse_page(page):
+    """
+    Parse the page using all parsing methods available.
+
+    :param str  page: the content of the fatality page
+    """
+    # Parse the page.
+    twitter_d = parse_twitter_fields(page)
+    page_d = parse_page_content(page)
 
     # Merge the results, from right to left.
     # (i.e. the rightmost object will overiide the object just before it, etc.)
-    d = {**title_d, **page_d, **desc_d, Fields.LINK: url}
+    d = {**page_d, **twitter_d}
+    return d
+
+
+async def process_detail_page(session, url):
+    """
+    Parse a details page from a URL.
+
+    :param aiohttp.ClientSession session: aiohttp session
+    :param str url: detail page URL
+    :return: a dictionary representing a fatality.
+    :rtype: dict
+    """
+    # Retrieve the page.
+    page = await fetch_text(session, url)
+
+    # Parse it.
+    d = parse_page(page)
+
+    # Add the link.
+    d[Fields.LINK] = url
+
+    # Return the result.
     return d
 
 
@@ -284,7 +324,7 @@ async def async_retrieve():
             news_page = await fetch_news_page(session, page)
             page_details_links = extract_traffic_fatalities_page_details_link(news_page)
             links = generate_detail_page_urls(page_details_links)
-            tasks = [parse_page_details(session, link) for link in links]
+            tasks = [process_detail_page(session, link) for link in links]
             res += await asyncio.gather(*tasks)
 
             if not has_next(news_page):
