@@ -1,6 +1,7 @@
 """Define the module containing the function used to scrap data from the APD website."""
 import asyncio
 import csv
+import datetime
 import re
 import unicodedata
 from urllib.parse import urljoin
@@ -151,7 +152,16 @@ def compute_age(date, dob):
     :rtype: int
     """
     DAYS_IN_YEAR = 365
-    return (dateparser.parse(date) - dateparser.parse(dob)).days // DAYS_IN_YEAR
+    dob_ = dateparser.parse(dob)
+
+    # In case the date of bith only contains 2 digits, we have to determine whether it should be
+    # 19xx or 20xx.
+    now = datetime.datetime.now()
+    if dob_.year > now.year:
+        dob_ = datetime.datetime(dob_.year - 100, dob_.month, dob_.day)
+
+    # Compute the age.
+    return (dateparser.parse(date) - dob_).days // DAYS_IN_YEAR
 
 
 def sanitize_fatality_entity(d):
@@ -177,7 +187,7 @@ def sanitize_fatality_entity(d):
     return d
 
 
-def parse_deaceased_field(deceased_field):
+def parse_deaceased_field(deceased_field):  # noqa: C901
     """
     Parse the deceased field.
 
@@ -193,8 +203,29 @@ def parse_deaceased_field(deceased_field):
     try:
         dob_index = deceased_field.index(Fields.DOB)
     except ValueError:
+        pass
+
+    if dob_index < 0:
         try:
             dob_index = deceased_field.index('D.O.B.')
+        except ValueError:
+            pass
+
+    if dob_index < 0:
+        try:
+            dob_index = deceased_field.index('(D.O.B.')
+        except ValueError:
+            pass
+
+    if dob_index < 0:
+        try:
+            dob_index = deceased_field.index('(D.O.B')
+        except ValueError:
+            pass
+
+    if dob_index < 0:
+        try:
+            dob_index = deceased_field.index('(D.O.B:')
         except ValueError:
             pass
 
@@ -206,10 +237,16 @@ def parse_deaceased_field(deceased_field):
 
         # `fleg` stands for First, Last, Ethnicity, Gender. It represents the info stored before the DOB.
         fleg = deceased_field[:dob_index]
-        d[Fields.GENDER] = fleg.pop().replace(',', '')
-        d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-        d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
-        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
+
+        # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
+        # For example, there is no first name and last name.
+        try:
+            d[Fields.GENDER] = fleg.pop().replace(',', '')
+            d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
+            d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
+            d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
+        except IndexError:
+            pass
 
     return d
 
@@ -225,10 +262,11 @@ def parse_page_content(detail_page):
     d = {}
     searches = [
         (Fields.CASE, re.compile(r'Case:.*\s([0-9\-]+)<')),
+        (Fields.CRASHES, re.compile(r'Traffic Fatality #(\d{1,3})')),
         (Fields.DATE, re.compile(r'>Date:.*\s{2,}([^<]*)</')),
         (Fields.TIME, re.compile(r'>Time:.*>\s{2,}([^<]+)')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}([^<]+)')),
-        (Fields.DECEASED, re.compile(r'>Deceased:.*\s{2,}([^<]*\d)<')),
+        (Fields.DECEASED, re.compile(r'>Deceased:.*\s{2,}([^<]*\d)\)?<')),
     ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
     for search in searches:
@@ -237,8 +275,8 @@ def parse_page_content(detail_page):
             d[search[0]] = match.groups()[0]
 
     # Parse the Deceased field.
-    if d.get('Deceased'):
-        d.update(parse_deaceased_field(d.get('Deceased').split()))
+    if d.get(Fields.DECEASED):
+        d.update(parse_deaceased_field(d.get(Fields.DECEASED).split()))
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
@@ -346,13 +384,12 @@ async def async_retrieve():
         Fields.GENDER,
         Fields.DOB,
         Fields.AGE,
-        Fields.NOTES,
         Fields.LINK,
     ]
 
     output = 'scrapd.csv'
     with open(output, 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=CSVFIELDS)
+        writer = csv.DictWriter(csvfile, fieldnames=CSVFIELDS, extrasaction='ignore')
         writer.writeheader()
         writer.writerows(res)
 
