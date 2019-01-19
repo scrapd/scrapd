@@ -15,6 +15,7 @@ Contents:
    installation
    usage
    contributing
+   testing
 
 Indices and tables
 ==================

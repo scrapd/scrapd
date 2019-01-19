@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from scrapd.core import apd
+from scrapd.core.constant import Fields
 from tests import mock_data
 
 TEST_ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -16,78 +17,116 @@ def news_page(scope='session'):
     return page_fd.read_text()
 
 
-parse_twitter_fileds_scenarios = {
-    'traffic-fatality-73-2': {
-        'Age': 38,
-        'Case': '18-3640187',
-        'DOB': '02/09/80',
-        'Date': 'December 30, 2018',
-        'Ethnicity': 'White',
-        'First Name': 'Corbin',
-        'Gender': 'male',
-        'Last Name': 'Sabillon-Garcia',
-        'Location': '1400 E. Highway 71 eastbound',
-        'Time': '2:24 a.m.'
-    },
+parse_twitter_fields_scenarios = {
     'traffic-fatality-2-3': {
-        'Age': 58,
-        'Case': '19-0161105',
-        'DOB': '02/15/1960',
-        'Date': 'January 16, 2019',
-        'Ethnicity': 'White',
-        'First Name': 'Ann',
-        'Gender': 'female',
-        'Last Name': 'Bottenfield-Seago',
-        'Location': 'West William Cannon Drive and Ridge Oak Road',
-        'Time': '3:42 p.m.'
+        Fields.CASE: '19-0161105',
+        Fields.CRASHES: '2',
     },
-    'traffic-fatality-72-1': {
-        'Age': 22,
-        'Case': '18-3551763',
-        'DOB': '3-29-96',
-        'Date': 'December 21, 2018',
-        'Ethnicity': 'White',
-        'First Name': 'Elijah',
-        'Gender': 'male',
-        'Last Name': 'Perales',
-        'Location': '9500 N Mopac SB',
-        'Time': '8:20 p.m.'
-    },
-}
-
-parse_page_content_scenarios = {
     'traffic-fatality-73-2': {
-        **parse_twitter_fileds_scenarios['traffic-fatality-73-2']
-    },
-    'traffic-fatality-2-3': {
-        **parse_twitter_fileds_scenarios['traffic-fatality-2-3']
-    },
-    'traffic-fatality-72-1': {
-        **parse_twitter_fileds_scenarios['traffic-fatality-72-1']
-    },
-}
-
-parse_page_scenarios = {
-    'traffic-fatality-73-2': {
-        **parse_twitter_fileds_scenarios['traffic-fatality-73-2'],
-        **parse_page_content_scenarios['traffic-fatality-73-2'], 'Notes':
+        Fields.AGE:
+        38,
+        Fields.CASE:
+        '18-3640187',
+        Fields.CRASHES:
+        '73',
+        Fields.DOB:
+        '02/09/80',
+        Fields.DATE:
+        'December 30, 2018',
+        Fields.ETHNICITY:
+        'White',
+        Fields.FIRST_NAME:
+        'Corbin',
+        Fields.GENDER:
+        'male',
+        Fields.LAST_NAME:
+        'Sabillon-Garcia',
+        Fields.LOCATION:
+        '1400 E. Highway 71 eastbound',
+        Fields.NOTES:
         'The preliminary investigation shows that a 2003 Ford F150 was '
         'traveling northbound on the US Highway 183 northbound ramp to E. '
         'Highway 71, eastbound. The truck went across the E. Highway 71 and '
         'US Highway 183 ramp, rolled and came to a stop north of the '
         'roadway.',
-        'Fatal crashes this year':
-        '73'
-    },
-    'traffic-fatality-2-3': {
-        **parse_twitter_fileds_scenarios['traffic-fatality-2-3'],
-        **parse_page_content_scenarios['traffic-fatality-2-3'],
-        'Fatal crashes this year': '2',
+        Fields.TIME:
+        '2:24 a.m.',
     },
     'traffic-fatality-72-1': {
-        **parse_twitter_fileds_scenarios['traffic-fatality-72-1'],
+        Fields.CASE: '18-3551763',
+        Fields.CRASHES: '72',
+        Fields.DATE: 'December 21, 2018',
+        Fields.LOCATION: '9500 N Mopac SB',
+        Fields.TIME: '8:20 p.m.',
+    },
+    'traffic-fatality-71-2': {
+        Fields.CASE: '18-3381590',
+        Fields.CRASHES: '71',
+        Fields.DATE: 'December 4, 2018',
+        Fields.LOCATION: '183 service road westbound and Payton Gin Rd.',
+        Fields.TIME: '8:39 p.m.',
+    },
+}
+
+parse_page_content_scenarios = {
+    'traffic-fatality-2-3': {
+        **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
+        Fields.AGE: 58,
+        Fields.CRASHES: '2',
+        Fields.DOB: '02/15/1960',
+        Fields.DATE: 'January 16, 2019',
+        Fields.ETHNICITY: 'White',
+        Fields.FIRST_NAME: 'Ann',
+        Fields.GENDER: 'female',
+        Fields.LAST_NAME: 'Bottenfield-Seago',
+        Fields.LOCATION: 'West William Cannon Drive and Ridge Oak Road',
+        Fields.TIME: '3:42 p.m.',
+    },
+    'traffic-fatality-73-2': {
+        Fields.AGE: 38,
+        Fields.CASE: '18-3640187',
+        Fields.CRASHES: '73',
+        Fields.DOB: '02/09/80',
+        Fields.DATE: 'December 30, 2018',
+        Fields.ETHNICITY: 'White',
+        Fields.FIRST_NAME: 'Corbin',
+        Fields.GENDER: 'male',
+        Fields.LAST_NAME: 'Sabillon-Garcia',
+        Fields.LOCATION: '1400 E. Highway 71 eastbound',
+        Fields.TIME: '2:24 a.m.',
+    },
+    'traffic-fatality-72-1': {
+        **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
+        Fields.AGE: 22,
+        Fields.DOB: '3-29-96',
+        Fields.ETHNICITY: 'White',
+        Fields.FIRST_NAME: 'Elijah',
+        Fields.GENDER: 'male',
+        Fields.LAST_NAME: 'Perales',
+    },
+    'traffic-fatality-71-2': {
+        **parse_twitter_fields_scenarios['traffic-fatality-71-2'],
+        Fields.DOB: '6-1-64',
+        Fields.FIRST_NAME: 'Barkat',
+        Fields.LAST_NAME: 'Umatia',
+        Fields.ETHNICITY: 'Other',
+        Fields.GENDER: 'male',
+        Fields.AGE: 54,
+    }
+}
+
+parse_page_scenarios = {
+    'traffic-fatality-2-3': {
+        **parse_page_content_scenarios['traffic-fatality-2-3'],
+        **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
+    },
+    'traffic-fatality-73-2': {
+        **parse_page_content_scenarios['traffic-fatality-73-2'],
+        **parse_twitter_fields_scenarios['traffic-fatality-73-2'],
+    },
+    'traffic-fatality-72-1': {
         **parse_page_content_scenarios['traffic-fatality-72-1'],
-        'Fatal crashes this year': '72',
+        **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
     },
 }
 
@@ -133,7 +172,7 @@ def test_parse_twitter_description_01():
     """Ensure the Twitter description gets parsed correctly."""
     actual = apd.parse_twitter_description(mock_data.twitter_description_01)
     expected = {
-        'Case': '19-0161105',
+        Fields.CASE: '19-0161105',
     }
     assert actual == expected
 
@@ -179,12 +218,12 @@ def test_parse_page_content_00(filename, expected):
     assert actual == expected
 
 
-@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_twitter_fileds_scenarios.items()])
+@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_twitter_fields_scenarios.items()])
 def test_parse_twitter_fields_00(filename, expected):
     """Ensure information are properly extracted from the twitter fields on detail page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page_content(page)
+    actual = apd.parse_twitter_fields(page)
     assert actual == expected
 
 
