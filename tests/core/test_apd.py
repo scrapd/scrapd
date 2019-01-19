@@ -234,3 +234,12 @@ def test_parse_page_00(filename, expected):
     page = page_fd.read_text()
     actual = apd.parse_page(page)
     assert actual == expected
+
+
+@pytest.mark.parametrize('current,from_,to,expected', [
+    ('Jan 10', 'Jan 1', 'Jan 31', True),
+    ('Jan 1', None, None, True),
+])
+def test_is_in_range_00(current, from_, to, expected):
+    """Ensure a date is in range."""
+    assert apd.is_in_range(current, from_, to) == expected
