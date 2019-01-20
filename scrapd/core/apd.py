@@ -79,7 +79,7 @@ def has_next(news_page):
     Return `True` if there is another news page available.
 
     :param str news_page: the news page to parse
-    :return: `True` if there is another news page available, `False otherwise.
+    :return: `True` if there is another news page available, `False` otherwise.
     :rtype: bool
     """
     if not news_page:
@@ -387,14 +387,15 @@ async def async_retrieve(pages=-1, from_=None, to=None):
 
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
-                entries_are_in_range = [is_in_range(entry[Fields.DATE], from_, to) for entry in page_res]
+                entries_in_time_range = [entry for entry in page_res if is_in_range(entry[Fields.DATE], from_, to)]
 
                 # If there are none in range, we do not need to search further, and we can discard the results.
-                if not any(entries_are_in_range):
+                if not entries_in_time_range:
+                    logger.debug(f'There are no data within the specified time range on page {page}.')
                     break
 
             # Otherwise store the results.
-            res += page_res
+            res += entries_in_time_range
 
             # Stop if there is no further pages.
             if not has_next(news_page):

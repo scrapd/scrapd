@@ -1,12 +1,15 @@
 Contributing
 ============
 
+Instructions for contributors
+-----------------------------
+
 We are interested in various different kinds of improvement for scrapd; please feel free to
 raise an `Issue`_ if you would like to work on something major to ensure efficient collaboration and avoid duplicate
 effort.
 
 Guidelines
-----------
+^^^^^^^^^^
 
 Use the provided templates to file an `Issue`_ or a `Pull Request`_.
 
@@ -30,7 +33,7 @@ including in caveats or follow up changes required. They should tell the story o
 understanding of what led to it. Please refer to `How to Write a Git Commit Message`_ for more details.
 
 Formatting your code
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 There is also a lot of YAPF plugins available for different editors. Here are a few:
 

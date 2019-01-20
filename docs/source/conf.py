@@ -27,11 +27,13 @@ import aiohttp_theme
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
     'sphinx.ext.coverage',
+    'sphinx.ext.doctest',
+    'sphinx.ext.githubpages',
     'sphinx.ext.viewcode',
-    'sphinx_click.ext',
     'aiohttp_theme',
+    'recommonmark',
+    'sphinx_click.ext',
 ]
 
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
@@ -39,14 +41,18 @@ extensions = [
 # execute "export SPHINX_DEBUG=1" in your terminal to disable
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
+}
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = u'scrapd'
-copyright = u'2019, rgreinho'
+copyright = u'2019, Rémy Greinhofer'
 version = u'0.1.0'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
@@ -57,7 +63,7 @@ add_function_parentheses = True
 add_module_names = True
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+# pygments_style = 'sphinx'
 
 # -- Options for HTML output --------------------------------------------------
 
@@ -69,6 +75,18 @@ pygments_style = 'sphinx'
 
 html_theme_path = [aiohttp_theme.get_path()]
 html_theme = 'aiohttp_theme'
+html_theme_options = {
+    'show_related': True,
+    'page_width': '80%',
+    'sidebar_width': '20%',
+}
+html_sidebars = {
+    '**': [
+        'about.html',
+        'navigation.html',
+        'searchbox.html',
+    ]
+}
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project
