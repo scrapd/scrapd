@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[1.0.0]] - 2019-01-21
+
+Initial version.
+
 [//]: # (Release links)
+[1.0.0]: https://github.com/rgreinho/scrapd/releases/1.0.0
 
 [//]: # (Issue/PR links)
