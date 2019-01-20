@@ -21,6 +21,7 @@ import sys
 #sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('../..'))
 # -- General configuration ----------------------------------------------------
+import aiohttp_theme
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -29,6 +30,8 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
+    'sphinx_click.ext',
+    'aiohttp_theme',
 ]
 
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
@@ -63,6 +66,9 @@ pygments_style = 'sphinx'
 # html_theme_path = ["."]
 # html_theme = '_theme'
 # html_static_path = ['static']
+
+html_theme_path = [aiohttp_theme.get_path()]
+html_theme = 'aiohttp_theme'
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project

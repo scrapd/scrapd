@@ -1,6 +1,5 @@
 """Define the module containing the function used to scrap data from the APD website."""
 import asyncio
-import csv
 import datetime
 import re
 import unicodedata
@@ -83,6 +82,8 @@ def has_next(news_page):
     :return: `True` if there is another news page available, `False otherwise.
     :rtype: bool
     """
+    if not news_page:
+        return False
 
     NEXT_XPATH = '/html/body/div[3]/div[2]/div[2]/div[2]/div/div/div/div/div[2]/div[3]/div/div/div/div[3]/ul/li[3]/a'
     root = html.fromstring(news_page)
@@ -99,11 +100,13 @@ def parse_twitter_title(twitter_title):
     :rtype: dict
     """
     d = {}
+    if not twitter_title:
+        return d
 
     # Extract the fatality number from the title.
     match = re.search(r'\d{1,3}', twitter_title)
     if match:
-        d['Fatal crashes this year'] = match.group()
+        d[Fields.CRASHES] = match.group()
 
     return d
 
@@ -119,10 +122,12 @@ def parse_twitter_description(twitter_description):
     :return: A dictionary containing the details information about the fatality.
     :rtype: dict
     """
-    current_field = None
     d = {}
+    if not twitter_description:
+        return d
 
     # Split the description to be able to parse it.
+    current_field = None
     description_words = twitter_description.split()
     for word in description_words:
         # A word ending with a colon (':') is considered a field.
@@ -132,8 +137,13 @@ def parse_twitter_description(twitter_description):
         d.setdefault(current_field, []).append(word)
 
     # Parse the Deceased field.
-    if d.get('Deceased'):
-        d.update(parse_deaceased_field(d.get('Deceased')))
+    if d.get(Fields.DECEASED):
+        try:
+            d.update(parse_deaceased_field(d.get(Fields.DECEASED)))
+        except ValueError as e:
+            logger.trace(e)
+    else:
+        logger.trace('No decease information to parse in Twitter description.')
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
@@ -154,7 +164,7 @@ def compute_age(date, dob):
     DAYS_IN_YEAR = 365
     dob_ = dateparser.parse(dob)
 
-    # In case the date of bith only contains 2 digits, we have to determine whether it should be
+    # In case the date of birth only contains 2 digits, we have to determine whether it should be
     # 19xx or 20xx.
     now = datetime.datetime.now()
     if dob_.year > now.year:
@@ -187,7 +197,7 @@ def sanitize_fatality_entity(d):
     return d
 
 
-def parse_deaceased_field(deceased_field):  # noqa: C901
+def parse_deaceased_field(deceased_field):
     """
     Parse the deceased field.
 
@@ -198,55 +208,38 @@ def parse_deaceased_field(deceased_field):  # noqa: C901
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
-    d = {}
     dob_index = -1
+    dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
+    while dob_index < 0 and dob_tokens:
+        dob_token = dob_tokens.pop()
+        try:
+            dob_index = deceased_field.index(dob_token)
+        except ValueError:
+            pass
+        else:
+            break
+
+    if dob_index < 0:
+        raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
+
+    d = {}
+    d[Fields.DOB] = deceased_field[dob_index + 1]
+    notes = deceased_field[dob_index + 2:]
+    if notes:
+        d[Fields.NOTES] = ' '.join(notes)
+
+    # `fleg` stands for First, Last, Ethnicity, Gender. It represents the info stored before the DOB.
+    fleg = deceased_field[:dob_index]
+
+    # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
+    # For example, there is no first name and last name.
     try:
-        dob_index = deceased_field.index(Fields.DOB)
-    except ValueError:
+        d[Fields.GENDER] = fleg.pop().replace(',', '')
+        d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
+        d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
+        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
+    except IndexError:
         pass
-
-    if dob_index < 0:
-        try:
-            dob_index = deceased_field.index('D.O.B.')
-        except ValueError:
-            pass
-
-    if dob_index < 0:
-        try:
-            dob_index = deceased_field.index('(D.O.B.')
-        except ValueError:
-            pass
-
-    if dob_index < 0:
-        try:
-            dob_index = deceased_field.index('(D.O.B')
-        except ValueError:
-            pass
-
-    if dob_index < 0:
-        try:
-            dob_index = deceased_field.index('(D.O.B:')
-        except ValueError:
-            pass
-
-    if dob_index >= 0:
-        d[Fields.DOB] = deceased_field[dob_index + 1]
-        notes = deceased_field[dob_index + 2:]
-        if notes:
-            d[Fields.NOTES] = ' '.join(notes)
-
-        # `fleg` stands for First, Last, Ethnicity, Gender. It represents the info stored before the DOB.
-        fleg = deceased_field[:dob_index]
-
-        # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
-        # For example, there is no first name and last name.
-        try:
-            d[Fields.GENDER] = fleg.pop().replace(',', '')
-            d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-            d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
-            d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
-        except IndexError:
-            pass
 
     return d
 
@@ -264,9 +257,9 @@ def parse_page_content(detail_page):
         (Fields.CASE, re.compile(r'Case:.*\s([0-9\-]+)<')),
         (Fields.CRASHES, re.compile(r'Traffic Fatality #(\d{1,3})')),
         (Fields.DATE, re.compile(r'>Date:.*\s{2,}([^<]*)</')),
-        (Fields.TIME, re.compile(r'>Time:.*>\s{2,}([^<]+)')),
-        (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}([^<]+)')),
         (Fields.DECEASED, re.compile(r'>Deceased:.*\s{2,}([^<]*\d)\)?<')),
+        (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}([^<]+)')),
+        (Fields.TIME, re.compile(r'>Time:.*>\s{2,}([^<]+)')),
     ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
     for search in searches:
@@ -276,7 +269,12 @@ def parse_page_content(detail_page):
 
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
-        d.update(parse_deaceased_field(d.get(Fields.DECEASED).split()))
+        try:
+            d.update(parse_deaceased_field(d.get(Fields.DECEASED).split()))
+        except ValueError as e:
+            logger.trace(e)
+    else:
+        logger.trace('No decease information to parse in fatality page.')
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
@@ -295,17 +293,13 @@ def parse_twitter_fields(page):
     """
     TWITTER_TITLE_XPATH = '/html/head/meta[@name="twitter:title"]'
     TWITTER_DESCRIPTION_XPATH = '/html/head/meta[@name="twitter:description"]'
-    twitter_title = ''
-    twitter_description = ''
 
     # Collect the elements.
     html_ = html.fromstring(page)
     elements = html_.xpath(TWITTER_TITLE_XPATH)
-    if elements:
-        twitter_title = elements[0].get('content')
+    twitter_title = elements[0].get('content') if elements else ''
     elements = html_.xpath(TWITTER_DESCRIPTION_XPATH)
-    if elements:
-        twitter_description = elements[0].get('content')
+    twitter_description = elements[0].get('content') if elements else ''
 
     # Parse the elements.
     title_d = parse_twitter_title(twitter_title)
@@ -330,9 +324,9 @@ def parse_page(page):
     return d
 
 
-async def process_detail_page(session, url):
+async def fetch_and_parse(session, url):
     """
-    Parse a details page from a URL.
+    Parse a fatality page from a URL.
 
     :param aiohttp.ClientSession session: aiohttp session
     :param str url: detail page URL
@@ -352,45 +346,63 @@ async def process_detail_page(session, url):
     return d
 
 
-async def async_retrieve():
+def is_in_range(date, from_=None, to=None):
+    """
+    Check whether a date is comprised between 2 others.
+
+    :param str date: date to vheck
+    :param str from_: start date, defaults to None
+    :param str to: end date, defaults to None
+    :return: `True` if the date is between `from_` and `to`
+    :rtype: bool
+    """
+
+    current_date = dateparser.parse(date)
+    from_date = dateparser.parse(from_, settings={'PREFER_DAY_OF_MONTH': 'first'}) if from_ else datetime.datetime.min
+    to_date = dateparser.parse(to, settings={'PREFER_DAY_OF_MONTH': 'last'}) if to else datetime.datetime.max
+
+    return from_date <= current_date <= to_date
+
+
+async def async_retrieve(pages=-1, from_=None, to=None):
     """Retrieve fatality data."""
     res = []
     page = 1
     async with aiohttp.ClientSession() as session:
         while True:
+            # Fetch the news page.
             logger.info(f'Fetching page {page}...')
             news_page = await fetch_news_page(session, page)
-            page_details_links = extract_traffic_fatalities_page_details_link(news_page)
-            links = generate_detail_page_urls(page_details_links)
-            tasks = [process_detail_page(session, link) for link in links]
-            res += await asyncio.gather(*tasks)
 
+            # Looks for traffic fatality links.
+            page_details_links = extract_traffic_fatalities_page_details_link(news_page)
+
+            # Generate the full URL for the links.
+            links = generate_detail_page_urls(page_details_links)
+            logger.debug(f'{len(links)} fatality page(s) to process.')
+
+            # Fetch and parse each link.
+            tasks = [fetch_and_parse(session, link) for link in links]
+            page_res = await asyncio.gather(*tasks)
+
+            # If the page contains fatalities, ensure all of them happened within the specified time range.
+            if page_res:
+                entries_are_in_range = [is_in_range(entry[Fields.DATE], from_, to) for entry in page_res]
+
+                # If there are none in range, we do not need to search further, and we can discard the results.
+                if not any(entries_are_in_range):
+                    break
+
+            # Otherwise store the results.
+            res += page_res
+
+            # Stop if there is no further pages.
             if not has_next(news_page):
                 break
-            # break
+
+            if page >= pages > 0:
+                break
 
             page += 1
-
-    # Write CSV file.
-    CSVFIELDS = [
-        Fields.CRASHES,
-        Fields.CASE,
-        Fields.DATE,
-        Fields.TIME,
-        Fields.LOCATION,
-        Fields.FIRST_NAME,
-        Fields.LAST_NAME,
-        Fields.ETHNICITY,
-        Fields.GENDER,
-        Fields.DOB,
-        Fields.AGE,
-        Fields.LINK,
-    ]
-
-    output = 'scrapd.csv'
-    with open(output, 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=CSVFIELDS, extrasaction='ignore')
-        writer.writeheader()
-        writer.writerows(res)
 
     return res

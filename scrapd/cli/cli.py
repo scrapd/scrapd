@@ -1,5 +1,7 @@
 """Define the top-level cli command."""
 import asyncio
+import csv
+import json
 import logging
 import os
 import pprint
@@ -10,8 +12,9 @@ from loguru import logger
 
 from scrapd import config
 from scrapd.cli.base import AbstractCommand
-from scrapd.core.version import detect_from_metadata
 from scrapd.core import apd
+from scrapd.core.constant import Fields
+from scrapd.core.version import detect_from_metadata
 
 # Set the project name.
 APP_NAME = 'scrapd'
@@ -61,26 +64,68 @@ def cli(ctx, verbose):
     logger.level('TRACE', color='<magenta>')
 
     # Add the logger.
-    logger.add(sys.stdout, format=log_format, level=log_level, colorize=True)
+    logger.add(sys.stderr, format=log_format, level=log_level, colorize=True)
 
 
 @click.command()
+@click.option(
+    '-f',
+    '--format',
+    type=click.Choice(['python', 'json', 'csv']),
+    default='csv',
+    help='specify output format',
+    show_default=True,
+)
+@click.option('--pages', default=-1, help='number pages to process')
+@click.option('--from', 'from_', help='start date')
+@click.option('--to', help='end date')
 @click.pass_context
-def retrieve(ctx):
-    """Greet somebody."""
+# pylint: disable=W0622
+def retrieve(ctx, format, pages, from_, to):
+    """Retrieve APD's traffic fatality reports."""
     command = Retrieve(ctx.params, ctx.obj)
     command.execute()
 
 
 class Retrieve(AbstractCommand):
-    """Greet somebody."""
+    """Retrieve APD's traffic fatality reports."""
 
     def _execute(self):
         """Define the internal execution of the command."""
-        res = asyncio.run(apd.async_retrieve())
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(res)
-        print(f'Total: {len(res)}')
+        # Collectr the results.
+        results = asyncio.run(apd.async_retrieve(
+            self.args['pages'],
+            self.args['from_'],
+            self.args['to'],
+        ))
+        logger.info(f'Total: {len(results)}')
+
+        # Display them.
+        output_format = self.args['format'].lower()
+        if output_format == 'python':
+            pp = pprint.PrettyPrinter(indent=2)
+            pp.pprint(results)
+        elif output_format == 'json':
+            print(json.dumps(results, sort_keys=True, indent=2))
+        else:
+            # Write CSV file.
+            CSVFIELDS = [
+                Fields.CRASHES,
+                Fields.CASE,
+                Fields.DATE,
+                Fields.TIME,
+                Fields.LOCATION,
+                Fields.FIRST_NAME,
+                Fields.LAST_NAME,
+                Fields.ETHNICITY,
+                Fields.GENDER,
+                Fields.DOB,
+                Fields.AGE,
+                Fields.LINK,
+            ]
+            writer = csv.DictWriter(sys.stdout, fieldnames=CSVFIELDS, extrasaction='ignore')
+            writer.writeheader()
+            writer.writerows(results)
 
 
 cli.add_command(retrieve)
