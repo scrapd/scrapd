@@ -75,7 +75,7 @@ in `json`::
     }
   ]
 
-Do the same rEsearch but output as CSV::
+Do the same research but output as CSV::
 
     scrapd retrieve --from "Jan 15 2019" --to "Jan 18 2019" --format csv
 

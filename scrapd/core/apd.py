@@ -368,6 +368,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
     """Retrieve fatality data."""
     res = []
     page = 1
+    has_entries = False
     async with aiohttp.ClientSession() as session:
         while True:
             # Fetch the news page.
@@ -388,14 +389,15 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [entry for entry in page_res if is_in_range(entry[Fields.DATE], from_, to)]
+                has_entries = has_entries and entries_in_time_range
 
                 # If there are none in range, we do not need to search further, and we can discard the results.
-                if not entries_in_time_range:
+                if has_entries and not entries_in_time_range:
                     logger.debug(f'There are no data within the specified time range on page {page}.')
                     break
 
-            # Otherwise store the results.
-            res += entries_in_time_range
+                # Otherwise store the results.
+                res += entries_in_time_range
 
             # Stop if there is no further pages.
             if not has_next(news_page):
