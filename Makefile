@@ -48,15 +48,15 @@ build-docker: Dockerfile ## Build a docker development image
 .PHONY: ci
 ci: docs lint test
 
-.PHONY: docs
+.PHONY: venv docs
 docs: ## Ensure the documentation builds
 	$(RUN_CMD) tox -e docs
 
-.PHONY: lint
+.PHONY: venv lint
 lint:  ## Run the static analyzers
 	$(RUN_CMD) tox -e flake8,pydocstyle,pylint,yapf
 
-.PHONY: lint-format
+.PHONY: venv lint-format
 lint-format: ## Check the code formatting using YAPF
 	$(RUN_CMD) tox -e yapf
 
@@ -82,7 +82,10 @@ dist-upload:
 format: ## Format the codebase using YAPF
 	$(RUN_CMD) yapf -r -i -e{$(YAPF_EXCLUDE)} .
 
-.PHONY: test
+publish: ## Publish the documentation
+	@bash $(TOPDIR)/.circleci/publish.sh
+
+.PHONY: venv test
 test: ## Run the unit tests
 	$(RUN_CMD) tox
 

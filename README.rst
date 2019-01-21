@@ -39,43 +39,43 @@ To save the results to a file, use the shell redirection::
 Examples
 ^^^^^^^^
 
-  Retrieve the traffic fatalities that happened between January 15th 2019 and January 18th 2019, and output the results
-  as `json`::
+Retrieve the traffic fatalities that happened between January 15th 2019 and January 18th 2019, and output the results
+in `json`::
 
-    scrapd retrieve --from "Jan 15 2019" --to "Jan 18 2019" --format json
+  scrapd retrieve --from "Jan 15 2019" --to "Jan 18 2019" --format json
 
-    [
-      {
-        "Age": 31,
-        "Case": "19-0150158",
-        "DOB": "07/09/1987",
-        "Date": "January 15, 2019",
-        "Ethnicity": "White",
-        "Fatal crashes this year": "1",
-        "First Name": "Hilburn",
-        "Gender": "male",
-        "Last Name": "Sell",
-        "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
-        "Location": "10500 block of N IH 35 SB",
-        "Time": "6:20 a.m."
-      },
-      {
-        "Age": 58,
-        "Case": "19-0161105",
-        "DOB": "02/15/1960",
-        "Date": "January 16, 2019",
-        "Ethnicity": "White",
-        "Fatal crashes this year": "2",
-        "First Name": "Ann",
-        "Gender": "female",
-        "Last Name": "Bottenfield-Seago",
-        "Link": "http://austintexas.gov/news/traffic-fatality-2-3",
-        "Location": "West William Cannon Drive and Ridge Oak Road",
-        "Time": "3:42 p.m."
-      }
-    ]
+  [
+    {
+      "Age": 31,
+      "Case": "19-0150158",
+      "DOB": "07/09/1987",
+      "Date": "January 15, 2019",
+      "Ethnicity": "White",
+      "Fatal crashes this year": "1",
+      "First Name": "Hilburn",
+      "Gender": "male",
+      "Last Name": "Sell",
+      "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
+      "Location": "10500 block of N IH 35 SB",
+      "Time": "6:20 a.m."
+    },
+    {
+      "Age": 58,
+      "Case": "19-0161105",
+      "DOB": "02/15/1960",
+      "Date": "January 16, 2019",
+      "Ethnicity": "White",
+      "Fatal crashes this year": "2",
+      "First Name": "Ann",
+      "Gender": "female",
+      "Last Name": "Bottenfield-Seago",
+      "Link": "http://austintexas.gov/news/traffic-fatality-2-3",
+      "Location": "West William Cannon Drive and Ridge Oak Road",
+      "Time": "3:42 p.m."
+    }
+  ]
 
-  Do the same research but output as CSV::
+Do the same rEsearch but output as CSV::
 
     scrapd retrieve --from "Jan 15 2019" --to "Jan 18 2019" --format csv
 
@@ -83,3 +83,42 @@ Examples
     Fatal crashes this year,Case,Date,Time,Location,First Name,Last Name,Ethnicity,Gender,DOB,Age,Link
     1,19-0150158,"January 15, 2019",6:20 a.m.,10500 block of N IH 35 SB,Hilburn,Sell,White,male,07/09/1987,31,http://austintexas.gov/news/traffic-fatality-1-4
     2,19-0161105,"January 16, 2019",3:42 p.m.,West William Cannon Drive and Ridge Oak Road,Ann,Bottenfield-Seago,White,female,02/15/1960,58,http://austintexas.gov/news/traffic-fatality-2-3
+
+Retrieve all the traffic fatalities from 2019 (*as of Jan 20th 2019*) in json, and enabling the logging to follow the progress
+of the process::
+
+  scrapd -v retrieve --from 2019 --format json
+
+  Fetching page 1...
+  Fetching page 2...
+  Total: 2
+  [
+    {
+      "Age": 31,
+      "Case": "19-0150158",
+      "DOB": "07/09/1987",
+      "Date": "January 15, 2019",
+      "Ethnicity": "White",
+      "Fatal crashes this year": "1",
+      "First Name": "Hilburn",
+      "Gender": "male",
+      "Last Name": "Sell",
+      "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
+      "Location": "10500 block of N IH 35 SB",
+      "Time": "6:20 a.m."
+    },
+    {
+      "Age": 58,
+      "Case": "19-0161105",
+      "DOB": "02/15/1960",
+      "Date": "January 16, 2019",
+      "Ethnicity": "White",
+      "Fatal crashes this year": "2",
+      "First Name": "Ann",
+      "Gender": "female",
+      "Last Name": "Bottenfield-Seago",
+      "Link": "http://austintexas.gov/news/traffic-fatality-2-3",
+      "Location": "West William Cannon Drive and Ridge Oak Road",
+      "Time": "3:42 p.m."
+    }
+  ]
