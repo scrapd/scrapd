@@ -48,16 +48,16 @@ build-docker: Dockerfile ## Build a docker development image
 .PHONY: ci
 ci: docs lint test
 
-.PHONY: venv docs
-docs: ## Ensure the documentation builds
+.PHONY: docs
+docs: venv ## Ensure the documentation builds
 	$(RUN_CMD) tox -e docs
 
-.PHONY: venv lint
-lint:  ## Run the static analyzers
+.PHONY: lint
+lint: venv ## Run the static analyzers
 	$(RUN_CMD) tox -e flake8,pydocstyle,pylint,yapf
 
-.PHONY: venv lint-format
-lint-format: ## Check the code formatting using YAPF
+.PHONY: lint-format
+lint-format: venv ## Check the code formatting using YAPF
 	$(RUN_CMD) tox -e yapf
 
 .PHONY: clean
@@ -85,8 +85,8 @@ format: ## Format the codebase using YAPF
 publish: ## Publish the documentation
 	@bash $(TOPDIR)/.circleci/publish.sh
 
-.PHONY: venv test
-test: ## Run the unit tests
+.PHONY:  test
+test: venv ## Run the unit tests
 	$(RUN_CMD) tox
 
 setup: venv ## Setup the full environment (default)
@@ -104,5 +104,5 @@ venv/bin/activate: requirements.txt
 		&& pip install -e .
 
 .PHONY: wheel
-wheel: ## Build a wheel package
+wheel: venv ## Build a wheel package
 	$(RUN_CMD) python setup.py bdist_wheel
