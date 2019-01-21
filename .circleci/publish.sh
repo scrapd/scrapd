@@ -25,7 +25,7 @@ FILES=$(git status -s)
 git commit -am "Publish documentation" -m "${FILES}"
 
 # Push the branch.
-git push --dry-run origin gh-pages
+git push origin gh-pages
 
 # Return to the previous branch.
 previous_branch
