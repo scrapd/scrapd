@@ -1,0 +1,6 @@
+.tox
+.vscode/
+docs/
+scrapd.egg-info/
+scrapd/
+venv/
