@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [[1.0.0]] - 2019-01-21
 
-Initial version.
+Initial release.
+
+This first version allows a user to retrieve traffic fatality repports for a certain period of time and export the results as csv, json or python.
 
 [//]: # (Release links)
 [1.0.0]: https://github.com/rgreinho/scrapd/releases/1.0.0
