@@ -16,7 +16,6 @@ ScrAPD requires Python 3.7+ to work.
 
 Quickstart
 ----------
-
 Collect all the data as CSV::
 
   scrapd retrieve --format csv
