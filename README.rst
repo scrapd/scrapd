@@ -12,7 +12,7 @@ ScrAPD requires Python 3.7+ to work.
 
 ::
 
-  pip install --user scrapd
+  pip install scrapd
 
 Quickstart
 ----------
