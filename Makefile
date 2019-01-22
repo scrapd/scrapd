@@ -85,9 +85,17 @@ format: ## Format the codebase using YAPF
 publish: ## Publish the documentation
 	@bash $(TOPDIR)/.circleci/publish.sh
 
-.PHONY:  test
+.PHONY: test
 test: venv ## Run the unit tests
 	$(RUN_CMD) tox
+
+.PHONY: test-units
+test-units: venv ## Run the unit tests
+	$(RUN_CMD) tox -- -m "not integrations"
+
+.PHONY: test-integrations
+test-integrations: venv ## Run the unit tests
+	$(RUN_CMD) tox -- -m "integrations"
 
 setup: venv ## Setup the full environment (default)
 
