@@ -49,4 +49,4 @@ Use either the *FULL* URL (preferred) or the `Username/Repository#`
 syntax.
 -->
 
-Fixes: https://github.com/rgreinho/scrapd/<issue_number>
+Fixes: rgreinho/scrapd/#<issue_number>
