@@ -389,7 +389,9 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [entry for entry in page_res if is_in_range(entry[Fields.DATE], from_, to)]
-                has_entries = has_entries and entries_in_time_range
+                if not has_entries:
+                    has_entries = not has_entries and bool(entries_in_time_range)
+                logger.debug(f'{len(entries_in_time_range)} fatality page(s) is/are within the specified time range.')
 
                 # If there are none in range, we do not need to search further, and we can discard the results.
                 if has_entries and not entries_in_time_range:
