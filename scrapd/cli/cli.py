@@ -122,6 +122,7 @@ class Retrieve(AbstractCommand):
                 Fields.DOB,
                 Fields.AGE,
                 Fields.LINK,
+                Fields.NOTES,
             ]
             writer = csv.DictWriter(sys.stdout, fieldnames=CSVFIELDS, extrasaction='ignore')
             writer.writeheader()
