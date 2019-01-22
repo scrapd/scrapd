@@ -69,16 +69,16 @@ add_module_names = True
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-# html_theme_path = ["."]
-# html_theme = '_theme'
-# html_static_path = ['static']
-
+html_static_path = ['_static']
 html_theme_path = [aiohttp_theme.get_path()]
 html_theme = 'aiohttp_theme'
 html_theme_options = {
     'show_related': True,
     'page_width': '80%',
     'sidebar_width': '20%',
+    'logo': 'scrapd-logo-128x152.png',
+    'description': 'Easily scrap APD traffic death repports',
+    'canonical_url': 'https://rgreinho.github.io/scrapd/',
 }
 html_sidebars = {
     '**': [

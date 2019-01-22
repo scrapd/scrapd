@@ -68,6 +68,8 @@ jobs:
           name: run unit tests
           command: |
             make test
+            venv/bin/pip install coveralls
+            venv/bin/coveralls
       - store_test_results:
           path: test-results
 
