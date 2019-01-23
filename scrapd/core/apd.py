@@ -28,8 +28,16 @@ async def fetch_text(session, url, params=None):
     """
     if not params:
         params = {}
-    async with session.get(url, params=params) as response:
-        return await response.text()
+    try:
+        async with session.get(url, params=params) as response:
+            return await response.text()
+    except (
+            aiohttp.ClientError,
+            aiohttp.http_exceptions.HttpProcessingError,
+    ) as e:
+        logger.error(f'aiohttp exception for {url} -> {e}')
+    except Exception as e:
+        logger.exception(f'non-aiohttp exception occured: {e}')
 
 
 async def fetch_news_page(session, page=1):
