@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 
 - Add the `Notes` column to the csv output. [#13]
+- Add feature tests to be able to validate scenarios in a manner that reflects the user interaction with the software.. [#14]
 
 ## [[1.0.0]] - 2019-01-21
 
@@ -22,3 +23,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/rgreinho/scrapd/issues/13
+[#14]: https://github.com/rgreinho/scrapd/issues/14

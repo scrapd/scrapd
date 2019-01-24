@@ -1,18 +1,15 @@
-"""Tes the APD module."""
-from pathlib import Path
-
+"""Test the APD module."""
 import pytest
 
 from scrapd.core import apd
 from scrapd.core.constant import Fields
 from tests import mock_data
-
-TEST_ROOT_DIR = Path(__file__).resolve().parent.parent
-TEST_DATA_DIR = TEST_ROOT_DIR / 'data'
+from tests.test_common import TEST_DATA_DIR
 
 
 @pytest.fixture
 def news_page(scope='session'):
+    """Returns the test news page."""
     page_fd = TEST_DATA_DIR / 'news_page.html'
     return page_fd.read_text()
 
