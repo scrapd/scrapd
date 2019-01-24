@@ -20,34 +20,22 @@ parse_twitter_fields_scenarios = {
         Fields.CRASHES: '2',
     },
     'traffic-fatality-73-2': {
-        Fields.AGE:
-        38,
-        Fields.CASE:
-        '18-3640187',
-        Fields.CRASHES:
-        '73',
-        Fields.DOB:
-        '02/09/80',
-        Fields.DATE:
-        'December 30, 2018',
-        Fields.ETHNICITY:
-        'White',
-        Fields.FIRST_NAME:
-        'Corbin',
-        Fields.GENDER:
-        'male',
-        Fields.LAST_NAME:
-        'Sabillon-Garcia',
-        Fields.LOCATION:
-        '1400 E. Highway 71 eastbound',
-        Fields.NOTES:
-        'The preliminary investigation shows that a 2003 Ford F150 was '
+        Fields.AGE: 38,
+        Fields.CASE: '18-3640187',
+        Fields.CRASHES: '73',
+        Fields.DOB: '02/09/80',
+        Fields.DATE: 'December 30, 2018',
+        Fields.ETHNICITY: 'White',
+        Fields.FIRST_NAME: 'Corbin',
+        Fields.GENDER: 'male',
+        Fields.LAST_NAME: 'Sabillon-Garcia',
+        Fields.LOCATION: '1400 E. Highway 71 eastbound',
+        Fields.NOTES: 'The preliminary investigation shows that a 2003 Ford F150 was '
         'traveling northbound on the US Highway 183 northbound ramp to E. '
         'Highway 71, eastbound. The truck went across the E. Highway 71 and '
         'US Highway 183 ramp, rolled and came to a stop north of the '
         'roadway.',
-        Fields.TIME:
-        '2:24 a.m.',
+        Fields.TIME: '2:24 a.m.',
     },
     'traffic-fatality-72-1': {
         Fields.CASE: '18-3551763',
@@ -139,28 +127,17 @@ def test_parse_twitter_description_00():
     """Ensure the Twitter description gets parsed correctly."""
     actual = apd.parse_twitter_description(mock_data.twitter_description_00)
     expected = {
-        'Case':
-        '18-3640187',
-        'Date':
-        'December 30, 2018',
-        'Time':
-        '2:24 a.m.',
-        'Location':
-        '1400 E. Highway 71 eastbound',
-        'DOB':
-        '02/09/80',
-        'Notes':
-        'The preliminary investigation shows that a 2003 Ford F150 was traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. The truck went across the E. Highway 71 and US Highway 183 ramp, rolled and came to a stop north of the roadway.',
-        'Gender':
-        'male',
-        'Ethnicity':
-        'White',
-        'Last Name':
-        'Sabillon-Garcia',
-        'First Name':
-        'Corbin',
-        'Age':
-        38,
+        'Case': '18-3640187',
+        'Date': 'December 30, 2018',
+        'Time': '2:24 a.m.',
+        'Location': '1400 E. Highway 71 eastbound',
+        'DOB': '02/09/80',
+        'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. The truck went across the E. Highway 71 and US Highway 183 ramp, rolled and came to a stop north of the roadway.',
+        'Gender': 'male',
+        'Ethnicity': 'White',
+        'Last Name': 'Sabillon-Garcia',
+        'First Name': 'Corbin',
+        'Age': 38,
     }
     assert actual == expected
 
