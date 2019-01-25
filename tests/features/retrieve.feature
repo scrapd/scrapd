@@ -11,5 +11,5 @@ Feature: Retrieve
     Examples:
       | format | from_date   | to_date     | entry_count |
       | csv    | Jan 15 2019 | Jan 18 2019 | 2           |
-      | json   | 2018        | 2019        | 73          |
+      | json   | 2018        | 2019        | 74          |
       | python |             | Feb 2017    | 3           |
