@@ -75,7 +75,6 @@ jobs:
 
   publish:
     <<: *defaults
-
     steps:
       - checkout
       - attach_workspace:
@@ -83,7 +82,6 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "0d:a6:2a:1d:51:d7:8b:19:05:f7:84:50:91:1f:29:2b"
-
       - run:
           name: Configure git
           command: |
@@ -96,6 +94,25 @@ jobs:
           name: Publish the docs
           command: make publish
 
+  upload:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: *working_directory
+      - run:
+          name: init .pypirc
+          command: |
+            echo -e "[pypi]" > ~/.pypirc
+            echo -e "username = remy.greinhofer" >> ~/.pypirc
+            echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+      - run:
+          name: package the application
+          command: make dist
+      - run:
+          name: upload the package
+          command: make dist-upload
+
 workflows:
   version: 2
   gates:
@@ -107,6 +124,9 @@ workflows:
       - format:
           requires:
             - prepare
+          filters:
+            tags:
+              only: /.*/
       - lint:
           requires:
             - prepare
@@ -122,10 +142,23 @@ workflows:
       - test:
           requires:
             - prepare
+          filters:
+            tags:
+              only: /.*/
       - publish:
           requires:
             - docs
             - lint
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+      - upload:
+          requires:
+            - format
+            - lint
+            - test
           filters:
             branches:
               ignore: /.*/
