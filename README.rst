@@ -1,6 +1,16 @@
 ScrAPD
 ======
 
+.. image:: https://badge.fury.io/py/scrapd.svg
+   :target: https://badge.fury.io/py/scrapd
+
+.. image:: https://circleci.com/gh/rgreinho/scrapd.svg?style=svg
+   :target: https://circleci.com/gh/rgreinho/scrapd
+
+.. image:: https://coveralls.io/repos/github/rgreinho/scrapd/badge.svg?branch=master
+   :target: https://coveralls.io/github/rgreinho/scrapd?branch=master
+
+
 Extract data from APD news site.
 
 ScrAPD is a small utility designed to help organizations retrieving traffic fatality data in a friendly manner.
