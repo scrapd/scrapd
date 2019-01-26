@@ -1,10 +1,21 @@
 """Test the APD module."""
+from loguru import logger
+import asynctest
 import pytest
 
 from scrapd.core import apd
 from scrapd.core.constant import Fields
 from tests import mock_data
 from tests.test_common import TEST_DATA_DIR
+
+# Disable logging for the tests.
+logger.remove()
+
+
+def load_test_page(page):
+    """Load a test page."""
+    page_fd = TEST_DATA_DIR / page
+    return page_fd.read_text()
 
 
 @pytest.fixture
@@ -217,3 +228,22 @@ def test_parse_page_00(filename, expected):
 def test_is_in_range_00(current, from_, to, expected):
     """Ensure a date is in range."""
     assert apd.is_in_range(current, from_, to) == expected
+
+
+@asynctest.patch(
+    "scrapd.core.apd.fetch_news_page",
+    side_effect=[load_test_page(page) for page in [
+        '296',
+        '296?page=1',
+        '296?page=27',
+    ]])
+@asynctest.patch(
+    "scrapd.core.apd.fetch_detail_page",
+    return_value=load_test_page('traffic-fatality-2-3'),
+)
+@pytest.mark.asyncio
+async def test_date_filtering_00(fake_details, fake_news):
+    """Ensure the date filtering do not fetch unnecessary data."""
+    expected = 2
+    _, actual = await apd.async_retrieve(pages=-1, from_="2050-01-02", to="2050-01-03")
+    assert actual == expected

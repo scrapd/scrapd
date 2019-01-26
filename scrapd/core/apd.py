@@ -13,7 +13,7 @@ from lxml import html
 from scrapd.core.constant import Fields
 
 APD_URL = 'http://austintexas.gov/department/news/296'
-PAGE_DETAILS_URL = 'http://austintexas.gov/news/'
+PAGE_DETAILS_URL = 'http://austintexas.gov/'
 
 
 async def fetch_text(session, url, params=None):
@@ -55,6 +55,19 @@ async def fetch_news_page(session, page=1):
     if page > 1:
         params['page'] = page - 1
     return await fetch_text(session, APD_URL, params)
+
+
+async def fetch_detail_page(session, url):
+    """
+    Fetch the content of a detail page.
+
+    :param aiohttp.ClientSession session: aiohttp session
+    :param str url: request URL
+    :return: the page content.
+    :rtype: str
+    """
+
+    return await fetch_text(session, url)
 
 
 def extract_traffic_fatalities_page_details_link(news_page):
@@ -342,7 +355,8 @@ async def fetch_and_parse(session, url):
     :rtype: dict
     """
     # Retrieve the page.
-    page = await fetch_text(session, url)
+    # page = await fetch_text(session, url)
+    page = await fetch_detail_page(session, url)
 
     # Parse it.
     d = parse_page(page)
@@ -364,7 +378,6 @@ def is_in_range(date, from_=None, to=None):
     :return: `True` if the date is between `from_` and `to`
     :rtype: bool
     """
-
     current_date = dateparser.parse(date)
     from_date = dateparser.parse(from_, settings={'PREFER_DAY_OF_MONTH': 'first'}) if from_ else datetime.datetime.min
     to_date = dateparser.parse(to, settings={'PREFER_DAY_OF_MONTH': 'last'}) if to else datetime.datetime.max
@@ -377,6 +390,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
     res = []
     page = 1
     has_entries = False
+    no_date_within_range_count = 0
     async with aiohttp.ClientSession() as session:
         while True:
             # Fetch the news page.
@@ -397,6 +411,20 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [entry for entry in page_res if is_in_range(entry[Fields.DATE], from_, to)]
+
+                # If 2 pages in a row:
+                #   1) contain results
+                #   2) but none of them contain dates within the time range
+                #   3) and we did not collect any valid entries
+                # Then we can stop the operation.
+                if not has_entries and from_ and all([entry[Fields.DATE] > from_ for entry in page_res]):
+                    no_date_within_range_count += 1
+                if no_date_within_range_count > 1:
+                    logger.debug(
+                        f'{len(entries_in_time_range)} fatality page(s) is/are within the specified time range.')
+                    break
+
+                # Check whether we found entries in the previous pages.
                 if not has_entries:
                     has_entries = not has_entries and bool(entries_in_time_range)
                 logger.debug(f'{len(entries_in_time_range)} fatality page(s) is/are within the specified time range.')
@@ -418,4 +446,4 @@ async def async_retrieve(pages=-1, from_=None, to=None):
 
             page += 1
 
-    return res
+    return res, page
