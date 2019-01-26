@@ -85,20 +85,6 @@ html_theme_options = {
     'github_type': 'star',
     'github_count': False,
     'github_banner': True,
-    'badges': [
-        {
-            'image': 'https://circleci.com/gh/rgreinho/scrapd/tree/master.svg?style=svg',
-            'target': 'https://circleci.com/gh/rgreinho/scrapd/tree/master',
-            'height': '20',
-            'alt': 'CircleCI build status'
-        },
-        {
-            'image': 'https://coveralls.io/repos/github/rgreinho/scrapd/badge.svg',
-            'target': 'https://coveralls.io/github/rgreinho/scrapd',
-            'height': '20',
-            'alt': 'Coveralls coverage status'
-        },
-    ],
 }
 html_sidebars = {
     '**': [
