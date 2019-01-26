@@ -76,7 +76,7 @@ dist: wheel ## Package the application
 
 .PHONY: dist-upload
 dist-upload:
-	twine upload $(TWINE_REPO) dist/*
+	$(RUN_CMD) twine upload $(TWINE_REPO) dist/*
 
 .PHONY: format
 format: ## Format the codebase using YAPF
