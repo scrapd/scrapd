@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix issue where scrapd was retrieving unnecessary data. [#28]
+
 ## [[1.1.0]] - 2019-01-25
 
 ### Added
@@ -34,3 +38,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#14]: https://github.com/rgreinho/scrapd/issues/14
 [#20]: https://github.com/rgreinho/scrapd/issues/20
 [#23]: https://github.com/rgreinho/scrapd/issues/23
+[#28]: https://github.com/rgreinho/scrapd/issues/28

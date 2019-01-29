@@ -93,7 +93,7 @@ class Retrieve(AbstractCommand):
     def _execute(self):
         """Define the internal execution of the command."""
         # Collectr the results.
-        results = asyncio.run(apd.async_retrieve(
+        results, _ = asyncio.run(apd.async_retrieve(
             self.args['pages'],
             self.args['from_'],
             self.args['to'],
