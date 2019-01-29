@@ -79,9 +79,10 @@ def cli(ctx, verbose):
 @click.option('--pages', default=-1, help='number pages to process')
 @click.option('--from', 'from_', help='start date')
 @click.option('--to', help='end date')
+@click.option('--count', count=True, help='only count the number of results')
 @click.pass_context
 # pylint: disable=W0622
-def retrieve(ctx, format, pages, from_, to):
+def retrieve(ctx, format, pages, from_, to, count):
     """Retrieve APD's traffic fatality reports."""
     command = Retrieve(ctx.params, ctx.obj)
     command.execute()
@@ -92,16 +93,28 @@ class Retrieve(AbstractCommand):
 
     def _execute(self):
         """Define the internal execution of the command."""
-        # Collectr the results.
+        # Collect the results.
         results, _ = asyncio.run(apd.async_retrieve(
             self.args['pages'],
             self.args['from_'],
             self.args['to'],
         ))
-        logger.info(f'Total: {len(results)}')
+        result_count = len(results)
+        logger.info(f'Total: {result_count}')
+        if self.args['count']:
+            print(result_count)
+            return
 
         # Display them.
-        output_format = self.args['format'].lower()
+        self.display_results(results, self.args['format'].lower())
+
+    def display_results(self, results, output_format):
+        """
+        Display results.
+
+        :param list(dict) results: a list of dictionaries, where each represents a fatality
+        :param str output_format: the output format
+        """
         if output_format == 'python':
             pp = pprint.PrettyPrinter(indent=2)
             pp.pprint(results)
