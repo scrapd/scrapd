@@ -11,7 +11,7 @@ ScrAPD
    :target: https://coveralls.io/github/rgreinho/scrapd?branch=master
 
 
-Extract data from APD news site.
+Extract data from `APD news site <http://austintexas.gov/department/news/296>`_.
 
 ScrAPD is a small utility designed to help organizations retrieving traffic fatality data in a friendly manner.
 
@@ -131,3 +131,34 @@ of the process::
       "Time": "3:42 p.m."
     }
   ]
+
+Speed and accuracy
+------------------
+
+ScrAPD executes all the requests in an asynchronous manner. As a result it goes very fast.
+
+It parses the information using both the text of the report itself and the Twitter tweet stored in the page metadata.
+Combining these two methods provides a high degree of confidence in the parsing and allows us to reach **90% of success
+rate**.
+
+Some statistics:
+
+* 125 entries in total
+* 112 entries correctly parsed (90%)
+
+  * 105 entries fully parsed (85%)
+  * 7 entries where the fatalities were unidentified or had no info (5%)
+
+* 7 entries failed the parsing (bug or incorrect regex)(5%)
+* 6 entries were using natural language instead of field-like organization (5%)
+
+  * i.e. "54 years of age" or "42 years old instead" of "DOB: 01/02/1972"
+* processing time: ~1m40s
+
+Who uses ScrAPD?
+----------------
+
+The Austin `Pedestrian Advisory Council <http://austintexas.gov/cityclerk/boards_commissions/meetings/121_1.htm>`_
+used ScrAPD to compile a detailed presentation of the status of the traffic deaths in Austin, TX:
+
+* `2018 PAC retrospective presentation <http://www.austintexas.gov/edims/document.cfm?id=314367>`_
