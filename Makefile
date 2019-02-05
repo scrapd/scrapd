@@ -100,10 +100,6 @@ test-integrations: venv ## Run the unit tests
 setup: venv ## Setup the full environment (default)
 
 venv: venv/bin/activate ## Setup local venv
-	echo "[ -f $(VENV_BIN)/postactivate ] && . $(VENV_BIN)/postactivate" >> $(VENV_BIN)/activate
-	echo "export PYTHONBREAKPOINT=bpdb.set_trace" > $(VENV_BIN)/postactivate
-	echo "source contrib/scrapd-complete.sh" > $(VENV_BIN)/postactivate
-	echo "unset PYTHONBREAKPOINT" > $(VENV_BIN)/predeactivate
 
 venv/bin/activate: requirements.txt
 	test -d venv || python3 -m venv venv
@@ -111,6 +107,10 @@ venv/bin/activate: requirements.txt
 		&& pip install --upgrade pip setuptools \
 		&& pip install -r requirements-dev.txt \
 		&& pip install -e .
+	echo "[ -f $(VENV_BIN)/postactivate ] && . $(VENV_BIN)/postactivate" >> $(VENV_BIN)/activate
+	echo "export PYTHONBREAKPOINT=bpdb.set_trace" > $(VENV_BIN)/postactivate
+	echo "source contrib/scrapd-complete.sh" > $(VENV_BIN)/postactivate
+	echo "unset PYTHONBREAKPOINT" > $(VENV_BIN)/predeactivate
 
 .PHONY: wheel
 wheel: venv ## Build a wheel package
