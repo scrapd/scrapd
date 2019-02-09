@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ScrAPD &#8212; scrapd 1.1.0 documentation</title>
+    <title>ScrAPD &#8212; scrapd 1.2.0 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -37,7 +37,10 @@
             
   <div class="section" id="scrapd">
 <h1>ScrAPD<a class="headerlink" href="#scrapd" title="Permalink to this headline">¶</a></h1>
-<p>Extract data from APD news site.</p>
+<a class="reference external image-reference" href="https://badge.fury.io/py/scrapd"><img alt="https://badge.fury.io/py/scrapd.svg" src="https://badge.fury.io/py/scrapd.svg" /></a>
+<a class="reference external image-reference" href="https://circleci.com/gh/rgreinho/scrapd"><img alt="https://circleci.com/gh/rgreinho/scrapd.svg?style=svg" src="https://circleci.com/gh/rgreinho/scrapd.svg?style=svg" /></a>
+<a class="reference external image-reference" href="https://coveralls.io/github/rgreinho/scrapd?branch=master"><img alt="https://coveralls.io/repos/github/rgreinho/scrapd/badge.svg?branch=master" src="https://coveralls.io/repos/github/rgreinho/scrapd/badge.svg?branch=master" /></a>
+<p>Extract data from <a class="reference external" href="http://austintexas.gov/department/news/296">APD news site</a>.</p>
 <p>ScrAPD is a small utility designed to help organizations retrieving traffic fatality data in a friendly manner.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -116,7 +119,7 @@ in <cite>json</cite>:</p>
 </div>
 <p>Retrieve all the traffic fatalities from 2019 (<em>as of Jan 20th 2019</em>) in json, and enabling the logging to follow the progress
 of the process:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scrapd</span> <span class="o">-</span><span class="n">v</span> <span class="n">retrieve</span> <span class="o">--</span><span class="kn">from</span> <span class="mi">2019</span> <span class="o">--</span><span class="nb">format</span> <span class="n">json</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scrapd</span> <span class="o">-</span><span class="n">v</span> <span class="n">retrieve</span> <span class="o">--</span><span class="kn">from</span> <span class="s2">&quot;1 1 2019&quot;</span> <span class="o">--</span><span class="nb">format</span> <span class="n">json</span>
 
 <span class="n">Fetching</span> <span class="n">page</span> <span class="mf">1.</span><span class="o">..</span>
 <span class="n">Fetching</span> <span class="n">page</span> <span class="mf">2.</span><span class="o">..</span>
@@ -153,7 +156,45 @@ of the process:</p>
 <span class="p">]</span>
 </pre></div>
 </div>
+<p>Export the results to Google Sheets:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scrapd</span> <span class="o">-</span><span class="n">v</span> <span class="n">retrieve</span> \
+  <span class="o">--</span><span class="kn">from</span> <span class="s2">&quot;Feb 1 2019&quot;</span> \
+  <span class="o">--</span><span class="nb">format</span> <span class="n">gsheets</span> \
+  <span class="o">--</span><span class="n">gcredentials</span> <span class="n">creds</span><span class="o">.</span><span class="n">json</span> \
+  <span class="o">--</span><span class="n">gcontributors</span> <span class="s2">&quot;remy.greinhofer@gmail.com:user:writer&quot;</span>
+</pre></div>
 </div>
+</div>
+</div>
+<div class="section" id="speed-and-accuracy">
+<h2>Speed and accuracy<a class="headerlink" href="#speed-and-accuracy" title="Permalink to this headline">¶</a></h2>
+<p>ScrAPD executes all the requests in an asynchronous manner. As a result it goes very fast.</p>
+<p>It parses the information using both the text of the report itself and the Twitter tweet stored in the page metadata.
+Combining these two methods provides a high degree of confidence in the parsing and allows us to reach <strong>90% of success
+rate</strong>.</p>
+<p>Some statistics:</p>
+<ul class="simple">
+<li>125 entries in total</li>
+<li>112 entries correctly parsed (90%)<ul>
+<li>105 entries fully parsed (85%)</li>
+<li>7 entries where the fatalities were unidentified or had no info (5%)</li>
+</ul>
+</li>
+<li>7 entries failed the parsing (bug or incorrect regex)(5%)</li>
+<li>6 entries were using natural language instead of field-like organization (5%)<ul>
+<li>i.e. “54 years of age” or “42 years old instead” of “DOB: 01/02/1972”</li>
+</ul>
+</li>
+<li>processing time: ~1m40s</li>
+</ul>
+</div>
+<div class="section" id="who-uses-scrapd">
+<h2>Who uses ScrAPD?<a class="headerlink" href="#who-uses-scrapd" title="Permalink to this headline">¶</a></h2>
+<p>The Austin <a class="reference external" href="http://austintexas.gov/cityclerk/boards_commissions/meetings/121_1.htm">Pedestrian Advisory Council</a>
+used ScrAPD to compile a detailed presentation of the status of the traffic deaths in Austin, TX:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.austintexas.gov/edims/document.cfm?id=314367">2018 PAC retrospective presentation</a></li>
+</ul>
 </div>
 </div>
 
@@ -188,29 +229,13 @@ of the process:</p>
 
 
 
-
-<ul class="badges">
-  
-  <li><a href="https://circleci.com/gh/rgreinho/scrapd/tree/master">
-    <img src="https://circleci.com/gh/rgreinho/scrapd/tree/master.svg?style=svg"
-	 alt="CircleCI build status"
-	 height="20"
-    />
-  </a>
-  
-  <li><a href="https://coveralls.io/github/rgreinho/scrapd">
-    <img src="https://coveralls.io/repos/github/rgreinho/scrapd/badge.svg"
-	 alt="Coveralls coverage status"
-	 height="20"
-    />
-  </a>
-  
-</ul>
 <h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ScrAPD</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#speed-and-accuracy">Speed and accuracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#who-uses-scrapd">Who uses ScrAPD?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Detailed usage</a></li>
