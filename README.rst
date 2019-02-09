@@ -96,7 +96,7 @@ Do the same research but output as CSV::
 Retrieve all the traffic fatalities from 2019 (*as of Jan 20th 2019*) in json, and enabling the logging to follow the progress
 of the process::
 
-  scrapd -v retrieve --from 2019 --format json
+  scrapd -v retrieve --from "1 1 2019" --format json
 
   Fetching page 1...
   Fetching page 2...

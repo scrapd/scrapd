@@ -1,8 +1,13 @@
 code.descname {
   color: #4885ed;
-  }
+}
 
-  th.field-name {
+th.field-name {
   color: #3cba54;
-  }
+}
 
+cite {
+  color: #4885ed;
+  font-weight: bold;
+  font-style: normal;
+}
