@@ -14,7 +14,7 @@ class Test_GSheets:
 
     def test_share_00(self, mocker):
         """Ensure the document is shared with valid contributors."""
-        contributors = ['alice@gmail.com:user:editor', 'alice@gmail.com:user:editor']
+        contributors = ['alice@gmail.com:user:writer', 'alice@gmail.com:user:reader']
         g = GSheets(self.fake.file_path(depth=1, category=None, extension='json'), contributors)
         g.spreadsheet = Spreadsheet(None, None)
         g.spreadsheet.share = mocker.MagicMock()

@@ -132,6 +132,14 @@ of the process::
     }
   ]
 
+Export the results to Google Sheets::
+
+  scrapd -v retrieve \
+    --from "Feb 1 2019" \
+    --format gsheets \
+    --gcredentials creds.json \
+    --gcontributors "remy.greinhofer@gmail.com:user:writer"
+
 Speed and accuracy
 ------------------
 

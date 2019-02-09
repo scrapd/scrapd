@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[1.2.0]] - 2019-02-09
+
+### Added
+
+- Add flag to only count the results. [#31]
+- Added Google Sheet support. [#35]
+
 ### Fixed
 
 - Fix issue where scrapd was retrieving unnecessary data. [#28]
@@ -32,6 +39,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [//]: # (Release links)
 [1.0.0]: https://github.com/rgreinho/scrapd/releases/1.0.0
 [1.1.0]: https://github.com/rgreinho/scrapd/releases/1.1.0
+[1.2.0]: https://github.com/rgreinho/scrapd/releases/1.2.0
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/rgreinho/scrapd/issues/13
@@ -39,3 +47,5 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#20]: https://github.com/rgreinho/scrapd/issues/20
 [#23]: https://github.com/rgreinho/scrapd/issues/23
 [#28]: https://github.com/rgreinho/scrapd/issues/28
+[#31]: https://github.com/rgreinho/scrapd/issues/31
+[#35]: https://github.com/rgreinho/scrapd/issues/35

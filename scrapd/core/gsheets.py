@@ -1,4 +1,4 @@
-"""Define A wrapper around GSpread to manipulate Google Spreadsheets."""
+"""Define a wrapper around GSpread to manipulate Google Spreadsheets."""
 
 import gspread
 from loguru import logger
@@ -52,11 +52,11 @@ class GSheets:
         """
         for contributor in self.contributors:
             try:
-                account, type_, role = contributor.split(':')
+                account, type_, role_ = contributor.split(':')
             except ValueError as e:
                 logger.error(f'Cannot parse contributor "{contributor}". Verify the format: {e}')
             else:
-                self.spreadsheet.share(account, perm_type=type_, role=role)
+                self.spreadsheet.share(account, perm_type=type_, role=role_)
 
     def add_csv_data(self, fieldnames, data):
         """
