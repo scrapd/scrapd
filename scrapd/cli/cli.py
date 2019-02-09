@@ -29,7 +29,7 @@ __version__ = detect_from_metadata(APP_NAME)
 #   The arguments are used via the `self.args` dict of the `AbstractCommand` class.
 @click.group()
 @click.version_option(version=__version__)
-@click.option('-v', '--verbose', count=True, help='defines the log level')
+@click.option('-v', '--verbose', count=True, help='adjust the log level')
 @click.pass_context
 def cli(ctx, verbose):  # noqa: D403
     """
@@ -84,14 +84,14 @@ def cli(ctx, verbose):  # noqa: D403
     help='specify output format',
     show_default=True,
 )
-@click.option('--gcontributors', help='comma separated list of contributors')
-@click.option('--gcredentials', type=click.File(), help='path of the google credentials file')
 @click.option('--from', 'from_', help='start date')
+@click.option('--gcontributors', help='comma separated list of contributors')
+@click.option('--gcredentials', type=click.Path(), help='path of the google credentials file')
 @click.option('--pages', default=-1, help='number pages to process')
 @click.option('--to', help='end date')
 @click.pass_context
 # pylint: disable=W0622
-def retrieve(ctx, count, format, from_, pages, to):
+def retrieve(ctx, count, format, from_, gcontributors, gcredentials, pages, to):
     """
     Retrieve APD's traffic fatality reports.
 
@@ -102,7 +102,10 @@ def retrieve(ctx, count, format, from_, pages, to):
 
     If `gsheets` is selected, you must also specify the path of the credentials file using the `--gcredentials` flag,
     and the list of contributors to your document with `--gcontributors`. Contributors are defined as a comma separated
-    list of `<account>:<type>:<role>`, for instance `'alice@gmail.com:user:owner,bob@gmail.com:user:editor'`
+    list of `<account>:<type>:<role>`, for instance `'alice@gmail.com:user:owner,bob@gmail.com:user:writer'`.
+
+    * Valid account types are: `user`, `group`, `domain`, `anyone`.
+    * Valid roles: `owner`, `writer`, `reader`.
 
     If the `count` option is used, the format is ignored. `count` simply returns the number of reports within the
     specified time range.
@@ -156,6 +159,9 @@ class Retrieve(AbstractCommand):
 
     def _execute(self):
         """Define the internal execution of the command."""
+        # Check the params.
+        self.check_params()
+
         # Collect the results.
         results, _ = asyncio.run(apd.async_retrieve(
             self.args['pages'],
@@ -170,14 +176,18 @@ class Retrieve(AbstractCommand):
 
         # Display them.
         if self.args['format'].lower() == 'gsheets':
-            if not self.args.get('gcredentials'):
-                raise click.ClickException('Google credentials are required.')
-            if not self.args.get('gcontributors'):
-                raise click.ClickException('You must specify contributors.')
             gcontributors = self.args.get('gcontributors').split(',')
             self.gsheet_writer(results, self.args['gcredentials'], gcontributors)
         else:
             self.display_results(results, self.args['format'].lower())
+
+    def check_params(self):
+        """Raise an exception if a custom parameters is invalid or missing."""
+        if self.args['format'].lower() == 'gsheets':
+            if not self.args.get('gcredentials'):
+                raise click.ClickException('Google credentials are required.')
+            if not self.args.get('gcontributors'):
+                raise click.ClickException('You must specify contributors.')
 
     def display_results(self, results, output_format):
         """
