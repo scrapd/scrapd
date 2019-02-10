@@ -15,7 +15,7 @@ TWINE_REPO =
 
 # Docker.
 DOCKERFILE = Dockerfile$(SUFFIX)
-DOCKER_ORG = requestyoracks
+DOCKER_ORG = rgreinho
 DOCKER_REPO = $(DOCKER_ORG)/$(PROJECT_NAME)
 DOCKER_IMG = $(DOCKER_REPO):$(TAG)
 
@@ -43,7 +43,7 @@ help: # Display help
 
 .PHONY: build-docker
 build-docker: Dockerfile ## Build a docker development image
-	@docker build -t $(DOCKER_IMAGE_FULL) .
+	@docker build -t $(DOCKER_IMG) .
 
 .PHONY: ci
 ci: docs lint test

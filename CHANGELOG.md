@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add a Docker image to run ScrAPD from a container. [#38]
+
 ## [[1.2.0]] - 2019-02-09
 
 ### Added
@@ -49,3 +53,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#28]: https://github.com/rgreinho/scrapd/issues/28
 [#31]: https://github.com/rgreinho/scrapd/issues/31
 [#35]: https://github.com/rgreinho/scrapd/issues/35
+[#38]: https://github.com/rgreinho/scrapd/issues/38
