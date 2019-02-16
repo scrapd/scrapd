@@ -1,11 +1,7 @@
 """Define the top-level cli command."""
 import asyncio
-import csv
-import datetime
-import json
 import logging
 import os
-import pprint
 import sys
 
 import click
@@ -14,8 +10,7 @@ from loguru import logger
 from scrapd import config
 from scrapd.cli.base import AbstractCommand
 from scrapd.core import apd
-from scrapd.core.gsheets import GSheets
-from scrapd.core.constant import Fields
+from scrapd.core.formatter import Formatter
 from scrapd.core.version import detect_from_metadata
 
 # Set the project name.
@@ -141,22 +136,6 @@ def retrieve(ctx, count, format, from_, gcontributors, gcredentials, pages, to):
 class Retrieve(AbstractCommand):
     """Retrieve APD's traffic fatality reports."""
 
-    CSVFIELDS = [
-        Fields.CRASHES,
-        Fields.CASE,
-        Fields.DATE,
-        Fields.TIME,
-        Fields.LOCATION,
-        Fields.FIRST_NAME,
-        Fields.LAST_NAME,
-        Fields.ETHNICITY,
-        Fields.GENDER,
-        Fields.DOB,
-        Fields.AGE,
-        Fields.LINK,
-        Fields.NOTES,
-    ]
-
     def _execute(self):
         """Define the internal execution of the command."""
         # Check the params.
@@ -170,55 +149,23 @@ class Retrieve(AbstractCommand):
         ))
         result_count = len(results)
         logger.info(f'Total: {result_count}')
-        if self.args['count']:
-            print(result_count)
-            return
 
-        # Display them.
-        if self.args['format'].lower() == 'gsheets':
-            gcontributors = self.args.get('gcontributors').split(',')
-            self.gsheet_writer(results, self.args['gcredentials'], gcontributors)
-        else:
-            self.display_results(results, self.args['format'].lower())
+        # Get the format and print the results.
+        format_ = 'count' if self.args['count'] else self.args['format'].lower()
+        formatter = Formatter(format_)
+        formatter.print(results)
 
     def check_params(self):
-        """Raise an exception if a custom parameters is invalid or missing."""
+        """
+        Raise an exception if a custom parameters is invalid or missing.
+
+        This is to avoid collecting all the data then failing due to a missing parameter.
+        """
         if self.args['format'].lower() == 'gsheets':
             if not self.args.get('gcredentials'):
                 raise click.ClickException('Google credentials are required.')
             if not self.args.get('gcontributors'):
-                raise click.ClickException('You must specify contributors.')
-
-    def display_results(self, results, output_format):
-        """
-        Display results.
-
-        :param list(dict) results: a list of dictionaries, where each represents a fatality
-        :param str output_format: the output format
-        """
-        if output_format == 'python':
-            pp = pprint.PrettyPrinter(indent=2)
-            pp.pprint(results)
-        elif output_format == 'json':
-            print(json.dumps(results, sort_keys=True, indent=2))
-        else:
-            # Write CSV file.
-            writer = csv.DictWriter(sys.stdout, fieldnames=self.CSVFIELDS, extrasaction='ignore')
-            writer.writeheader()
-            writer.writerows(results)
-
-    def gsheet_writer(self, results, credentials, contributors):
-        """
-        Export the results to Google Sheets.
-
-        :param dict results: search results
-        :param str credentials: path to the credential file
-        :param list(str) contributors: list of contributors to the document being created
-        """
-        gs = GSheets(credentials, contributors)
-        gs.authenticate()
-        gs.create(datetime.datetime.now().strftime('%Y-%m-%d'))
-        gs.add_csv_data(self.CSVFIELDS, results)
+                raise click.ClickException('At least 1 contributor is required.')
 
 
 cli.add_command(retrieve)

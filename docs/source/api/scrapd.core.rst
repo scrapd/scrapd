@@ -17,6 +17,14 @@ scrapd.core.constant module
     :undoc-members:
     :show-inheritance:
 
+scrapd.core.formatter module
+----------------------------
+
+.. automodule:: scrapd.core.formatter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 scrapd.core.version module
 --------------------------
 
