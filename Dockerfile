@@ -3,13 +3,13 @@ LABEL MAINTAINER="Rémy Greinhofer <remy.greinhofer@gmail.com>"
 
 WORKDIR /usr/src/app
 
-# Install the pip packages.
+# Install the packages.
 RUN apk add --no-cache g++ \
   gcc \
   libffi-dev \
   libxslt-dev \
   musl-dev \
   openssl-dev \
-  && pip install scrapd==1.2.0
+  && pip install scrapd==1.3.0
 
 ENTRYPOINT ["scrapd"]

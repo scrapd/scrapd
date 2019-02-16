@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[1.3.0]] - 2019-02-16
+
 ### Added
 
 - Add a Docker image to run ScrAPD from a container. [#38]
@@ -16,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add flag to only count the results. [#31]
-- Added Google Sheet support. [#35]
+- Add Google Sheet support. [#35]
 
 ### Fixed
 
