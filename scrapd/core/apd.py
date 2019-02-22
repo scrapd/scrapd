@@ -78,7 +78,7 @@ def extract_traffic_fatalities_page_details_link(news_page):
     :return: a list of links.
     :rtype: list or `None`
     """
-    PATTERN = r'<a href="(/news/traffic-fatality-\d{1,3}-\d)">(Traffic Fatality #(\d{1,3}))</a>'
+    PATTERN = r'<a href="(/news/traffic-fatality-\d{1,3}-\d)">(Traffic Fatality #(\d{1,3}))\s*</a>'
     regex = re.compile(PATTERN)
     matches = regex.findall(news_page, re.MULTILINE)
     return matches
@@ -156,6 +156,11 @@ def parse_twitter_description(twitter_description):
             current_field = word.replace(':', '')
             continue
         d.setdefault(current_field, []).append(word)
+
+    # Handle special case where Date of birth is a token `DOB:`.
+    tmp_dob = d.get(Fields.DOB)
+    if tmp_dob and isinstance(tmp_dob, list):
+        d[Fields.DOB] = tmp_dob[0]
 
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
@@ -417,11 +422,10 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if not has_entries and from_ and all([entry[Fields.DATE] > from_ for entry in page_res]):
+                if not has_entries and from_ and all([is_posterior(entry[Fields.DATE], from_) for entry in page_res]):
                     no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
-                    logger.debug(
-                        f'{len(entries_in_time_range)} fatality page(s) is/are within the specified time range.')
+                    logger.debug(f'{len(entries_in_time_range)} fatality page(s) within the specified time range.')
                     break
 
                 # Check whether we found entries in the previous pages.
@@ -447,3 +451,16 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             page += 1
 
     return res, page
+
+
+def is_posterior(d1, d2):
+    """
+    Return True is d1 is posterior to d2 (i.e. it happened after).
+
+    :param str d1: date 1
+    :param str d2: date 2
+    :return: True is d1 is posterior to d2
+    :rtype: bool
+    """
+
+    return dateparser.parse(d1) < dateparser.parse(d2)

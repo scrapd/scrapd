@@ -7,5 +7,5 @@ Case:           18-3640187 Date:            December 30, 2018 Time:            2
 2003 Ford F150 was traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. The truck
 went across the E. Highway 71 and US Highway 183 ramp, rolled and came to a stop north of the roadway.
 """
-
 twitter_description_01 = "Case:           19-0161105"
+twitter_description_02 = "Case:            18-160882 Date:             Tuesday, January 16, 2018 Time:             5:14 p.m. Location:      1500 W. Slaughter Lane Deceased:     Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)"

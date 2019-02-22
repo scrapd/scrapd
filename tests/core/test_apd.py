@@ -162,6 +162,20 @@ def test_parse_twitter_description_01():
     assert actual == expected
 
 
+def test_parse_twitter_description_02():
+    """Ensure a DOB recognized as a field can be parsed."""
+    actual = apd.parse_twitter_description(mock_data.twitter_description_02)
+    expected = {
+        'Age': 57,
+        'Case': '18-160882',
+        'DOB': '01-22-1961',
+        'Date': 'Tuesday, January 16, 2018',
+        'Location': '1500 W. Slaughter Lane',
+        'Time': '5:14 p.m.',
+    }
+    assert actual == expected
+
+
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
     """Ensure page detail links are extracted from news page."""
     actual = apd.extract_traffic_fatalities_page_details_link(news_page)

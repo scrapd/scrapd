@@ -27,6 +27,7 @@ __version__ = detect_from_metadata(APP_NAME)
 @click.option(
     '-f',
     '--format',
+    'format_',
     type=click.Choice(sorted(Formatter.formatters)),
     default='json',
     help='specify output format',
@@ -93,7 +94,7 @@ class Retrieve(AbstractCommand):
         logger.info(f'Total: {result_count}')
 
         # Get the format and print the results.
-        format_ = self.args['format'].lower()
+        format_ = self.args['format_'].lower()
         formatter = Formatter(format_)
         formatter.print(results)
 
@@ -103,7 +104,7 @@ class Retrieve(AbstractCommand):
 
         This is to avoid collecting all the data then failing due to a missing parameter.
         """
-        if self.args['format'].lower() == 'gsheets':
+        if self.args['format_'].lower() == 'gsheets':
             if not self.args.get('gcredentials'):
                 raise click.ClickException('Google credentials are required.')
             if not self.args.get('gcontributors'):
