@@ -60,7 +60,7 @@ docker
 ------
 
 In addition to installing the Python package, you can also use the
-[docker container](https://hub.docker.com/r/rgreinho/scrapd.
+[docker container](https://hub.docker.com/r/rgreinho/scrapd).
 
 .. code-block:: bash
 

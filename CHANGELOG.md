@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[1.4.1]] - 2019-02-23
+
+### Fixed
+
+- Fix Changelog and documentation. [#46]
+
 ## [[1.4.0]] - 2019-02-23
 
 ### Added
@@ -64,6 +70,8 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [1.1.0]: https://github.com/rgreinho/scrapd/releases/1.1.0
 [1.2.0]: https://github.com/rgreinho/scrapd/releases/1.2.0
 [1.3.0]: https://github.com/rgreinho/scrapd/releases/1.3.0
+[1.4.0]: https://github.com/rgreinho/scrapd/releases/1.4.0
+[1.4.1]: https://github.com/rgreinho/scrapd/releases/1.4.1
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/rgreinho/scrapd/issues/13
@@ -75,4 +83,5 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#35]: https://github.com/rgreinho/scrapd/issues/35
 [#38]: https://github.com/rgreinho/scrapd/issues/38
 [#44]: https://github.com/rgreinho/scrapd/pull/44
+[#45]: https://github.com/rgreinho/scrapd/pull/45
 [#46]: https://github.com/rgreinho/scrapd/pull/46
