@@ -1,16 +1,15 @@
 """Define the module containing the function used to scrap data from the APD website."""
 import asyncio
-import datetime
 import re
 import unicodedata
 from urllib.parse import urljoin
 
 import aiohttp
-import dateparser
 from loguru import logger
 from lxml import html
 
 from scrapd.core.constant import Fields
+from scrapd.core import date_utils
 
 APD_URL = 'http://austintexas.gov/department/news/296'
 PAGE_DETAILS_URL = 'http://austintexas.gov/'
@@ -173,31 +172,9 @@ def parse_twitter_description(twitter_description):
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = compute_age(' '.join(d.get(Fields.DATE)), d.get(Fields.DOB))
+        d[Fields.AGE] = date_utils.compute_age(' '.join(d.get(Fields.DATE)), d.get(Fields.DOB))
 
     return sanitize_fatality_entity(d)
-
-
-def compute_age(date, dob):
-    """
-    Compute a victim's age.
-
-    :param str date: crash date
-    :param str dob: date of birth
-    :return: the victim's age.
-    :rtype: int
-    """
-    DAYS_IN_YEAR = 365
-    dob_ = dateparser.parse(dob)
-
-    # In case the date of birth only contains 2 digits, we have to determine whether it should be
-    # 19xx or 20xx.
-    now = datetime.datetime.now()
-    if dob_.year > now.year:
-        dob_ = datetime.datetime(dob_.year - 100, dob_.month, dob_.day)
-
-    # Compute the age.
-    return (dateparser.parse(date) - dob_).days // DAYS_IN_YEAR
 
 
 def sanitize_fatality_entity(d):
@@ -304,7 +281,7 @@ def parse_page_content(detail_page):
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
+        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
 
     return sanitize_fatality_entity(d)
 
@@ -373,29 +350,15 @@ async def fetch_and_parse(session, url):
     return d
 
 
-def is_in_range(date, from_=None, to=None):
-    """
-    Check whether a date is comprised between 2 others.
-
-    :param str date: date to vheck
-    :param str from_: start date, defaults to None
-    :param str to: end date, defaults to None
-    :return: `True` if the date is between `from_` and `to`
-    :rtype: bool
-    """
-    current_date = dateparser.parse(date)
-    from_date = dateparser.parse(from_, settings={'PREFER_DAY_OF_MONTH': 'first'}) if from_ else datetime.datetime.min
-    to_date = dateparser.parse(to, settings={'PREFER_DAY_OF_MONTH': 'last'}) if to else datetime.datetime.max
-
-    return from_date <= current_date <= to_date
-
-
 async def async_retrieve(pages=-1, from_=None, to=None):
     """Retrieve fatality data."""
     res = []
     page = 1
     has_entries = False
     no_date_within_range_count = 0
+
+    logger.debug(f'Retrieving fatalities from {date_utils.from_date(from_)} to {date_utils.to_date(to)}.')
+
     async with aiohttp.ClientSession() as session:
         while True:
             # Fetch the news page.
@@ -415,15 +378,18 @@ async def async_retrieve(pages=-1, from_=None, to=None):
 
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
-                entries_in_time_range = [entry for entry in page_res if is_in_range(entry[Fields.DATE], from_, to)]
+                entries_in_time_range = [
+                    entry for entry in page_res if date_utils.is_in_range(entry[Fields.DATE], from_, to)
+                ]
 
                 # If 2 pages in a row:
                 #   1) contain results
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if not has_entries and from_ and all([is_posterior(entry[Fields.DATE], from_) for entry in page_res]):
-                    no_date_within_range_count += 1
+                if not has_entries:
+                    if from_ and all([date_utils.is_posterior(entry[Fields.DATE], from_) for entry in page_res]):
+                        no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
                     logger.debug(f'{len(entries_in_time_range)} fatality page(s) within the specified time range.')
                     break
@@ -451,16 +417,3 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             page += 1
 
     return res, page
-
-
-def is_posterior(d1, d2):
-    """
-    Return True is d1 is posterior to d2 (i.e. it happened after).
-
-    :param str d1: date 1
-    :param str d2: date 2
-    :return: True is d1 is posterior to d2
-    :rtype: bool
-    """
-
-    return dateparser.parse(d1) < dateparser.parse(d2)

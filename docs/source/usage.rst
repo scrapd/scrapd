@@ -59,7 +59,8 @@ For 2 `-v` and more, the log format also changes from compact to verbose.
 docker
 ------
 
-In addition to installing the Python package, you can also use the docker container.
+In addition to installing the Python package, you can also use the
+[docker container](https://hub.docker.com/r/rgreinho/scrapd.
 
 .. code-block:: bash
 
