@@ -7,12 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## Changed
+## [[1.4.0]] - 2019-02-23
+
+### Added
+
+- Improved date parsing and date manipulation operations. [#45]
+
+### Changed
 
 - Simplify the tool by removing the `retrieve` subcommand. ScrAPD is a tool to do exactly that, there is no need for
   subcommands.
 
-## Fixed
+### Fixed
 
 - Fix incorrect date filtering condition. [#44]
 - Improve regex to detect fatality links. [#44]
@@ -69,3 +75,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#35]: https://github.com/rgreinho/scrapd/issues/35
 [#38]: https://github.com/rgreinho/scrapd/issues/38
 [#44]: https://github.com/rgreinho/scrapd/pull/44
+[#46]: https://github.com/rgreinho/scrapd/pull/46

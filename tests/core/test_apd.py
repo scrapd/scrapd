@@ -208,6 +208,11 @@ def test_has_next_00(news_page):
     assert apd.has_next(news_page)
 
 
+def test_has_next_01():
+    """Ensure we detect whether there are no more news pages."""
+    assert apd.has_next(None) is False
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_content_scenarios.items()])
 def test_parse_page_content_00(filename, expected):
     """Ensure information are properly extracted from the content detail page."""
@@ -233,15 +238,6 @@ def test_parse_page_00(filename, expected):
     page = page_fd.read_text()
     actual = apd.parse_page(page)
     assert actual == expected
-
-
-@pytest.mark.parametrize('current,from_,to,expected', [
-    ('Jan 10', 'Jan 1', 'Jan 31', True),
-    ('Jan 1', None, None, True),
-])
-def test_is_in_range_00(current, from_, to, expected):
-    """Ensure a date is in range."""
-    assert apd.is_in_range(current, from_, to) == expected
 
 
 @asynctest.patch(
