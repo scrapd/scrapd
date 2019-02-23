@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>scrapd.core package &#8212; scrapd 1.3.0 documentation</title>
+    <title>scrapd.core package &#8212; scrapd 1.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -43,30 +43,6 @@
 <dt id="scrapd.core.apd.async_retrieve">
 <code class="descclassname">scrapd.core.apd.</code><code class="descname">async_retrieve</code><span class="sig-paren">(</span><em>pages=-1</em>, <em>from_=None</em>, <em>to=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#async_retrieve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.async_retrieve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve fatality data.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.compute_age">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">compute_age</code><span class="sig-paren">(</span><em>date</em>, <em>dob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#compute_age"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.compute_age" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute a victim’s age.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>date</strong> (<em>str</em>) – crash date</li>
-<li><strong>dob</strong> (<em>str</em>) – date of birth</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the victim’s age.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="function">
@@ -216,31 +192,6 @@
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><cite>True</cite> if there is another news page available, <cite>False</cite> otherwise.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.is_in_range">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">is_in_range</code><span class="sig-paren">(</span><em>date</em>, <em>from_=None</em>, <em>to=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#is_in_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.is_in_range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check whether a date is comprised between 2 others.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>date</strong> (<em>str</em>) – date to vheck</li>
-<li><strong>from</strong> (<em>str</em>) – start date, defaults to None</li>
-<li><strong>to</strong> (<em>str</em>) – end date, defaults to None</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><cite>True</cite> if the date is between <cite>from_</cite> and <cite>to</cite></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
-</td>
 </tr>
 </tbody>
 </table>
@@ -459,6 +410,313 @@ relevant information anymore.</p>
 <dt id="scrapd.core.constant.Fields.TIME">
 <code class="descname">TIME</code><em class="property"> = 'Time'</em><a class="headerlink" href="#scrapd.core.constant.Fields.TIME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrapd.core.date_utils">
+<span id="scrapd-core-date-utils-module"></span><h2>scrapd.core.date_utils module<a class="headerlink" href="#module-scrapd.core.date_utils" title="Permalink to this headline">¶</a></h2>
+<p>Define a module to manipulate dates.</p>
+<dl class="function">
+<dt id="scrapd.core.date_utils.compute_age">
+<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">compute_age</code><span class="sig-paren">(</span><em>date</em>, <em>dob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#compute_age"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.compute_age" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a victim’s age.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>str</em>) – crash date</li>
+<li><strong>dob</strong> (<em>str</em>) – date of birth</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the victim’s age.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.date_utils.from_date">
+<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">from_date</code><span class="sig-paren">(</span><em>date</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#from_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.from_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the date from a human readable format, with options for the from date.</p>
+<ul class="simple">
+<li>If the date cannot be parsed, <cite>datetime.datetime.min</cite> is returned.</li>
+<li>If the day of the month is not specified, the first day is used.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> (<em>str</em>) – date</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a date object representing the date.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime.datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.date_utils.is_in_range">
+<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">is_in_range</code><span class="sig-paren">(</span><em>date</em>, <em>from_=None</em>, <em>to=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#is_in_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.is_in_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether a date is comprised between 2 others.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>str</em>) – date to vheck</li>
+<li><strong>from</strong> (<em>str</em>) – start date, defaults to None</li>
+<li><strong>to</strong> (<em>str</em>) – end date, defaults to None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><cite>True</cite> if the date is between <cite>from_</cite> and <cite>to</cite></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.date_utils.is_posterior">
+<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">is_posterior</code><span class="sig-paren">(</span><em>d1</em>, <em>d2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#is_posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.is_posterior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True is d1 is posterior to d2 (i.e. it happened after).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>d1</strong> (<em>str</em>) – date 1</li>
+<li><strong>d2</strong> (<em>str</em>) – date 2</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True is d1 is posterior to d2</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.date_utils.parse_date">
+<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">parse_date</code><span class="sig-paren">(</span><em>date</em>, <em>default=None</em>, <em>settings=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#parse_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.parse_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the date from a human readable format.</p>
+<p>If no default value is specified and there is an error, an exception is raised. Otherwise the default value is
+returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>str</em>) – date</li>
+<li><strong>default</strong> (<em>datetime</em>) – default value in case the date cannot be parsed.</li>
+<li><strong>settings</strong> (<em>dict</em>) – a dictionary containing the parsing options. All the available options are defined here:
+<a class="reference external" href="https://dateparser.readthedocs.io/en/latest/dateparser.html#dateparser.conf.Settings">https://dateparser.readthedocs.io/en/latest/dateparser.html#dateparser.conf.Settings</a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a date object representing the date.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">datetime.datetime</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.date_utils.to_date">
+<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">to_date</code><span class="sig-paren">(</span><em>date</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#to_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.to_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the date from a human readable format, with options for the to date.</p>
+<ul class="simple">
+<li>If the date cannot be parsed, <cite>datetime.datetime.max</cite> is returned.</li>
+<li>If the day of the month is not specified, the last day is used.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>date</strong> (<em>str</em>) – date</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a date object representing the date.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime.datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-scrapd.core.formatter">
+<span id="scrapd-core-formatter-module"></span><h2>scrapd.core.formatter module<a class="headerlink" href="#module-scrapd.core.formatter" title="Permalink to this headline">¶</a></h2>
+<p>Define the formatter module.</p>
+<p>This module contains all the classes with the ability to print the results. They destination depends on the custom
+formatter used to print the results and can be sdtout, sdterr, a file or even a remote storage if the formatter allows
+it.</p>
+<dl class="class">
+<dt id="scrapd.core.formatter.CSVFormatter">
+<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">CSVFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CSVFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CSVFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
+<p>Define the CSV formatter.</p>
+<p>Displays the results as a CSV.</p>
+<dl class="method">
+<dt id="scrapd.core.formatter.CSVFormatter.printer">
+<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CSVFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CSVFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the printer method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – the results to display.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="scrapd.core.formatter.CountFormatter">
+<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">CountFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CountFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CountFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
+<p>Define the Count formatter.</p>
+<p>Simply displays the number of results matching the search criterias.</p>
+<dl class="method">
+<dt id="scrapd.core.formatter.CountFormatter.printer">
+<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CountFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CountFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the printer method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – the results to display.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="scrapd.core.formatter.Formatter">
+<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">Formatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Define the Formatter base class.</p>
+<p>The default printer method simply uses the <cite>print()</cite> function.</p>
+<dl class="attribute">
+<dt id="scrapd.core.formatter.Formatter.formatters">
+<code class="descname">formatters</code><em class="property"> = {'count': &lt;class 'scrapd.core.formatter.CountFormatter'&gt;, 'csv': &lt;class 'scrapd.core.formatter.CSVFormatter'&gt;, 'gsheets': &lt;class 'scrapd.core.formatter.GSheetFormatter'&gt;, 'json': &lt;class 'scrapd.core.formatter.JSONFormatter'&gt;, 'python': &lt;class 'scrapd.core.formatter.PythonFormatter'&gt;}</em><a class="headerlink" href="#scrapd.core.formatter.Formatter.formatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="scrapd.core.formatter.Formatter.print">
+<code class="descname">print</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter.print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter.print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the results with the appropriate formatter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – the results to display.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="scrapd.core.formatter.Formatter.printer">
+<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter.printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the printer method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – the results to display.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="scrapd.core.formatter.GSheetFormatter">
+<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">GSheetFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#GSheetFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.GSheetFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
+<p>Define the GSheet formatter.</p>
+<p>Stores the results into a Google Sheets document.</p>
+<dl class="method">
+<dt id="scrapd.core.formatter.GSheetFormatter.printer">
+<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#GSheetFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.GSheetFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the printer method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – the results to display.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="scrapd.core.formatter.JSONFormatter">
+<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">JSONFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#JSONFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.JSONFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
+<p>Define the JSON formatter.</p>
+<p>Displays the results as JSON. The keys are sorted and an indentation of 2 spaces is set.</p>
+<dl class="method">
+<dt id="scrapd.core.formatter.JSONFormatter.printer">
+<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#JSONFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.JSONFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the printer method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – the results to display.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="scrapd.core.formatter.PythonFormatter">
+<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">PythonFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#PythonFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.PythonFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
+<p>Define the Python formatter.</p>
+<p>Displays the results using <cite>PrettyPrinter</cite> with an indentation of 2 spaces.</p>
+<dl class="method">
+<dt id="scrapd.core.formatter.PythonFormatter.printer">
+<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#PythonFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.PythonFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the printer method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>results</strong> (<em>list</em><em>(</em><em>dict</em><em>)</em>) – the results to display.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

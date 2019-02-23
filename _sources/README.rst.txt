@@ -28,17 +28,17 @@ Quickstart
 ----------
 Collect all the data as CSV::
 
-  scrapd retrieve --format csv
+  scrapd --format csv
 
 By default, scrapd does not display anything until it is done collecting the data. If you want to get some feedback
-about the process, you can enable logging, by adding the `-v` **BEFORE** the command you want to use. Multiple `-v`
+about the process, you can enable logging, by adding the `-v` to the command you want to use. Multiple `-v`
 options increase the verbosity. The maximum is 3 (`-vvv`)::
 
-  scrapd -v retrieve --format csv
+  scrapd -v --format csv
 
 To save the results to a file, use the shell redirection::
 
-  scrapd -v retrieve --format csv > results.csv
+  scrapd -v --format csv > results.csv
 
 .. note::
 
@@ -51,7 +51,7 @@ Examples
 Retrieve the traffic fatalities that happened between January 15th 2019 and January 18th 2019, and output the results
 in `json`::
 
-  scrapd retrieve --from "Jan 15 2019" --to "Jan 18 2019" --format json
+  scrapd --from "Jan 15 2019" --to "Jan 18 2019" --format json
 
   [
     {
@@ -86,7 +86,7 @@ in `json`::
 
 Do the same research but output as CSV::
 
-    scrapd retrieve --from "Jan 15 2019" --to "Jan 18 2019" --format csv
+    scrapd --from "Jan 15 2019" --to "Jan 18 2019" --format csv
 
 
     Fatal crashes this year,Case,Date,Time,Location,First Name,Last Name,Ethnicity,Gender,DOB,Age,Link
@@ -96,7 +96,7 @@ Do the same research but output as CSV::
 Retrieve all the traffic fatalities from 2019 (*as of Jan 20th 2019*) in json, and enabling the logging to follow the progress
 of the process::
 
-  scrapd -v retrieve --from "1 1 2019" --format json
+  scrapd -v --from "1 1 2019" --format json
 
   Fetching page 1...
   Fetching page 2...
@@ -134,7 +134,7 @@ of the process::
 
 Export the results to Google Sheets::
 
-  scrapd -v retrieve \
+  scrapd -v \
     --from "Feb 1 2019" \
     --format gsheets \
     --gcredentials creds.json \

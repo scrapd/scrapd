@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>scrapd.core.apd &#8212; scrapd 1.3.0 documentation</title>
+    <title>scrapd.core.apd &#8212; scrapd 1.4.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -36,17 +36,16 @@
   <h1>Source code for scrapd.core.apd</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Define the module containing the function used to scrap data from the APD website.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">unicodedata</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urljoin</span>
 
 <span class="kn">import</span> <span class="nn">aiohttp</span>
-<span class="kn">import</span> <span class="nn">dateparser</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">html</span>
 
 <span class="kn">from</span> <span class="nn">scrapd.core.constant</span> <span class="k">import</span> <span class="n">Fields</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">date_utils</span>
 
 <span class="n">APD_URL</span> <span class="o">=</span> <span class="s1">&#39;http://austintexas.gov/department/news/296&#39;</span>
 <span class="n">PAGE_DETAILS_URL</span> <span class="o">=</span> <span class="s1">&#39;http://austintexas.gov/&#39;</span>
@@ -114,7 +113,7 @@
 <span class="sd">    :return: a list of links.</span>
 <span class="sd">    :rtype: list or `None`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&lt;a href=&quot;(/news/traffic-fatality-\d{1,3}-\d)&quot;&gt;(Traffic Fatality #(\d{1,3}))&lt;/a&gt;&#39;</span>
+    <span class="n">PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;&lt;a href=&quot;(/news/traffic-fatality-\d{1,3}-\d)&quot;&gt;(Traffic Fatality #(\d{1,3}))\s*&lt;/a&gt;&#39;</span>
     <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">PATTERN</span><span class="p">)</span>
     <span class="n">matches</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">news_page</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">matches</span></div>
@@ -193,6 +192,11 @@
             <span class="k">continue</span>
         <span class="n">d</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">current_field</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 
+    <span class="c1"># Handle special case where Date of birth is a token `DOB:`.</span>
+    <span class="n">tmp_dob</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tmp_dob</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tmp_dob</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_dob</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
     <span class="c1"># Parse the Deceased field.</span>
     <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DECEASED</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -204,31 +208,9 @@
 
     <span class="c1"># Compute the victim&#39;s age.</span>
     <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">):</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">AGE</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_age</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">)),</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">))</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">AGE</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">compute_age</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">)),</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">sanitize_fatality_entity</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="compute_age"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.compute_age">[docs]</a><span class="k">def</span> <span class="nf">compute_age</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">dob</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute a victim&#39;s age.</span>
-
-<span class="sd">    :param str date: crash date</span>
-<span class="sd">    :param str dob: date of birth</span>
-<span class="sd">    :return: the victim&#39;s age.</span>
-<span class="sd">    :rtype: int</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">DAYS_IN_YEAR</span> <span class="o">=</span> <span class="mi">365</span>
-    <span class="n">dob_</span> <span class="o">=</span> <span class="n">dateparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">dob</span><span class="p">)</span>
-
-    <span class="c1"># In case the date of birth only contains 2 digits, we have to determine whether it should be</span>
-    <span class="c1"># 19xx or 20xx.</span>
-    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">dob_</span><span class="o">.</span><span class="n">year</span> <span class="o">&gt;</span> <span class="n">now</span><span class="o">.</span><span class="n">year</span><span class="p">:</span>
-        <span class="n">dob_</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">dob_</span><span class="o">.</span><span class="n">year</span> <span class="o">-</span> <span class="mi">100</span><span class="p">,</span> <span class="n">dob_</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">dob_</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
-
-    <span class="c1"># Compute the age.</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">dateparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">date</span><span class="p">)</span> <span class="o">-</span> <span class="n">dob_</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">//</span> <span class="n">DAYS_IN_YEAR</span></div>
 
 
 <div class="viewcode-block" id="sanitize_fatality_entity"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.sanitize_fatality_entity">[docs]</a><span class="k">def</span> <span class="nf">sanitize_fatality_entity</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
@@ -335,7 +317,7 @@
 
     <span class="c1"># Compute the victim&#39;s age.</span>
     <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">):</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">AGE</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_age</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">))</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">AGE</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">compute_age</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">sanitize_fatality_entity</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
 
@@ -404,29 +386,15 @@
     <span class="k">return</span> <span class="n">d</span></div>
 
 
-<div class="viewcode-block" id="is_in_range"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.is_in_range">[docs]</a><span class="k">def</span> <span class="nf">is_in_range</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check whether a date is comprised between 2 others.</span>
-
-<span class="sd">    :param str date: date to vheck</span>
-<span class="sd">    :param str from_: start date, defaults to None</span>
-<span class="sd">    :param str to: end date, defaults to None</span>
-<span class="sd">    :return: `True` if the date is between `from_` and `to`</span>
-<span class="sd">    :rtype: bool</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">current_date</span> <span class="o">=</span> <span class="n">dateparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-    <span class="n">from_date</span> <span class="o">=</span> <span class="n">dateparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">from_</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PREFER_DAY_OF_MONTH&#39;</span><span class="p">:</span> <span class="s1">&#39;first&#39;</span><span class="p">})</span> <span class="k">if</span> <span class="n">from_</span> <span class="k">else</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">min</span>
-    <span class="n">to_date</span> <span class="o">=</span> <span class="n">dateparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;PREFER_DAY_OF_MONTH&#39;</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span><span class="p">})</span> <span class="k">if</span> <span class="n">to</span> <span class="k">else</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span>
-
-    <span class="k">return</span> <span class="n">from_date</span> <span class="o">&lt;=</span> <span class="n">current_date</span> <span class="o">&lt;=</span> <span class="n">to_date</span></div>
-
-
 <div class="viewcode-block" id="async_retrieve"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.async_retrieve">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">async_retrieve</span><span class="p">(</span><span class="n">pages</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Retrieve fatality data.&quot;&quot;&quot;</span>
     <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">page</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">has_entries</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">no_date_within_range_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Retrieving fatalities from {date_utils.from_date(from_)} to {date_utils.to_date(to)}.&#39;</span><span class="p">)</span>
+
     <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># Fetch the news page.</span>
@@ -446,18 +414,20 @@
 
             <span class="c1"># If the page contains fatalities, ensure all of them happened within the specified time range.</span>
             <span class="k">if</span> <span class="n">page_res</span><span class="p">:</span>
-                <span class="n">entries_in_time_range</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">page_res</span> <span class="k">if</span> <span class="n">is_in_range</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">],</span> <span class="n">from_</span><span class="p">,</span> <span class="n">to</span><span class="p">)]</span>
+                <span class="n">entries_in_time_range</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">page_res</span> <span class="k">if</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">is_in_range</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">],</span> <span class="n">from_</span><span class="p">,</span> <span class="n">to</span><span class="p">)</span>
+                <span class="p">]</span>
 
                 <span class="c1"># If 2 pages in a row:</span>
                 <span class="c1">#   1) contain results</span>
                 <span class="c1">#   2) but none of them contain dates within the time range</span>
                 <span class="c1">#   3) and we did not collect any valid entries</span>
                 <span class="c1"># Then we can stop the operation.</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">has_entries</span> <span class="ow">and</span> <span class="n">from_</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="n">entry</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">from_</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">page_res</span><span class="p">]):</span>
-                    <span class="n">no_date_within_range_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">has_entries</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">from_</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">([</span><span class="n">date_utils</span><span class="o">.</span><span class="n">is_posterior</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">],</span> <span class="n">from_</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">page_res</span><span class="p">]):</span>
+                        <span class="n">no_date_within_range_count</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">no_date_within_range_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                        <span class="n">f</span><span class="s1">&#39;{len(entries_in_time_range)} fatality page(s) is/are within the specified time range.&#39;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{len(entries_in_time_range)} fatality page(s) within the specified time range.&#39;</span><span class="p">)</span>
                     <span class="k">break</span>
 
                 <span class="c1"># Check whether we found entries in the previous pages.</span>

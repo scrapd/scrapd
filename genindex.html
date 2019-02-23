@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Index &#8212; scrapd 1.3.0 documentation</title>
+    <title>Index &#8212; scrapd 1.4.0 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -47,6 +47,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
@@ -58,38 +59,31 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    --count
-
-      <ul>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-count">scrapd-retrieve command line option</a>
-</li>
-      </ul></li>
-      <li>
     --from &lt;from_&gt;
 
       <ul>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-from">scrapd-retrieve command line option</a>
+        <li><a href="usage.html#cmdoption-scrapd-from">scrapd command line option</a>
 </li>
       </ul></li>
       <li>
     --gcontributors &lt;gcontributors&gt;
 
       <ul>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-gcontributors">scrapd-retrieve command line option</a>
+        <li><a href="usage.html#cmdoption-scrapd-gcontributors">scrapd command line option</a>
 </li>
       </ul></li>
       <li>
     --gcredentials &lt;gcredentials&gt;
 
       <ul>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-gcredentials">scrapd-retrieve command line option</a>
+        <li><a href="usage.html#cmdoption-scrapd-gcredentials">scrapd command line option</a>
 </li>
       </ul></li>
       <li>
     --pages &lt;pages&gt;
 
       <ul>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-pages">scrapd-retrieve command line option</a>
+        <li><a href="usage.html#cmdoption-scrapd-pages">scrapd command line option</a>
 </li>
       </ul></li>
   </ul></td>
@@ -98,7 +92,7 @@
     --to &lt;to&gt;
 
       <ul>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-to">scrapd-retrieve command line option</a>
+        <li><a href="usage.html#cmdoption-scrapd-to">scrapd command line option</a>
 </li>
       </ul></li>
       <li>
@@ -109,10 +103,10 @@
 </li>
       </ul></li>
       <li>
-    -f, --format &lt;format&gt;
+    -f, --format &lt;format_&gt;
 
       <ul>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-f">scrapd-retrieve command line option</a>
+        <li><a href="usage.html#cmdoption-scrapd-f">scrapd command line option</a>
 </li>
       </ul></li>
       <li>
@@ -142,13 +136,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/scrapd.core.html#scrapd.core.constant.Fields.CASE">CASE (scrapd.core.constant.Fields attribute)</a>
 </li>
-      <li><a href="api/scrapd.core.html#scrapd.core.apd.compute_age">compute_age() (in module scrapd.core.apd)</a>
+      <li><a href="api/scrapd.core.html#scrapd.core.date_utils.compute_age">compute_age() (in module scrapd.core.date_utils)</a>
+</li>
+      <li><a href="api/scrapd.core.html#scrapd.core.constant.Constant">Constant (class in scrapd.core.constant)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/scrapd.core.html#scrapd.core.constant.Constant">Constant (class in scrapd.core.constant)</a>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.CountFormatter">CountFormatter (class in scrapd.core.formatter)</a>
 </li>
       <li><a href="api/scrapd.core.html#scrapd.core.constant.Fields.CRASHES">CRASHES (scrapd.core.constant.Fields attribute)</a>
+</li>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.CSVFormatter">CSVFormatter (class in scrapd.core.formatter)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -190,13 +188,19 @@
 </li>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.fetch_news_page">fetch_news_page() (in module scrapd.core.apd)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.fetch_text">fetch_text() (in module scrapd.core.apd)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/scrapd.core.html#scrapd.core.constant.Fields">Fields (class in scrapd.core.constant)</a>
 </li>
       <li><a href="api/scrapd.core.html#scrapd.core.constant.Fields.FIRST_NAME">FIRST_NAME (scrapd.core.constant.Fields attribute)</a>
+</li>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.Formatter">Formatter (class in scrapd.core.formatter)</a>
+</li>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.Formatter.formatters">formatters (scrapd.core.formatter.Formatter attribute)</a>
+</li>
+      <li><a href="api/scrapd.core.html#scrapd.core.date_utils.from_date">from_date() (in module scrapd.core.date_utils)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -209,6 +213,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.generate_detail_page_urls">generate_detail_page_urls() (in module scrapd.core.apd)</a>
+</li>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.GSheetFormatter">GSheetFormatter (class in scrapd.core.formatter)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -224,7 +230,19 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/scrapd.core.html#scrapd.core.apd.is_in_range">is_in_range() (in module scrapd.core.apd)</a>
+      <li><a href="api/scrapd.core.html#scrapd.core.date_utils.is_in_range">is_in_range() (in module scrapd.core.date_utils)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/scrapd.core.html#scrapd.core.date_utils.is_posterior">is_posterior() (in module scrapd.core.date_utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.JSONFormatter">JSONFormatter (class in scrapd.core.formatter)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -254,19 +272,39 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/scrapd.core.html#scrapd.core.date_utils.parse_date">parse_date() (in module scrapd.core.date_utils)</a>
+</li>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.parse_deaceased_field">parse_deaceased_field() (in module scrapd.core.apd)</a>
 </li>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.parse_page">parse_page() (in module scrapd.core.apd)</a>
 </li>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.parse_page_content">parse_page_content() (in module scrapd.core.apd)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.parse_twitter_description">parse_twitter_description() (in module scrapd.core.apd)</a>
 </li>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.parse_twitter_fields">parse_twitter_fields() (in module scrapd.core.apd)</a>
 </li>
       <li><a href="api/scrapd.core.html#scrapd.core.apd.parse_twitter_title">parse_twitter_title() (in module scrapd.core.apd)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.Formatter.print">print() (scrapd.core.formatter.Formatter method)</a>
+</li>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.CountFormatter.printer">printer() (scrapd.core.formatter.CountFormatter method)</a>
+
+      <ul>
+        <li><a href="api/scrapd.core.html#scrapd.core.formatter.CSVFormatter.printer">(scrapd.core.formatter.CSVFormatter method)</a>
+</li>
+        <li><a href="api/scrapd.core.html#scrapd.core.formatter.Formatter.printer">(scrapd.core.formatter.Formatter method)</a>
+</li>
+        <li><a href="api/scrapd.core.html#scrapd.core.formatter.GSheetFormatter.printer">(scrapd.core.formatter.GSheetFormatter method)</a>
+</li>
+        <li><a href="api/scrapd.core.html#scrapd.core.formatter.JSONFormatter.printer">(scrapd.core.formatter.JSONFormatter method)</a>
+</li>
+        <li><a href="api/scrapd.core.html#scrapd.core.formatter.PythonFormatter.printer">(scrapd.core.formatter.PythonFormatter method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/scrapd.core.html#scrapd.core.formatter.PythonFormatter">PythonFormatter (class in scrapd.core.formatter)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -280,28 +318,21 @@
     scrapd command line option
 
       <ul>
+        <li><a href="usage.html#cmdoption-scrapd-from">--from &lt;from_&gt;</a>
+</li>
+        <li><a href="usage.html#cmdoption-scrapd-gcontributors">--gcontributors &lt;gcontributors&gt;</a>
+</li>
+        <li><a href="usage.html#cmdoption-scrapd-gcredentials">--gcredentials &lt;gcredentials&gt;</a>
+</li>
+        <li><a href="usage.html#cmdoption-scrapd-pages">--pages &lt;pages&gt;</a>
+</li>
+        <li><a href="usage.html#cmdoption-scrapd-to">--to &lt;to&gt;</a>
+</li>
         <li><a href="usage.html#cmdoption-scrapd-version">--version</a>
 </li>
+        <li><a href="usage.html#cmdoption-scrapd-f">-f, --format &lt;format_&gt;</a>
+</li>
         <li><a href="usage.html#cmdoption-scrapd-v">-v, --verbose</a>
-</li>
-      </ul></li>
-      <li>
-    scrapd-retrieve command line option
-
-      <ul>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-count">--count</a>
-</li>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-from">--from &lt;from_&gt;</a>
-</li>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-gcontributors">--gcontributors &lt;gcontributors&gt;</a>
-</li>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-gcredentials">--gcredentials &lt;gcredentials&gt;</a>
-</li>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-pages">--pages &lt;pages&gt;</a>
-</li>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-to">--to &lt;to&gt;</a>
-</li>
-        <li><a href="usage.html#cmdoption-scrapd-retrieve-f">-f, --format &lt;format&gt;</a>
 </li>
       </ul></li>
   </ul></td>
@@ -309,6 +340,10 @@
       <li><a href="api/scrapd.core.html#module-scrapd.core.apd">scrapd.core.apd (module)</a>
 </li>
       <li><a href="api/scrapd.core.html#module-scrapd.core.constant">scrapd.core.constant (module)</a>
+</li>
+      <li><a href="api/scrapd.core.html#module-scrapd.core.date_utils">scrapd.core.date_utils (module)</a>
+</li>
+      <li><a href="api/scrapd.core.html#module-scrapd.core.formatter">scrapd.core.formatter (module)</a>
 </li>
       <li><a href="api/scrapd.core.html#module-scrapd.core.version">scrapd.core.version (module)</a>
 </li>
@@ -319,6 +354,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/scrapd.core.html#scrapd.core.constant.Fields.TIME">TIME (scrapd.core.constant.Fields attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/scrapd.core.html#scrapd.core.date_utils.to_date">to_date() (in module scrapd.core.date_utils)</a>
 </li>
   </ul></td>
 </tr></table>
