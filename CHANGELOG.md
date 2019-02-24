@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improve fatality page detection. [#47]
+
 ## [[1.4.1]] - 2019-02-23
 
 ### Fixed
@@ -85,3 +89,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#44]: https://github.com/rgreinho/scrapd/pull/44
 [#45]: https://github.com/rgreinho/scrapd/pull/45
 [#46]: https://github.com/rgreinho/scrapd/pull/46
+[#47]: https://github.com/rgreinho/scrapd/pull/47

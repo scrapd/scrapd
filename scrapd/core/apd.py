@@ -77,7 +77,7 @@ def extract_traffic_fatalities_page_details_link(news_page):
     :return: a list of links.
     :rtype: list or `None`
     """
-    PATTERN = r'<a href="(/news/traffic-fatality-\d{1,3}-\d)">(Traffic Fatality #(\d{1,3}))\s*</a>'
+    PATTERN = r'<a href="(/news/traffic-fatality-\d{1,3}-\d|\S*)">(Traffic Fatality #(\d{1,3})).*\s*</a>'
     regex = re.compile(PATTERN)
     matches = regex.findall(news_page, re.MULTILINE)
     return matches

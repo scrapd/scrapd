@@ -190,6 +190,20 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     assert actual == expected
 
 
+def test_extract_traffic_fatalities_page_details_link_01():
+    """Ensure page detail links are extracted from news page."""
+    news_page = """
+    <div class="views-field views-field-title">
+        <span class="field-content">
+            <a href="/news/traffic-fatality-59-update">Traffic Fatality #59- Update</a>
+        </span>
+    </div>
+    """
+    actual = apd.extract_traffic_fatalities_page_details_link(news_page)
+    expected = [('/news/traffic-fatality-59-update', 'Traffic Fatality #59', '59')]
+    assert actual == expected
+
+
 def test_generate_detail_page_urls_00():
     """Ensure a full URL is generated from a partial one."""
     actual = apd.generate_detail_page_urls([
