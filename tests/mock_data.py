@@ -9,3 +9,4 @@ went across the E. Highway 71 and US Highway 183 ramp, rolled and came to a stop
 """
 twitter_description_01 = "Case:           19-0161105"
 twitter_description_02 = "Case:            18-160882 Date:             Tuesday, January 16, 2018 Time:             5:14 p.m. Location:      1500 W. Slaughter Lane Deceased:     Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)"
+twitter_description_03 = "APD is asking any businesses in the area of East Cesar Chavez and Adam L. Chapa Sr. streets to check their surveillance cameras between 2 and 2:10 a.m. on Oct. 10, 2018, for this suspect vehicle. See video of suspect vehicle here --&gt; https://youtu.be/ezxaRW79PnI"
