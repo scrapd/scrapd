@@ -176,6 +176,13 @@ def test_parse_twitter_description_02():
     assert actual == expected
 
 
+def test_parse_twitter_description_03():
+    """Ensure a DOB recognized as a field can be parsed."""
+    actual = apd.parse_twitter_description(mock_data.twitter_description_03)
+    expected = {}
+    assert actual == expected
+
+
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
     """Ensure page detail links are extracted from news page."""
     actual = apd.extract_traffic_fatalities_page_details_link(news_page)

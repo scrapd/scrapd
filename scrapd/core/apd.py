@@ -154,6 +154,8 @@ def parse_twitter_description(twitter_description):
         if word.endswith(':'):
             current_field = word.replace(':', '')
             continue
+        if not current_field:
+            continue
         d.setdefault(current_field, []).append(word)
 
     # Handle special case where Date of birth is a token `DOB:`.
