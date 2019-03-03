@@ -151,17 +151,13 @@ rate**.
 
 Some statistics:
 
-* 125 entries in total
-* 112 entries correctly parsed (90%)
+* 141 entries in total
+* **100% of entries detected**
+* 128 entries correctly parsed (90%)
 
-  * 105 entries fully parsed (85%)
-  * 7 entries where the fatalities were unidentified or had no info (5%)
+  * 13 entries failed the parsing at least partially
 
-* 7 entries failed the parsing (bug or incorrect regex)(5%)
-* 6 entries were using natural language instead of field-like organization (5%)
-
-  * i.e. "54 years of age" or "42 years old instead" of "DOB: 01/02/1972"
-* processing time: ~1m40s
+* processing time: ~1m00s
 
 Who uses ScrAPD?
 ----------------
@@ -170,3 +166,9 @@ The Austin `Pedestrian Advisory Council <http://austintexas.gov/cityclerk/boards
 used ScrAPD to compile a detailed presentation of the status of the traffic deaths in Austin, TX:
 
 * `2018 PAC retrospective presentation <http://www.austintexas.gov/edims/document.cfm?id=314367>`_
+
+Related resources
+-----------------
+
+* The Statesman published an article about `pedestrian deaths reaching a record high level in 2018
+  <https://www.statesman.com/news/20190215/pedestrian-deaths-reached-record-levels-in-2018-police-data-show>`_.
