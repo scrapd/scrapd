@@ -166,7 +166,7 @@ def parse_twitter_description(twitter_description):
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
-            d.update(parse_deaceased_field(d.get(Fields.DECEASED)))
+            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
         except ValueError as e:
             logger.trace(e)
     else:
@@ -195,6 +195,12 @@ def sanitize_fatality_entity(d):
         if isinstance(v, list):
             d[k] = ' '.join(v)
 
+    if d.get('Date'):
+        d['Date'] =  date_utils.to_date_string(d['Date'])
+
+    if d.get('DOB'):
+        d['DOB'] = date_utils.to_date_string(d['DOB'])
+
     # The 'Deceased' field is unnecessary.
     if d.get('Deceased'):
         del d['Deceased']
@@ -202,7 +208,7 @@ def sanitize_fatality_entity(d):
     return d
 
 
-def parse_deaceased_field(deceased_field):
+def parse_deceased_field(deceased_field):
     """
     Parse the deceased field.
 
@@ -275,7 +281,7 @@ def parse_page_content(detail_page):
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
-            d.update(parse_deaceased_field(d.get(Fields.DECEASED).split()))
+            d.update(parse_deceased_field(d.get(Fields.DECEASED).split()))
         except ValueError as e:
             logger.trace(e)
     else:
