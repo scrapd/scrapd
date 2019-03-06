@@ -27,3 +27,11 @@ def test_parse_date_01():
     """Ensure an invalid date with no default raises an exception."""
     with pytest.raises(Exception):
         date_utils.parse_date('Not a date')
+
+@pytest.mark.parametrize('date, expected', [
+    ('Jan 10 2019', '01/10/2019'),
+    ('2019-01-10', '01/10/2019'),
+])
+def test_clean_date_string_00(date, expected):
+    """Ensure date string is properly formatted."""
+    assert date_utils.clean_date_string(date) == expected
