@@ -16,6 +16,7 @@ def is_posterior(d1, d2):
 
     return parse_date(d1) < parse_date(d2)
 
+
 def clean_date_string(date):
     """
     Parse the date from an unspecified format to the specified format.
