@@ -28,6 +28,7 @@ def test_parse_date_01():
     with pytest.raises(Exception):
         date_utils.parse_date('Not a date')
 
+
 @pytest.mark.parametrize('date, expected', [
     ('Jan 10 2019', '01/10/2019'),
     ('2019-01-10', '01/10/2019'),
