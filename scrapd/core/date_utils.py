@@ -16,6 +16,17 @@ def is_posterior(d1, d2):
 
     return parse_date(d1) < parse_date(d2)
 
+def clean_date_string(date):
+    """
+    Parse the date from an unspecified format to the specified format.
+
+    :param str date: 
+    :return: a date string in the uniform %d-%m-%Y format.
+    :rtype: str
+    """
+    dt = parse_date(date)
+    return datetime.datetime.strftime(dt, "%d-%m-%Y")
+
 
 def from_date(date):
     """
