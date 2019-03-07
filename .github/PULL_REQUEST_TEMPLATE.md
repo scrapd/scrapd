@@ -49,4 +49,4 @@ Use either the *FULL* URL (preferred) or the `Username/Repository#`
 syntax.
 -->
 
-Fixes: rgreinho/scrapd#
+Fixes: scrapd/scrapd#
