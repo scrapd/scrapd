@@ -17,15 +17,35 @@ def is_posterior(d1, d2):
     return parse_date(d1) < parse_date(d2)
 
 
-def clean_date_string(date):
+def check_dob(dob):
+    """
+    In case that a date only contains 2 digits, we have to determine whether it should be
+    19xx or 20xx.
+
+    :param datetime.datetime dob: DOB
+    :return: If DOB contains only 2 digits and is incorrectly parsed
+    to represent a future date, change from 20xx to 19xx.
+    :rtype: datetime.datetime
+    """
+
+    now = datetime.datetime.now()
+    if dob.year > now.year:
+        dob_ = datetime.datetime(dob.year - 100, dob.month, dob.day)
+    return dob_
+
+
+def clean_date_string(date, is_dob=False):
     """
     Parse the date from an unspecified format to the specified format.
 
-    :param str date:
+    :param str date: date
+    :param boolean is_dob: True if date is DOB, otherwise False
     :return: a date string in the uniform %m/%d/%Y format.
     :rtype: str
     """
     dt = parse_date(date)
+    if is_dob:
+        dt = check_dob(dt)
     return datetime.datetime.strftime(dt, "%m/%d/%Y")
 
 
@@ -77,11 +97,6 @@ def parse_date(date, default=None, settings=None):
     try:
         d = dateparser.parse(date, settings=settings)
         if d:
-            # In case that a date only contains 2 digits, we have to determine whether it should be
-            # 19xx or 20xx.
-            now = datetime.datetime.now()
-            if d.year > now.year:
-                d = datetime.datetime(d.year - 100, d.month, d.day)
             return d
         raise ValueError(f'Cannot parse date: {date}')
     except Exception:
@@ -120,4 +135,4 @@ def compute_age(date, dob):
     dob_ = parse_date(dob)
 
     # Compute the age.
-    return (parse_date(date) - dob_).days // DAYS_IN_YEAR
+    return (parse_date(date) - check_dob(dob_)).days // DAYS_IN_YEAR
