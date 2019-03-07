@@ -77,6 +77,11 @@ def parse_date(date, default=None, settings=None):
     try:
         d = dateparser.parse(date, settings=settings)
         if d:
+            # In case that a date only contains 2 digits, we have to determine whether it should be
+            # 19xx or 20xx.
+            now = datetime.datetime.now()
+            if d.year > now.year:
+                d = datetime.datetime(d.year - 100, d.month, d.day)
             return d
         raise ValueError(f'Cannot parse date: {date}')
     except Exception:
@@ -113,12 +118,6 @@ def compute_age(date, dob):
     """
     DAYS_IN_YEAR = 365
     dob_ = parse_date(dob)
-
-    # In case the date of birth only contains 2 digits, we have to determine whether it should be
-    # 19xx or 20xx.
-    now = datetime.datetime.now()
-    if dob_.year > now.year:
-        dob_ = datetime.datetime(dob_.year - 100, dob_.month, dob_.day)
 
     # Compute the age.
     return (parse_date(date) - dob_).days // DAYS_IN_YEAR
