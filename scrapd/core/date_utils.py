@@ -28,6 +28,7 @@ def clean_date_string(date):
     dt = parse_date(date)
     return datetime.datetime.strftime(dt, "%m/%d/%Y")
 
+
 def from_date(date):
     """
     Parse the date from a human readable format, with options for the from date.
