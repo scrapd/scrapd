@@ -277,7 +277,6 @@ def parse_page_content(detail_page):
         match = re.search(search[1], normalized_detail_page)
         if match:
             d[search[0]] = match.groups()[0]
-
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
@@ -285,7 +284,20 @@ def parse_page_content(detail_page):
         except ValueError as e:
             logger.trace(e)
     else:
-        logger.trace('No decease information to parse in fatality page.')
+        logger.trace('No deceased information to parse in fatality page.')
+
+    # Fill in Notes from Details page if not in description.
+    # search_description = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
+    # match_d = re.search(search_description, normalized_detail_page)
+    # if match_d:
+    #     description = match_d.string[match_d.start(0):match_d.end(0)]
+    #     try:
+    #         start_tag = description.find('<p>')+3
+    #         end_tag = description.find('</p>', start_tag)
+    #     except ValueError:
+    #         with open('no_p_tags.txt', 'a') as outfile:
+    #             outfile.write(description+'\n')
+    #     d[Fields.NOTES] = description[start_tag:end_tag]
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
