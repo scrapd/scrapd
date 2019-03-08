@@ -76,24 +76,24 @@ Initial release.
 This first version allows a user to retrieve traffic fatality repports for a certain period of time and export the results as csv, json or python.
 
 [//]: # (Release links)
-[1.0.0]: https://github.com/rgreinho/scrapd/releases/1.0.0
-[1.1.0]: https://github.com/rgreinho/scrapd/releases/1.1.0
-[1.2.0]: https://github.com/rgreinho/scrapd/releases/1.2.0
-[1.3.0]: https://github.com/rgreinho/scrapd/releases/1.3.0
-[1.4.0]: https://github.com/rgreinho/scrapd/releases/1.4.0
-[1.4.1]: https://github.com/rgreinho/scrapd/releases/1.4.1
-[1.4.2]: https://github.com/rgreinho/scrapd/releases/1.4.2
+[1.0.0]: https://github.com/scrapd/scrapd/releases/1.0.0
+[1.1.0]: https://github.com/scrapd/scrapd/releases/1.1.0
+[1.2.0]: https://github.com/scrapd/scrapd/releases/1.2.0
+[1.3.0]: https://github.com/scrapd/scrapd/releases/1.3.0
+[1.4.0]: https://github.com/scrapd/scrapd/releases/1.4.0
+[1.4.1]: https://github.com/scrapd/scrapd/releases/1.4.1
+[1.4.2]: https://github.com/scrapd/scrapd/releases/1.4.2
 
 [//]: # (Issue/PR links)
-[#13]: https://github.com/rgreinho/scrapd/issues/13
-[#14]: https://github.com/rgreinho/scrapd/issues/14
-[#20]: https://github.com/rgreinho/scrapd/issues/20
-[#23]: https://github.com/rgreinho/scrapd/issues/23
-[#28]: https://github.com/rgreinho/scrapd/issues/28
-[#31]: https://github.com/rgreinho/scrapd/issues/31
-[#35]: https://github.com/rgreinho/scrapd/issues/35
-[#38]: https://github.com/rgreinho/scrapd/issues/38
-[#44]: https://github.com/rgreinho/scrapd/pull/44
-[#45]: https://github.com/rgreinho/scrapd/pull/45
-[#46]: https://github.com/rgreinho/scrapd/pull/46
-[#47]: https://github.com/rgreinho/scrapd/pull/47
+[#13]: https://github.com/scrapd/scrapd/issues/13
+[#14]: https://github.com/scrapd/scrapd/issues/14
+[#20]: https://github.com/scrapd/scrapd/issues/20
+[#23]: https://github.com/scrapd/scrapd/issues/23
+[#28]: https://github.com/scrapd/scrapd/issues/28
+[#31]: https://github.com/scrapd/scrapd/issues/31
+[#35]: https://github.com/scrapd/scrapd/issues/35
+[#38]: https://github.com/scrapd/scrapd/issues/38
+[#44]: https://github.com/scrapd/scrapd/pull/44
+[#45]: https://github.com/scrapd/scrapd/pull/45
+[#46]: https://github.com/scrapd/scrapd/pull/46
+[#47]: https://github.com/scrapd/scrapd/pull/47
