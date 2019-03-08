@@ -199,7 +199,7 @@ def sanitize_fatality_entity(d):
         d['Date'] = date_utils.clean_date_string(d['Date'])
 
     if d.get('DOB'):
-        d['DOB'] = date_utils.clean_date_string(d['DOB'])
+        d['DOB'] = date_utils.clean_date_string(d['DOB'], True)
 
     # The 'Deceased' field is unnecessary.
     if d.get('Deceased'):
