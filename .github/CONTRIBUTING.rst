@@ -42,7 +42,7 @@ There is also a lot of YAPF plugins available for different editors. Here are a 
   * `sublime text <https://github.com/jason-kane/PyYapf>`_
   * `vim <https://github.com/google/yapf/blob/master/plugins/yapf.vim>`_
 
-.. _`Issue`: https://github.com/rgreinho/scrapd/issues
-.. _`Pull Request`: https://github.com/rgreinho/scrapd/pulls
+.. _`Issue`: https://github.com/scrapd/scrapd/issues
+.. _`Pull Request`: https://github.com/scrapd/scrapd/pulls
 .. _`YAPF`: https://github.com/google/yapf
 .. _`How to Write a Git Commit Message`: http://chris.beams.io/posts/git-commit

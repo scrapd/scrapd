@@ -4,11 +4,11 @@ ScrAPD
 .. image:: https://badge.fury.io/py/scrapd.svg
    :target: https://badge.fury.io/py/scrapd
 
-.. image:: https://circleci.com/gh/rgreinho/scrapd.svg?style=svg
-   :target: https://circleci.com/gh/rgreinho/scrapd
+.. image:: https://circleci.com/gh/scrapd/scrapd.svg?style=svg
+   :target: https://circleci.com/gh/scrapd/scrapd
 
-.. image:: https://coveralls.io/repos/github/rgreinho/scrapd/badge.svg?branch=master
-   :target: https://coveralls.io/github/rgreinho/scrapd?branch=master
+.. image:: https://coveralls.io/repos/github/scrapd/scrapd/badge.svg?branch=master
+   :target: https://coveralls.io/github/scrapd/scrapd?branch=master
 
 
 Extract data from `APD news site <http://austintexas.gov/department/news/296>`_.

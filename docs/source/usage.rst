@@ -60,17 +60,17 @@ docker
 ------
 
 In addition to installing the Python package, you can also use the
-[docker container](https://hub.docker.com/r/rgreinho/scrapd).
+[docker container](https://hub.docker.com/r/scrapd/scrapd).
 
 .. code-block:: bash
 
-  docker pull rgreinho/scrapd
+  docker pull scrapd/scrapd
 
 The syntax is identical to the commands described above, simply use the `docker run` command before.
 
 .. code-block:: bash
 
-  docker run --rm -it rgreinho/scrapd -v --from "Feb 1 2019"
+  docker run --rm -it scrapd/scrapd -v --from "Feb 1 2019"
 
 If you intend to export the results to Google Sheets, you must also mount your credential file.
 It is a good practice to mount it as read-only.
@@ -79,7 +79,7 @@ It is a good practice to mount it as read-only.
 
   docker run --rm -it \
     -v ${HOME}/.config/scrapd/gsheet-credentials.json:/usr/src/app/creds.json:ro \
-    rgreinho/scrapd \
+    scrapd/scrapd \
       -v \
       --from "Feb 1 2019" \
       --format gsheets \
