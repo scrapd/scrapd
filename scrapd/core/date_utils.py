@@ -19,19 +19,17 @@ def is_posterior(d1, d2):
 
 def check_dob(dob):
     """
-    In case that a date only contains 2 digits, we have to determine whether it should be
-    19xx or 20xx.
+    In case that a date only contains 2 digits, determine century.
 
     :param datetime.datetime dob: DOB
-    :return: If DOB contains only 2 digits and is incorrectly parsed
-    to represent a future date, change from 20xx to 19xx.
+    :return: DOB with 19xx or 20xx as appropriate
     :rtype: datetime.datetime
     """
 
     now = datetime.datetime.now()
     if dob.year > now.year:
-        dob_ = datetime.datetime(dob.year - 100, dob.month, dob.day)
-    return dob_
+        dob = datetime.datetime(dob.year - 100, dob.month, dob.day)
+    return dob
 
 
 def clean_date_string(date, is_dob=False):
