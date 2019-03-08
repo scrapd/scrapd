@@ -17,6 +17,36 @@ def is_posterior(d1, d2):
     return parse_date(d1) < parse_date(d2)
 
 
+def check_dob(dob):
+    """
+    In case that a date only contains 2 digits, determine century.
+
+    :param datetime.datetime dob: DOB
+    :return: DOB with 19xx or 20xx as appropriate
+    :rtype: datetime.datetime
+    """
+
+    now = datetime.datetime.now()
+    if dob.year > now.year:
+        dob = datetime.datetime(dob.year - 100, dob.month, dob.day)
+    return dob
+
+
+def clean_date_string(date, is_dob=False):
+    """
+    Parse the date from an unspecified format to the specified format.
+
+    :param str date: date
+    :param boolean is_dob: True if date is DOB, otherwise False
+    :return: a date string in the uniform %m/%d/%Y format.
+    :rtype: str
+    """
+    dt = parse_date(date)
+    if is_dob:
+        dt = check_dob(dt)
+    return datetime.datetime.strftime(dt, "%m/%d/%Y")
+
+
 def from_date(date):
     """
     Parse the date from a human readable format, with options for the from date.
@@ -102,11 +132,5 @@ def compute_age(date, dob):
     DAYS_IN_YEAR = 365
     dob_ = parse_date(dob)
 
-    # In case the date of birth only contains 2 digits, we have to determine whether it should be
-    # 19xx or 20xx.
-    now = datetime.datetime.now()
-    if dob_.year > now.year:
-        dob_ = datetime.datetime(dob_.year - 100, dob_.month, dob_.day)
-
     # Compute the age.
-    return (parse_date(date) - dob_).days // DAYS_IN_YEAR
+    return (parse_date(date) - check_dob(dob_)).days // DAYS_IN_YEAR
