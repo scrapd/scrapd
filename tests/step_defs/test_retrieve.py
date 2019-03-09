@@ -43,4 +43,6 @@ def ensure_results(mocker, event_loop, output_format, time_range, entry_count):
     """Ensure we get the right amount of entries."""
     result, _ = event_loop.run_until_complete(apd.async_retrieve(pages=-1, **time_range))
     assert result is not None
+    if 'Notes' in result:
+        del result['Notes']
     assert len(result) == entry_count
