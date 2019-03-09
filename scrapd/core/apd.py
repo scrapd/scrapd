@@ -317,11 +317,10 @@ def parse_page_content(detail_page):
     # Fill in Notes from Details page if not in description.
     search_description = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
     match_d = re.search(search_description, normalized_detail_page)
-    if match_d:
+    if match_d and not d.get(Fields.NOTES):
         description = match_d.string[match_d.start(0):match_d.end(0)]
         try:
-            if not d.get(Fields.NOTES):
-                d[Fields.NOTES] = parse_detail_page_description(description)
+            d[Fields.NOTES] = parse_detail_page_description(description)
         except ValueError:
             pass
 
