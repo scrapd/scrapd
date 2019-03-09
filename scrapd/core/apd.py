@@ -198,7 +198,7 @@ def parse_detail_page_description(details_description):
     snippet = details_description[start_tag:end_tag]
     if snippet[:4] == '<img':
         start_tag = details_description.find(r'<br \>') + 6
-    squished = details_description[start_tag:end_tag].replace('\n', '')
+    squished = details_description[start_tag:end_tag].replace('\n', ' ')
     first_cap = 0
     for index, c in enumerate(squished):
         if c.isupper():
