@@ -143,9 +143,9 @@ def test_parse_twitter_description_00():
         'Time': '2:24 a.m.',
         'Location': '1400 E. Highway 71 eastbound',
         'DOB': '02/09/1980',
-        'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was'
-        'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound.'
-        'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled'
+        'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
+        'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
+        'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
         'and came to a stop north of the roadway.',
         'Gender': 'male',
         'Ethnicity': 'White',
@@ -239,7 +239,8 @@ def test_has_next_01():
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_content_scenarios.items()])
 def test_parse_page_content_00(filename, expected):
-    """Ensure information are properly extracted from the content detail page."""
+    """Ensure information are properly extracted from the content detail page.
+           Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
     actual = apd.parse_page_content(page)
@@ -282,8 +283,7 @@ def test_parse_page_00(filename, expected):
 )
 @pytest.mark.asyncio
 async def test_date_filtering_00(fake_details, fake_news):
-    """Ensure the date filtering do not fetch unnecessary data.
-       Don't compare notes if parsed from details page."""
+    """Ensure the date filtering do not fetch unnecessary data."""
     expected = 2
     _, actual = await apd.async_retrieve(pages=-1, from_="2050-01-02", to="2050-01-03")
     assert actual == expected
