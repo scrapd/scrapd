@@ -178,6 +178,32 @@ def parse_twitter_description(twitter_description):
 
     return sanitize_fatality_entity(d)
 
+def parse_detail_page_description(details_description):
+    """
+    Clean up a details page notes section.
+
+    The purpose of this function is to attempt to extract the sentences about
+    the crash with some level of fidelity, but does not always return
+    a perfectly parsed sentence as the html syntax varies widely.
+
+    :param str details_description: the paragraph after the Deceased information
+    :return: A paragraph containing the details of the fatality in sentence form.
+    :rtype: str
+    """
+    start_tag = details_description.find('<p>')+3
+    end_tag = details_description.find('</p>', start_tag)
+    if not details_description[start_tag:end_tag].upper().isupper():
+        start_tag = details_description.find(r'<br \>')+6
+    snippet = details_description[start_tag:end_tag]
+    if snippet[:4] == '<img':
+        start_tag = details_description.find(r'<br \>')+6
+    squished = details_description[start_tag:end_tag].replace('\n', '')
+    first_cap = 0
+    for index, c in enumerate(squished):
+        if c.isupper():
+            first_cap = index
+            break
+    return squished[first_cap:]
 
 def sanitize_fatality_entity(d):
     """
@@ -186,7 +212,7 @@ def sanitize_fatality_entity(d):
     Ensures that the values are all strings and removes the 'Deceased' field which does not contain
     relevant information anymore.
 
-    :param dict d: the fatality to sanatize
+    :param dict d: the fatality to sanitize
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
@@ -287,17 +313,15 @@ def parse_page_content(detail_page):
         logger.trace('No deceased information to parse in fatality page.')
 
     # Fill in Notes from Details page if not in description.
-    # search_description = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
-    # match_d = re.search(search_description, normalized_detail_page)
-    # if match_d:
-    #     description = match_d.string[match_d.start(0):match_d.end(0)]
-    #     try:
-    #         start_tag = description.find('<p>')+3
-    #         end_tag = description.find('</p>', start_tag)
-    #     except ValueError:
-    #         with open('no_p_tags.txt', 'a') as outfile:
-    #             outfile.write(description+'\n')
-    #     d[Fields.NOTES] = description[start_tag:end_tag]
+    search_description = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
+    match_d = re.search(search_description, normalized_detail_page)
+    if match_d:
+        description = match_d.string[match_d.start(0):match_d.end(0)]
+        try:
+            if not d.get(Fields.NOTES):
+                d[Fields.NOTES] = parse_detail_page_description(description)
+        except ValueError:
+            pass
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
