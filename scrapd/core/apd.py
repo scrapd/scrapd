@@ -178,6 +178,7 @@ def parse_twitter_description(twitter_description):
 
     return sanitize_fatality_entity(d)
 
+
 def parse_detail_page_description(details_description):
     """
     Clean up a details page notes section.
@@ -190,13 +191,13 @@ def parse_detail_page_description(details_description):
     :return: A paragraph containing the details of the fatality in sentence form.
     :rtype: str
     """
-    start_tag = details_description.find('<p>')+3
+    start_tag = details_description.find('<p>') + 3
     end_tag = details_description.find('</p>', start_tag)
     if not details_description[start_tag:end_tag].upper().isupper():
-        start_tag = details_description.find(r'<br \>')+6
+        start_tag = details_description.find(r'<br \>') + 6
     snippet = details_description[start_tag:end_tag]
     if snippet[:4] == '<img':
-        start_tag = details_description.find(r'<br \>')+6
+        start_tag = details_description.find(r'<br \>') + 6
     squished = details_description[start_tag:end_tag].replace('\n', '')
     first_cap = 0
     for index, c in enumerate(squished):
@@ -204,6 +205,7 @@ def parse_detail_page_description(details_description):
             first_cap = index
             break
     return squished[first_cap:]
+
 
 def sanitize_fatality_entity(d):
     """
