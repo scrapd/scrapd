@@ -1,6 +1,9 @@
 FROM python:3.7.2-alpine3.9
 LABEL MAINTAINER="Rémy Greinhofer <remy.greinhofer@gmail.com>"
 
+ARG DOCKER_TAG
+ENV VERSION ${DOCKER_TAG:+==$DOCKER_TAG}
+
 WORKDIR /usr/src/app
 
 # Install the packages.
@@ -10,6 +13,6 @@ RUN apk add --no-cache g++ \
   libxslt-dev \
   musl-dev \
   openssl-dev \
-  && pip install scrapd==1.3.0
+  && pip install scrapd${VERSION}
 
 ENTRYPOINT ["scrapd"]
