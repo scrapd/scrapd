@@ -374,10 +374,7 @@ def parse_page(page):
     """
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
-    if twitter_d.get(Fields.NOTES):
-        page_d = parse_page_content(page, True)
-    else:
-        page_d = parse_page_content(page, False)
+    page_d = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
 
     # Merge the results, from right to left.
     # (i.e. the rightmost object will override the object just before it, etc.)

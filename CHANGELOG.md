@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix inconsistent date format. All the new date fields now follow the English format `MM/DD/YYYY`. [#57]
+- Build the Docker image with the right version of ScrAPD. [#54]
+- Fix the parsing of the `Notes`. [#55]
 
 ## [[1.4.2]] - 2019-03-03
 
@@ -97,3 +99,6 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#45]: https://github.com/scrapd/scrapd/pull/45
 [#46]: https://github.com/scrapd/scrapd/pull/46
 [#47]: https://github.com/scrapd/scrapd/pull/47
+[#54]: https://github.com/scrapd/scrapd/issues/54
+[#55]: https://github.com/scrapd/scrapd/issues/55
+[#57]: https://github.com/scrapd/scrapd/pull/57
