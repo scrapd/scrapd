@@ -179,7 +179,7 @@ def parse_twitter_description(twitter_description):
     return sanitize_fatality_entity(d)
 
 
-def parse_detail_page_notes(details_page_notes):
+def parse_details_page_notes(details_page_notes):
     """
     Clean up a details page notes section.
 
@@ -203,16 +203,12 @@ def parse_detail_page_notes(details_page_notes):
 
     snippet = details_page_notes[start_tag:end_tag]
 
-    # If no following tag, return an empty string.
-    if not snippet:
-        return ''
-
     # Update the snippet if the following tag is an image.
     if snippet[:4] == '<img':
-        start_tag = details_page_notes.find(r'<br \>') + len(r'<br \>')
+        snippet = details_page_notes[details_page_notes.find(r'<br \>') + len(r'<br \>'):end_tag]
 
     # Remove the end of line characters.
-    squished = details_page_notes[start_tag:end_tag].replace('\n', ' ')
+    squished = snippet.replace('\n', ' ')
 
     # Look for the first capital letter and start from there.
     first_cap = 0
@@ -336,7 +332,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     match = re.search(search_notes, normalized_detail_page)
     if match and not notes_parsed:
         text_chunk = match.string[match.start(0):match.end(0)]
-        d[Fields.NOTES] = parse_detail_page_notes(text_chunk)
+        d[Fields.NOTES] = parse_details_page_notes(text_chunk)
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):

@@ -186,6 +186,13 @@ def test_parse_twitter_description_03():
     assert actual == expected
 
 
+def test_parse_details_page_notes_01():
+    """Ensure a malformed entry is not parsed."""
+    actual = apd.parse_twitter_description(mock_data.details_page_notes_01)
+    expected = {}
+    assert actual == expected
+
+
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
     """Ensure page detail links are extracted from news page."""
     actual = apd.extract_traffic_fatalities_page_details_link(news_page)
