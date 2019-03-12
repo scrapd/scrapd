@@ -40,7 +40,8 @@ def time_range(from_date, to_date):
 @then('the generated file must contain <entry_count> entries')
 @pytest.mark.asyncio
 def ensure_results(mocker, event_loop, output_format, time_range, entry_count):
-    """Ensure we get the right amount of entries."""
+    """Ensure we get the right amount of entries.
+       Don't compare the parsed notes to entry."""
     result, _ = event_loop.run_until_complete(apd.async_retrieve(pages=-1, **time_range))
     assert result is not None
     assert len(result) == entry_count

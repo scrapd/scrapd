@@ -179,6 +179,47 @@ def parse_twitter_description(twitter_description):
     return sanitize_fatality_entity(d)
 
 
+def parse_details_page_notes(details_page_notes):
+    """
+    Clean up a details page notes section.
+
+    The purpose of this function is to attempt to extract the sentences about
+    the crash with some level of fidelity, but does not always return
+    a perfectly parsed sentence as the HTML syntax varies widely.
+
+    :param str details_description: the paragraph after the Deceased information
+    :return: A paragraph containing the details of the fatality in sentence form.
+    :rtype: str
+    """
+    # Ideally the Notes will be contained in a paragraph tag.
+    start_tag = details_page_notes.find('<p>') + len('<p>')
+    end_tag = details_page_notes.find('</p>', start_tag)
+
+    # Here .upper().isupper() tests if the substring of the
+    # text passed in contains any letters. If it doesn't,
+    # the Notes may be located after a <br \>.
+    if not details_page_notes[start_tag:end_tag].upper().isupper():
+        start_tag = details_page_notes.find(r'<br \>') + len(r'<br \>')
+
+    snippet = details_page_notes[start_tag:end_tag]
+
+    # Update the snippet if the following tag is an image.
+    if snippet[:4] == '<img':
+        snippet = details_page_notes[details_page_notes.find(r'<br \>') + len(r'<br \>'):end_tag]
+
+    # Remove the end of line characters.
+    squished = snippet.replace('\n', ' ')
+
+    # Look for the first capital letter and start from there.
+    first_cap = 0
+    for index, c in enumerate(squished):
+        if c.isupper():
+            first_cap = index
+            break
+
+    return squished[first_cap:]
+
+
 def sanitize_fatality_entity(d):
     """
     Clean up a fatality entity.
@@ -186,7 +227,7 @@ def sanitize_fatality_entity(d):
     Ensures that the values are all strings and removes the 'Deceased' field which does not contain
     relevant information anymore.
 
-    :param dict d: the fatality to sanatize
+    :param dict d: the fatality to sanitize
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
@@ -255,7 +296,7 @@ def parse_deceased_field(deceased_field):
     return d
 
 
-def parse_page_content(detail_page):
+def parse_page_content(detail_page, notes_parsed=False):
     """
     Parse the detail page to extract fatality information.
 
@@ -277,7 +318,6 @@ def parse_page_content(detail_page):
         match = re.search(search[1], normalized_detail_page)
         if match:
             d[search[0]] = match.groups()[0]
-
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
@@ -285,7 +325,14 @@ def parse_page_content(detail_page):
         except ValueError as e:
             logger.trace(e)
     else:
-        logger.trace('No decease information to parse in fatality page.')
+        logger.trace('No deceased information to parse in fatality page.')
+
+    # Fill in Notes from Details page if not in twitter description.
+    search_notes = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
+    match = re.search(search_notes, normalized_detail_page)
+    if match and not notes_parsed:
+        text_chunk = match.string[match.start(0):match.end(0)]
+        d[Fields.NOTES] = parse_details_page_notes(text_chunk)
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
@@ -327,10 +374,13 @@ def parse_page(page):
     """
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
-    page_d = parse_page_content(page)
+    if twitter_d.get(Fields.NOTES):
+        page_d = parse_page_content(page, True)
+    else:
+        page_d = parse_page_content(page, False)
 
     # Merge the results, from right to left.
-    # (i.e. the rightmost object will overiide the object just before it, etc.)
+    # (i.e. the rightmost object will override the object just before it, etc.)
     d = {**page_d, **twitter_d}
     return d
 
