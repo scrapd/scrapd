@@ -179,31 +179,48 @@ def parse_twitter_description(twitter_description):
     return sanitize_fatality_entity(d)
 
 
-def parse_detail_page_description(details_description):
+def parse_detail_page_notes(details_page_notes):
     """
     Clean up a details page notes section.
 
     The purpose of this function is to attempt to extract the sentences about
     the crash with some level of fidelity, but does not always return
-    a perfectly parsed sentence as the html syntax varies widely.
+    a perfectly parsed sentence as the HTML syntax varies widely.
 
     :param str details_description: the paragraph after the Deceased information
     :return: A paragraph containing the details of the fatality in sentence form.
     :rtype: str
     """
-    start_tag = details_description.find('<p>') + 3
-    end_tag = details_description.find('</p>', start_tag)
-    if not details_description[start_tag:end_tag].upper().isupper():
-        start_tag = details_description.find(r'<br \>') + 6
-    snippet = details_description[start_tag:end_tag]
+    # Ideally the Notes will be contained in a paragraph tag.
+    start_tag = details_page_notes.find('<p>') + len('<p>')
+    end_tag = details_page_notes.find('</p>', start_tag)
+
+    # Here .upper().isupper() tests if the substring of the
+    # text passed in contains any letters. If it doesn't,
+    # the Notes may be located after a <br \>.
+    if not details_page_notes[start_tag:end_tag].upper().isupper():
+        start_tag = details_page_notes.find(r'<br \>') + len(r'<br \>')
+
+    snippet = details_page_notes[start_tag:end_tag]
+
+    # If no following tag, return an empty string.
+    if not snippet:
+        return ''
+
+    # Update the snippet if the following tag is an image.
     if snippet[:4] == '<img':
-        start_tag = details_description.find(r'<br \>') + 6
-    squished = details_description[start_tag:end_tag].replace('\n', ' ')
+        start_tag = details_page_notes.find(r'<br \>') + len(r'<br \>')
+
+    # Remove the end of line characters.
+    squished = details_page_notes[start_tag:end_tag].replace('\n', ' ')
+
+    # Look for the first capital letter and start from there.
     first_cap = 0
     for index, c in enumerate(squished):
         if c.isupper():
             first_cap = index
             break
+
     return squished[first_cap:]
 
 
@@ -283,7 +300,7 @@ def parse_deceased_field(deceased_field):
     return d
 
 
-def parse_page_content(detail_page):
+def parse_page_content(detail_page, notes_parsed=False):
     """
     Parse the detail page to extract fatality information.
 
@@ -314,15 +331,12 @@ def parse_page_content(detail_page):
     else:
         logger.trace('No deceased information to parse in fatality page.')
 
-    # Fill in Notes from Details page if not in description.
-    search_description = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
-    match_d = re.search(search_description, normalized_detail_page)
-    if match_d and not d.get(Fields.NOTES):
-        description = match_d.string[match_d.start(0):match_d.end(0)]
-        try:
-            d[Fields.NOTES] = parse_detail_page_description(description)
-        except ValueError:
-            pass
+    # Fill in Notes from Details page if not in twitter description.
+    search_notes = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
+    match = re.search(search_notes, normalized_detail_page)
+    if match and not notes_parsed:
+        text_chunk = match.string[match.start(0):match.end(0)]
+        d[Fields.NOTES] = parse_detail_page_notes(text_chunk)
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
@@ -364,10 +378,13 @@ def parse_page(page):
     """
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
-    page_d = parse_page_content(page)
+    if twitter_d.get(Fields.NOTES):
+        page_d = parse_page_content(page, True)
+    else:
+        page_d = parse_page_content(page, False)
 
     # Merge the results, from right to left.
-    # (i.e. the rightmost object will overiide the object just before it, etc.)
+    # (i.e. the rightmost object will override the object just before it, etc.)
     d = {**page_d, **twitter_d}
     return d
 
