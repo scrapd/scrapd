@@ -217,7 +217,11 @@ def parse_details_page_notes(details_page_notes):
             first_cap = index
             break
 
-    return squished[first_cap:]
+    #cleaned = ''.join(re.split(r'<br />\s*\\t\s*<br />', squished[first_cap:])[1:-1]).replace(r'\t', '').strip()
+    no_html = re.sub(re.compile('<.*?>'), '', squished[first_cap:])
+    #cleaned_no_html = re.sub('<a[^>]*>([^<]+)</a>', r'\1', squished[first_cap:])
+
+    return no_html
 
 
 def sanitize_fatality_entity(d):
@@ -379,6 +383,12 @@ def parse_page(page):
     # Merge the results, from right to left.
     # (i.e. the rightmost object will override the object just before it, etc.)
     d = {**page_d, **twitter_d}
+
+    # For testing only -- remove this.
+    with open("notes.txt", "a") as outfile:
+        outfile.write(str(d.get(Fields.CASE) + ':\n'))
+        outfile.write(str(d.get(Fields.NOTES)) + '\n\n\n')
+
     return d
 
 
