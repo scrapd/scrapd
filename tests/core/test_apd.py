@@ -206,9 +206,6 @@ def test_parse_details_page_notes_02():
         'there were 71 fatal traffic crashes and 76 traffic fatalities. These statements are based on '
         'the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.'
     )
-    if actual != expected:
-        with open("diff.txt", "w") as outfile:
-            outfile.write(actual + '\n\n\n' + expected)
     assert actual == expected
 
 
