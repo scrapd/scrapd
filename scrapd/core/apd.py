@@ -400,11 +400,6 @@ def parse_page(page):
     # (i.e. the rightmost object will override the object just before it, etc.)
     d = {**page_d, **twitter_d}
 
-    # For testing only -- remove this.
-    with open("notes.txt", "a") as outfile:
-        outfile.write(str(d.get(Fields.CASE) + ':\n'))
-        outfile.write(str(d.get(Fields.NOTES)) + '\n\n\n')
-
     return d
 
 
