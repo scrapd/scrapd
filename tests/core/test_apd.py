@@ -188,8 +188,27 @@ def test_parse_twitter_description_03():
 
 def test_parse_details_page_notes_01():
     """Ensure a malformed entry is not parsed."""
-    actual = apd.parse_twitter_description(mock_data.details_page_notes_01)
-    expected = {}
+    actual = apd.parse_details_page_notes(mock_data.details_page_notes_01)
+    expected = ''
+    assert actual == expected
+
+
+def test_parse_details_page_notes_02():
+    """Ensure details page notes parsed correctly."""
+    actual = apd.parse_details_page_notes(mock_data.details_page_notes_02)
+    expected = (
+        'The passenger was ejected from the vehicle and was pronounced deceased '
+        'on scene at 2:43 a.m. The driver was transported to St. David’s South Austin Hospital. '
+        'APD is investigating this case. Anyone with information regarding this case should call '
+        'APD’s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by '
+        'downloading APD’s mobile app, Austin PD, for free on iPhone and Android. This is Austin’s '
+        '73rd fatal traffic crash of 2018, resulting in 74 fatalities this year. At this time in 2017, '
+        'there were 71 fatal traffic crashes and 76 traffic fatalities. These statements are based on '
+        'the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.'
+    )
+    if actual != expected:
+        with open("diff.txt", "w") as outfile:
+            outfile.write(actual + '\n\n\n' + expected)
     assert actual == expected
 
 
