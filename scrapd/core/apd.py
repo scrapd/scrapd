@@ -225,17 +225,14 @@ def parse_details_page_notes(details_page_notes):
 
     # Demographic info is usually only included in subject description.
     # DOB would be better, but that is sometimes missing.
-    for segment in remove_subjects:
-        if 'male' in segment or 'female' in segment:
-            remove_subjects.remove(segment)
-
-    final = ' '.join(remove_subjects)
+    final = ' '.join([segment for segment in remove_subjects if 'male' not in segment])
 
     # This phrase signals the end of a report.
     footer_string = 'Fatality information may change.'
+    end_pos = final.find(footer_string)
 
-    if final.find(footer_string) != -1:
-        final = final[:final.find(footer_string) + len(footer_string)]
+    if end_pos != -1:
+        final = final[:end_pos + len(footer_string)]
 
     return final
 
