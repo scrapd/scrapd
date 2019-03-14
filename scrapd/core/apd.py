@@ -217,11 +217,27 @@ def parse_details_page_notes(details_page_notes):
             first_cap = index
             break
 
-    #cleaned = ''.join(re.split(r'<br />\s*\\t\s*<br />', squished[first_cap:])[1:-1]).replace(r'\t', '').strip()
+    # Remove HTML tags.
     no_html = re.sub(re.compile('<.*?>'), '', squished[first_cap:])
-    #cleaned_no_html = re.sub('<a[^>]*>([^<]+)</a>', r'\1', squished[first_cap:])
 
-    return no_html
+    # Remove tabs and, if subjects included, remove.
+    remove_subjects = re.split(r'\s{2,}', no_html)
+
+    # Demographic info is usually only included in subject description.
+    # DOB would be better, but that is sometimes missing.
+    for segment in remove_subjects:
+        if 'male' in segment or 'female' in segment:
+            remove_subjects.remove(segment)
+
+    final = ' '.join(remove_subjects)
+
+    # This phrase signals the end of a report.
+    footer_string = 'Fatality information may change.'
+
+    if final.find(footer_string) != -1:
+        final = final[:final.find(footer_string) + len(footer_string)]
+
+    return final
 
 
 def sanitize_fatality_entity(d):
