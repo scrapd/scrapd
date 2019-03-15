@@ -217,7 +217,24 @@ def parse_details_page_notes(details_page_notes):
             first_cap = index
             break
 
-    return squished[first_cap:]
+    # Remove HTML tags.
+    no_html = re.sub(re.compile('<.*?>'), '', squished[first_cap:])
+
+    # Remove tabs and, if subjects included, remove.
+    remove_subjects = re.split(r'\s{2,}', no_html)
+
+    # Demographic info is usually only included in subject description.
+    # DOB would be better, but that is sometimes missing.
+    final = ' '.join([segment for segment in remove_subjects if 'male' not in segment])
+
+    # This phrase signals the end of a report.
+    footer_string = 'Fatality information may change.'
+    end_pos = final.find(footer_string)
+
+    if end_pos != -1:
+        final = final[:end_pos + len(footer_string)]
+
+    return final
 
 
 def sanitize_fatality_entity(d):
@@ -379,6 +396,7 @@ def parse_page(page):
     # Merge the results, from right to left.
     # (i.e. the rightmost object will override the object just before it, etc.)
     d = {**page_d, **twitter_d}
+
     return d
 
 
