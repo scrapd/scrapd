@@ -425,7 +425,10 @@ def remove_duplicate_entries(res):
     deduped_res = [r for r in res if r not in to_remove]
     deduped_res += to_merge
 
-    return deduped_res
+    # Sort to maintain original order.
+    res = sorted(deduped_res, key=lambda x: int(x['Fatal crashes this year']), reverse=True)
+
+    return res
 
 
 async def fetch_and_parse(session, url):
@@ -518,5 +521,9 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             page += 1
 
     res = remove_duplicate_entries(res)
+    with open("full_results.txt", "a") as outfile:
+        for r in res:
+            outfile.write(str(r) + '\n')
+        outfile.write('\n\n\n\n\n')
 
     return res, page
