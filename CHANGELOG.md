@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Build the Docker image with the right version of ScrAPD. [#61]
 - Fix the parsing of the `Notes`. [#60]
 - Further improvements to `Notes` parsing. [#64]
+- Remove duplicate fatality entries. [#66]
 
 ## [[1.4.2]] - 2019-03-03
 
