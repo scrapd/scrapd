@@ -245,18 +245,31 @@ def test_generate_detail_page_urls_00():
     ]
     assert actual == expected
 
+
 def test_remove_duplicate_entries_00():
     """Ensure duplicated cases are removed."""
-    actual = apd.remove_duplicate_entries([
-        {'Case':'1', 'Traffic Fatality #:': '1'},
-        {'Case':'1', 'Traffic Fatality #:': '1'},
-        {'Case':'2', 'Traffic Fatality #:': '2'},
-        {'Case':'2', 'Traffic Fatality #:': '2', 'Notes':'Details of crash.'}
-    ])
-    expected = [
-        {'Case':'1', 'Traffic Fatality #:': '1'},
-        {'Case':'2', 'Traffic Fatality #:': '2', 'Notes':'Details of crash.'}
-    ]
+    actual = apd.remove_duplicate_entries([{
+        'Case': '1',
+        'Traffic Fatality #:': '1'
+    }, {
+        'Case': '1',
+        'Traffic Fatality #:': '1'
+    }, {
+        'Case': '2',
+        'Traffic Fatality #:': '2'
+    }, {
+        'Case': '2',
+        'Traffic Fatality #:': '2',
+        'Notes': 'Details of crash.'
+    }])
+    expected = [{
+        'Case': '1',
+        'Traffic Fatality #:': '1'
+    }, {
+        'Case': '2',
+        'Traffic Fatality #:': '2',
+        'Notes': 'Details of crash.'
+    }]
     assert actual == expected
 
 
