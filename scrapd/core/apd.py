@@ -3,7 +3,6 @@ import asyncio
 import re
 import unicodedata
 from urllib.parse import urljoin
-from collections import Counter
 
 import aiohttp
 from loguru import logger
@@ -407,28 +406,20 @@ def remove_duplicate_entries(res):
 
     :param list res: the list of parsed entries
     """
-    # Look for duplicate case numbers in entry set.
-    case_nums = [r['Case'] for r in res]
-    ctr = Counter(case_nums)
-    duplicated = [num for num, cnt in ctr.items() if cnt > 1]
+    # Create dict with case number keys pointing to entries.
+    cases = set(r['Case'] for r in res)
+    res_dict = {case: [r for r in res if r['Case'] == case] for case in cases}
+    
+    # For each case number, create dict combining fields from
+    # any associated fatality entries.
+    new_res = []
+    for case in res_dict:
+        merged = {}
+        for entry in res_dict[case]:
+            merged.update(entry)
+        new_res.append(merged)
 
-    # For case numbers that appear more than once, merge
-    # fields from both cases into a single entry.
-    to_remove = []
-    to_merge = []
-    for num in duplicated:
-        dupes = [r for r in res if r['Case'] == num]
-        to_remove += dupes
-        to_merge.append({k: v for d in dupes for k, v in d.items()})
-
-    # Remove old, duplicated entries and add new merged entries.
-    deduped_res = [r for r in res if r not in to_remove]
-    deduped_res += to_merge
-
-    # Sort to maintain original order.
-    res = sorted(deduped_res, key=lambda x: int(x['Fatal crashes this year']), reverse=True)
-
-    return res
+    return new_res
 
 
 async def fetch_and_parse(session, url):
