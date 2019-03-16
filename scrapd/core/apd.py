@@ -3,6 +3,7 @@ import asyncio
 import re
 import unicodedata
 from urllib.parse import urljoin
+from collections import Counter
 
 import aiohttp
 from loguru import logger
@@ -400,6 +401,33 @@ def parse_page(page):
     return d
 
 
+def remove_duplicate_entries(res):
+    """
+    Return list of fatality entries with duplicates removed.
+
+    :param list res: the list of parsed entries
+    """
+    # Look for duplicate case numbers in entry set.
+    case_nums = [r['Case'] for r in res]
+    ctr = Counter(case_nums)
+    duplicated = [num for num, cnt in ctr.items() if cnt > 1]
+
+    # For case numbers that appear more than once, merge
+    # fields from both cases into a single entry.
+    to_remove = []
+    to_merge = []
+    for num in duplicated:
+        dupes = [r for r in res if r['Case'] == num]
+        to_remove += dupes
+        to_merge.append({k: v for d in dupes for k, v in d.items()})
+
+    # Remove old, duplicated entries and add new merged entries.
+    deduped_res = [r for r in res if r not in to_remove]
+    deduped_res += to_merge
+
+    return deduped_res
+
+
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
@@ -488,5 +516,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 break
 
             page += 1
+
+    res = remove_duplicate_entries(res)
 
     return res, page
