@@ -7,6 +7,8 @@ from scrapd.core import apd
 from scrapd.core.constant import Fields
 from tests import mock_data
 from tests.test_common import TEST_DATA_DIR
+from tests.test_common import scenario_ids
+from tests.test_common import scenario_inputs
 
 # Disable logging for the tests.
 logger.remove()
@@ -186,26 +188,20 @@ def test_parse_twitter_description_03():
     assert actual == expected
 
 
-def test_parse_details_page_notes_01():
-    """Ensure a malformed entry is not parsed."""
-    actual = apd.parse_details_page_notes(mock_data.details_page_notes_01)
-    expected = ''
-    assert actual == expected
+parse_details_page_notes_scenarios = [
+    ((mock_data.details_page_notes_01, ''), 'Ensure a malformed entry is not parsed'),
+    ((mock_data.details_page_notes_02, mock_data.details_page_notes_02_expected),
+     'Ensure details page notes parsed correctly'),
+]
 
 
-def test_parse_details_page_notes_02():
+@pytest.mark.parametrize(
+    'input_,expected',
+    scenario_inputs(parse_details_page_notes_scenarios),
+    ids=scenario_ids(parse_details_page_notes_scenarios))
+def test_parse_details_page_notes_01(input_, expected):
     """Ensure details page notes parsed correctly."""
-    actual = apd.parse_details_page_notes(mock_data.details_page_notes_02)
-    expected = (
-        'The passenger was ejected from the vehicle and was pronounced deceased '
-        'on scene at 2:43 a.m. The driver was transported to St. David’s South Austin Hospital. '
-        'APD is investigating this case. Anyone with information regarding this case should call '
-        'APD’s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by '
-        'downloading APD’s mobile app, Austin PD, for free on iPhone and Android. This is Austin’s '
-        '73rd fatal traffic crash of 2018, resulting in 74 fatalities this year. At this time in 2017, '
-        'there were 71 fatal traffic crashes and 76 traffic fatalities. These statements are based on '
-        'the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.'
-    )
+    actual = apd.parse_details_page_notes(input_)
     assert actual == expected
 
 
