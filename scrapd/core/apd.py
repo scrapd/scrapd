@@ -521,9 +521,5 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             page += 1
 
     res = remove_duplicate_entries(res)
-    with open("full_results.txt", "a") as outfile:
-        for r in res:
-            outfile.write(str(r) + '\n')
-        outfile.write('\n\n\n\n\n')
 
     return res, page
