@@ -409,7 +409,7 @@ def remove_duplicate_entries(res):
     # Create dict with case number keys pointing to entries.
     cases = set(r['Case'] for r in res)
     res_dict = {case: [r for r in res if r['Case'] == case] for case in cases}
-    
+
     # For each case number, create dict combining fields from
     # any associated fatality entries.
     new_res = []
