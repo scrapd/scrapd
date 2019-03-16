@@ -246,30 +246,18 @@ def test_generate_detail_page_urls_00():
     assert actual == expected
 
 
-def test_remove_duplicate_entries_00():
-    """Ensure duplicated cases are removed."""
-    actual = apd.remove_duplicate_entries([{
-        'Case': '1',
-        'Traffic Fatality #:': '1'
-    }, {
-        'Case': '1',
-        'Traffic Fatality #:': '1'
-    }, {
-        'Case': '2',
-        'Traffic Fatality #:': '2'
-    }, {
-        'Case': '2',
-        'Traffic Fatality #:': '2',
-        'Notes': 'Details of crash.'
-    }])
-    expected = [{
-        'Case': '1',
-        'Traffic Fatality #:': '1'
-    }, {
-        'Case': '2',
-        'Traffic Fatality #:': '2',
-        'Notes': 'Details of crash.'
-    }]
+remove_duplicate_entries_scenarios = [((mock_data.duplicated_entry_list_01,
+                                        mock_data.duplicated_entry_list_expected_01),
+                                       'Ensure a malformed entry is not parsed')]
+
+
+@pytest.mark.parametrize(
+    'input_,expected',
+    scenario_inputs(remove_duplicate_entries_scenarios),
+    ids=scenario_ids(remove_duplicate_entries_scenarios))
+def test_remove_duplicate_entries_00(input_, expected):
+    """Ensure details page notes parsed correctly."""
+    actual = apd.remove_duplicate_entries(input_)
     assert actual == expected
 
 
