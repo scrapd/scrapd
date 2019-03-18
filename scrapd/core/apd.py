@@ -399,29 +399,6 @@ def parse_page(page):
 
     return d
 
-
-def remove_duplicate_entries(res):
-    """
-    Return list of fatality entries with duplicates removed.
-
-    :param list res: the list of parsed entries
-    """
-    # Create dict with case number keys pointing to entries.
-    cases = set(r['Case'] for r in res)
-    res_dict = {case: [r for r in res if r['Case'] == case] for case in cases}
-
-    # For each case number, create dict combining fields from
-    # any associated fatality entries.
-    new_res = []
-    for case in res_dict:
-        merged = {}
-        for entry in res_dict[case]:
-            merged.update(entry)
-        new_res.append(merged)
-
-    return new_res
-
-
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
