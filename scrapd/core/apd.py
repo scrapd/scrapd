@@ -399,6 +399,7 @@ def parse_page(page):
 
     return d
 
+
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
@@ -476,10 +477,11 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                     logger.debug(f'There are no data within the specified time range on page {page}.')
                     break
 
-                # Store the results oldest-first so that
-                # newer entries overwrite older entries associated with the same case.
-                for entry in entries_in_time_range[::-1]:
-                    res[entry.get(Fields.CASE)] = entry
+                # Store the results if the case number is new.
+                for entry in entries_in_time_range:
+                    case_num = entry.get(Fields.CASE)
+                    if case_num not in res:
+                        res[case_num] = entry
 
             # Stop if there is no further pages.
             if not has_next(news_page) or page >= pages > 0:
