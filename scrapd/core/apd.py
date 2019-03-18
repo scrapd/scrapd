@@ -447,7 +447,7 @@ async def fetch_and_parse(session, url):
 
 async def async_retrieve(pages=-1, from_=None, to=None):
     """Retrieve fatality data."""
-    res = []
+    res = {}
     page = 1
     has_entries = False
     no_date_within_range_count = 0
@@ -499,18 +499,15 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                     logger.debug(f'There are no data within the specified time range on page {page}.')
                     break
 
-                # Otherwise store the results.
-                res += entries_in_time_range
+                # Store the results oldest-first so that
+                # newer entries overwrite older entries associated with the same case.
+                for entry in entries_in_time_range[::-1]:
+                    res[entry.get(Fields.CASE)] = entry
 
             # Stop if there is no further pages.
-            if not has_next(news_page):
-                break
-
-            if page >= pages > 0:
+            if not has_next(news_page) or page >= pages > 0:
                 break
 
             page += 1
-
-    res = remove_duplicate_entries(res)
 
     return res, page
