@@ -55,24 +55,10 @@ in `json`::
 
   [
     {
-      "Age": 31,
-      "Case": "19-0150158",
-      "DOB": "07/09/1987",
-      "Date": "January 15, 2019",
-      "Ethnicity": "White",
-      "Fatal crashes this year": "1",
-      "First Name": "Hilburn",
-      "Gender": "male",
-      "Last Name": "Sell",
-      "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
-      "Location": "10500 block of N IH 35 SB",
-      "Time": "6:20 a.m."
-    },
-    {
       "Age": 58,
       "Case": "19-0161105",
       "DOB": "02/15/1960",
-      "Date": "January 16, 2019",
+      "Date": "01/16/2019",
       "Ethnicity": "White",
       "Fatal crashes this year": "2",
       "First Name": "Ann",
@@ -80,7 +66,23 @@ in `json`::
       "Last Name": "Bottenfield-Seago",
       "Link": "http://austintexas.gov/news/traffic-fatality-2-3",
       "Location": "West William Cannon Drive and Ridge Oak Road",
+      "Notes": "The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD\u2019s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD\u2019s mobile app, Austin PD, for free on iPhone and Android. This is Austin\u2019s second fatal traffic crash of 2018, resulting in two fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.",
       "Time": "3:42 p.m."
+    },
+    {
+      "Age": 31,
+      "Case": "19-0150158",
+      "DOB": "07/09/1987",
+      "Date": "01/15/2019",
+      "Ethnicity": "White",
+      "Fatal crashes this year": "1",
+      "First Name": "Hilburn",
+      "Gender": "male",
+      "Last Name": "Sell",
+      "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
+      "Location": "10500 block of N IH 35 SB",
+      "Notes": "The preliminary investigation shows that a 2000 Peterbilt semi truck was travelling southbound in the center lane on IH 35 when it struck pedestrian David Sell. The driver stopped as soon as it was possible to do so and remained on scene. He reported not seeing the pedestrian prior to impact given that it was still dark at the time of the crash. Sell was pronounced deceased at the scene at 6:24 a.m. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD\u2019s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD\u2019s mobile app, Austin PD, for free on iPhone and Android. This is Austin\u2019s first fatal traffic crash of 2018, resulting in one fatality this year. At this time in 2018, there was one fatal traffic crash and two traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.",
+      "Time": "6:20 a.m."
     }
   ]
 
@@ -89,38 +91,42 @@ Do the same research but output as CSV::
     scrapd --from "Jan 15 2019" --to "Jan 18 2019" --format csv
 
 
-    Fatal crashes this year,Case,Date,Time,Location,First Name,Last Name,Ethnicity,Gender,DOB,Age,Link
-    1,19-0150158,"January 15, 2019",6:20 a.m.,10500 block of N IH 35 SB,Hilburn,Sell,White,male,07/09/1987,31,http://austintexas.gov/news/traffic-fatality-1-4
-    2,19-0161105,"January 16, 2019",3:42 p.m.,West William Cannon Drive and Ridge Oak Road,Ann,Bottenfield-Seago,White,female,02/15/1960,58,http://austintexas.gov/news/traffic-fatality-2-3
+    Fatal crashes this year,Case,Date,Time,Location,First Name,Last Name,Ethnicity,Gender,DOB,Age,Link,Notes
+    2,19-0161105,01/16/2019,3:42 p.m.,West William Cannon Drive and Ridge Oak Road,Ann,Bottenfield-Seago,White,female,02/15/1960,58,http://austintexas.gov/news/traffic-fatality-2-3,"The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD’s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD’s mobile app, Austin PD, for free on iPhone and Android. This is Austin’s second fatal traffic crash of 2018, resulting in two fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change."
+    1,19-0150158,01/15/2019,6:20 a.m.,10500 block of N IH 35 SB,Hilburn,Sell,White,male,07/09/1987,31,http://austintexas.gov/news/traffic-fatality-1-4,"The preliminary investigation shows that a 2000 Peterbilt semi truck was travelling southbound in the center lane on IH 35 when it struck pedestrian David Sell. The driver stopped as soon as it was possible to do so and remained on scene. He reported not seeing the pedestrian prior to impact given that it was still dark at the time of the crash. Sell was pronounced deceased at the scene at 6:24 a.m. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD’s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD’s mobile app, Austin PD, for free on iPhone and Android. This is Austin’s first fatal traffic crash of 2018, resulting in one fatality this year. At this time in 2018, there was one fatal traffic crash and two traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change."
+
 
 Retrieve all the traffic fatalities from 2019 (*as of Jan 20th 2019*) in json, and enabling the logging to follow the progress
 of the process::
 
-  scrapd -v --from "1 1 2019" --format json
+  scrapd -v --from "1 1 2019" --to "Jan 20 2019" --format json
 
   Fetching page 1...
   Fetching page 2...
-  Total: 2
+  Fetching page 3...
+  Total: 3
+
   [
     {
-      "Age": 31,
-      "Case": "19-0150158",
-      "DOB": "07/09/1987",
-      "Date": "January 15, 2019",
-      "Ethnicity": "White",
-      "Fatal crashes this year": "1",
-      "First Name": "Hilburn",
+      "Age": 15,
+      "Case": "19-0081623",
+      "DOB": "02/18/2003",
+      "Date": "01/08/2019",
+      "Ethnicity": "Hispanic",
+      "Fatal crashes this year": "3",
+      "First Name": "Jesus",
       "Gender": "male",
-      "Last Name": "Sell",
-      "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
-      "Location": "10500 block of N IH 35 SB",
-      "Time": "6:20 a.m."
+      "Last Name": "Servantez",
+      "Link": "http://austintexas.gov/news/traffic-fatality-3-4",
+      "Location": "3600 block of South Capital of Texas Highway SB",
+      "Notes": "The preliminary investigation shows that the driver of a silver, 2018 KIA was traveling in the center lane of the 3600 block of South Capital of Texas Highway SB when the car collided with Jesus Servantez, a pedestrian in the roadway. The driver remained at the scene and told investigators that he did not see Servantez prior to the crash. Jesus Servantez was transported to Saint David\u2019s South Austin Medical Center where he succumbed to his injuries on January 21, 2019. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD\u2019s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD\u2019s mobile app, Austin PD, for free on iPhone and Android. This is Austin\u2019s third fatal traffic crash of 2018, resulting in three fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.",
+      "Time": "9:37 p.m."
     },
     {
       "Age": 58,
       "Case": "19-0161105",
       "DOB": "02/15/1960",
-      "Date": "January 16, 2019",
+      "Date": "01/16/2019",
       "Ethnicity": "White",
       "Fatal crashes this year": "2",
       "First Name": "Ann",
@@ -128,9 +134,26 @@ of the process::
       "Last Name": "Bottenfield-Seago",
       "Link": "http://austintexas.gov/news/traffic-fatality-2-3",
       "Location": "West William Cannon Drive and Ridge Oak Road",
+      "Notes": "The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD\u2019s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD\u2019s mobile app, Austin PD, for free on iPhone and Android. This is Austin\u2019s second fatal traffic crash of 2018, resulting in two fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.",
       "Time": "3:42 p.m."
+    },
+    {
+      "Age": 31,
+      "Case": "19-0150158",
+      "DOB": "07/09/1987",
+      "Date": "01/15/2019",
+      "Ethnicity": "White",
+      "Fatal crashes this year": "1",
+      "First Name": "Hilburn",
+      "Gender": "male",
+      "Last Name": "Sell",
+      "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
+      "Location": "10500 block of N IH 35 SB",
+      "Notes": "The preliminary investigation shows that a 2000 Peterbilt semi truck was travelling southbound in the center lane on IH 35 when it struck pedestrian David Sell. The driver stopped as soon as it was possible to do so and remained on scene. He reported not seeing the pedestrian prior to impact given that it was still dark at the time of the crash. Sell was pronounced deceased at the scene at 6:24 a.m. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD\u2019s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD\u2019s mobile app, Austin PD, for free on iPhone and Android. This is Austin\u2019s first fatal traffic crash of 2018, resulting in one fatality this year. At this time in 2018, there was one fatal traffic crash and two traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.",
+      "Time": "6:20 a.m."
     }
   ]
+
 
 Export the results to Google Sheets::
 

@@ -32,6 +32,24 @@ Commit messages should follow best practices, including explaining the context o
 including in caveats or follow up changes required. They should tell the story of the change and provide readers
 understanding of what led to it. Please refer to `How to Write a Git Commit Message`_ for more details.
 
+Commit example
+""""""""""""""
+
+.. code-block:: bash
+
+  Use Docker Hub build environment values
+
+  Uses the Docker Hub build environment values in order to ensure the
+  correct version of ScrAPD is installed into the image.
+
+  Fixes scrapd/scrapd#54
+
+The following commit is a good example as:
+
+1. The fist line is a short description and starts with an imperative verb
+2. The first paragraph describes why this commit may be useful
+3. The last line points to an existing issue and will automatically close it.
+
 Formatting your code
 ^^^^^^^^^^^^^^^^^^^^
 
