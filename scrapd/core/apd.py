@@ -425,7 +425,7 @@ async def fetch_and_parse(session, url):
 
 async def async_retrieve(pages=-1, from_=None, to=None):
     """Retrieve fatality data."""
-    res = []
+    res = {}
     page = 1
     has_entries = False
     no_date_within_range_count = 0
@@ -477,14 +477,14 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                     logger.debug(f'There are no data within the specified time range on page {page}.')
                     break
 
-                # Otherwise store the results.
-                res += entries_in_time_range
+                # Store the results if the case number is new.
+                for entry in entries_in_time_range:
+                    case_num = entry.get(Fields.CASE)
+                    if case_num not in res:
+                        res[case_num] = entry
 
             # Stop if there is no further pages.
-            if not has_next(news_page):
-                break
-
-            if page >= pages > 0:
+            if not has_next(news_page) or page >= pages > 0:
                 break
 
             page += 1
