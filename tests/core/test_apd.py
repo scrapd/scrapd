@@ -304,5 +304,6 @@ def test_parse_page_00(filename, expected):
 async def test_date_filtering_00(fake_details, fake_news):
     """Ensure the date filtering do not fetch unnecessary data."""
     expected = 2
-    _, actual = await apd.async_retrieve(pages=-1, from_="2050-01-02", to="2050-01-03")
+    data, actual = await apd.async_retrieve(pages=-1, from_="2050-01-02", to="2050-01-03")
     assert actual == expected
+    assert isinstance(data, list)
