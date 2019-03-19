@@ -44,3 +44,6 @@ def ensure_results(mocker, event_loop, output_format, time_range, entry_count):
     result, _ = event_loop.run_until_complete(apd.async_retrieve(pages=-1, **time_range))
     assert result is not None
     assert len(result) == entry_count
+    assert isinstance(result, list)
+    if len(result) > 0:
+        assert isinstance(result[0], dict)

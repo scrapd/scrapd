@@ -489,4 +489,4 @@ async def async_retrieve(pages=-1, from_=None, to=None):
 
             page += 1
 
-    return res, page
+    return list(res.values()), page
