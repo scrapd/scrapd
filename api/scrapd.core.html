@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>scrapd.core package &#8212; scrapd 1.4.2 documentation</title>
+    <title>scrapd.core package &#8212; scrapd 1.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
 
 
-<link rel="canonical" href="https://rgreinho.github.io/scrapd/api/scrapd.core.html"/>
+<link rel="canonical" href="https://scrapd.github.io/scrapd/api/scrapd.core.html"/>
 
 <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 <link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet">
@@ -198,8 +198,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="scrapd.core.apd.parse_deaceased_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_deaceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_deaceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_deaceased_field" title="Permalink to this definition">¶</a></dt>
+<dt id="scrapd.core.apd.parse_deceased_field">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_deceased_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the deceased field.</p>
 <p>At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
 Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.</p>
@@ -212,6 +212,27 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dictionary representing a deceased field.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.apd.parse_details_page_notes">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_details_page_notes</code><span class="sig-paren">(</span><em>details_page_notes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_details_page_notes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_details_page_notes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up a details page notes section.</p>
+<p>The purpose of this function is to attempt to extract the sentences about
+the crash with some level of fidelity, but does not always return
+a perfectly parsed sentence as the HTML syntax varies widely.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>details_description</strong> (<em>str</em>) – the paragraph after the Deceased information</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A paragraph containing the details of the fatality in sentence form.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
 </tr>
 </tbody>
 </table>
@@ -233,7 +254,7 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 
 <dl class="function">
 <dt id="scrapd.core.apd.parse_page_content">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_page_content</code><span class="sig-paren">(</span><em>detail_page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_page_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_page_content" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_page_content</code><span class="sig-paren">(</span><em>detail_page</em>, <em>notes_parsed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_page_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_page_content" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the detail page to extract fatality information.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -315,7 +336,7 @@ relevant information anymore.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>d</strong> (<em>dict</em>) – the fatality to sanatize</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>d</strong> (<em>dict</em>) – the fatality to sanitize</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dictionary containing the details information about the fatality with sanitized entries.</td>
 </tr>
@@ -417,6 +438,48 @@ relevant information anymore.</p>
 <div class="section" id="module-scrapd.core.date_utils">
 <span id="scrapd-core-date-utils-module"></span><h2>scrapd.core.date_utils module<a class="headerlink" href="#module-scrapd.core.date_utils" title="Permalink to this headline">¶</a></h2>
 <p>Define a module to manipulate dates.</p>
+<dl class="function">
+<dt id="scrapd.core.date_utils.check_dob">
+<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">check_dob</code><span class="sig-paren">(</span><em>dob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#check_dob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.check_dob" title="Permalink to this definition">¶</a></dt>
+<dd><p>In case that a date only contains 2 digits, determine century.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dob</strong> (<em>datetime.datetime</em>) – DOB</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">DOB with 19xx or 20xx as appropriate</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">datetime.datetime</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.date_utils.clean_date_string">
+<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">clean_date_string</code><span class="sig-paren">(</span><em>date</em>, <em>is_dob=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#clean_date_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.clean_date_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the date from an unspecified format to the specified format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>date</strong> (<em>str</em>) – date</li>
+<li><strong>is_dob</strong> (<em>boolean</em>) – True if date is DOB, otherwise False</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a date string in the uniform %m/%d/%Y format.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="scrapd.core.date_utils.compute_age">
 <code class="descclassname">scrapd.core.date_utils.</code><code class="descname">compute_age</code><span class="sig-paren">(</span><em>date</em>, <em>dob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#compute_age"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.compute_age" title="Permalink to this definition">¶</a></dt>
@@ -765,7 +828,7 @@ it.</p>
 
 
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=rgreinho&repo=scrapd&type=star&count=False&size=large&v=2"
+<iframe src="https://ghbtns.com/github-btn.html?user=scrapd&repo=scrapd&type=star&count=False&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
 
@@ -816,7 +879,7 @@ it.</p>
     </div>
 
     
-    <a href="https://github.com/rgreinho/scrapd" class="github">
+    <a href="https://github.com/scrapd/scrapd" class="github">
         <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
     </a>
     

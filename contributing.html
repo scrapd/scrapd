@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Contributing &#8212; scrapd 1.4.2 documentation</title>
+    <title>Contributing &#8212; scrapd 1.5.0 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="_static/custom.css" type="text/css" />
 
 
-<link rel="canonical" href="https://rgreinho.github.io/scrapd/contributing.html"/>
+<link rel="canonical" href="https://scrapd.github.io/scrapd/contributing.html"/>
 
 <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 <link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet">
@@ -40,11 +40,11 @@
 <div class="section" id="instructions-for-contributors">
 <h2>Instructions for contributors<a class="headerlink" href="#instructions-for-contributors" title="Permalink to this headline">¶</a></h2>
 <p>We are interested in various different kinds of improvement for scrapd; please feel free to
-raise an <a class="reference external" href="https://github.com/rgreinho/scrapd/issues">Issue</a> if you would like to work on something major to ensure efficient collaboration and avoid duplicate
+raise an <a class="reference external" href="https://github.com/scrapd/scrapd/issues">Issue</a> if you would like to work on something major to ensure efficient collaboration and avoid duplicate
 effort.</p>
 <div class="section" id="guidelines">
 <h3>Guidelines<a class="headerlink" href="#guidelines" title="Permalink to this headline">¶</a></h3>
-<p>Use the provided templates to file an <a class="reference external" href="https://github.com/rgreinho/scrapd/issues">Issue</a> or a <a class="reference external" href="https://github.com/rgreinho/scrapd/pulls">Pull Request</a>.</p>
+<p>Use the provided templates to file an <a class="reference external" href="https://github.com/scrapd/scrapd/issues">Issue</a> or a <a class="reference external" href="https://github.com/scrapd/scrapd/pulls">Pull Request</a>.</p>
 <p>Create a topic branch from where you want to base your work.</p>
 <p>For formatting the files properly, please use <a class="reference external" href="https://github.com/google/yapf">YAPF</a>.In the root directory of the project, run the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make format
@@ -57,6 +57,23 @@ an optional, more detailed explanatory text which is separated from the summary 
 <p>Commit messages should follow best practices, including explaining the context of the problem and how it was solved,
 including in caveats or follow up changes required. They should tell the story of the change and provide readers
 understanding of what led to it. Please refer to <a class="reference external" href="http://chris.beams.io/posts/git-commit">How to Write a Git Commit Message</a> for more details.</p>
+<div class="section" id="commit-example">
+<h4>Commit example<a class="headerlink" href="#commit-example" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Use Docker Hub build environment values
+
+Uses the Docker Hub build environment values in order to ensure the
+correct version of ScrAPD is installed into the image.
+
+Fixes scrapd/scrapd#54
+</pre></div>
+</div>
+<p>The following commit is a good example as:</p>
+<ol class="arabic simple">
+<li>The fist line is a short description and starts with an imperative verb</li>
+<li>The first paragraph describes why this commit may be useful</li>
+<li>The last line points to an existing issue and will automatically close it.</li>
+</ol>
+</div>
 </div>
 <div class="section" id="formatting-your-code">
 <h3>Formatting your code<a class="headerlink" href="#formatting-your-code" title="Permalink to this headline">¶</a></h3>
@@ -121,7 +138,7 @@ open https://regex101.com/
 
 
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=rgreinho&repo=scrapd&type=star&count=False&size=large&v=2"
+<iframe src="https://ghbtns.com/github-btn.html?user=scrapd&repo=scrapd&type=star&count=False&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
 
@@ -174,7 +191,7 @@ open https://regex101.com/
     </div>
 
     
-    <a href="https://github.com/rgreinho/scrapd" class="github">
+    <a href="https://github.com/scrapd/scrapd" class="github">
         <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
     </a>
     
