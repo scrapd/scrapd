@@ -460,9 +460,9 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if not has_entries:
-                    if from_ and all([date_utils.is_posterior(entry[Fields.DATE], from_) for entry in page_res]):
-                        no_date_within_range_count += 1
+                if from_ and all([date_utils.is_posterior(entry[Fields.DATE], from_)
+                                  for entry in page_res]) and not has_entries:
+                    no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
                     logger.debug(f'{len(entries_in_time_range)} fatality page(s) within the specified time range.')
                     break
@@ -478,10 +478,10 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                     break
 
                 # Store the results if the case number is new.
-                for entry in entries_in_time_range:
-                    case_num = entry.get(Fields.CASE)
-                    if case_num not in res:
-                        res[case_num] = entry
+                res.update({
+                    entry.get(Fields.CASE): entry
+                    for entry in entries_in_time_range if entry.get(Fields.CASE) not in res
+                })
 
             # Stop if there is no further pages.
             if not has_next(news_page) or page >= pages > 0:
