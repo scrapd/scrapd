@@ -64,6 +64,13 @@ parse_twitter_fields_scenarios = {
         Fields.LOCATION: '183 service road westbound and Payton Gin Rd.',
         Fields.TIME: '8:39 p.m.',
     },
+    'traffic-fatality-16-4': {
+        Fields.CASE: '19-0930132',
+        Fields.CRASHES: '16',
+        Fields.DATE: '04/03/2019',
+        Fields.LOCATION: 'E. Wells Branch Parkway/S. Heatherwilde Boulevard',
+        Fields.TIME: '2:39 a.m.',
+    },
 }
 
 parse_page_content_scenarios = {
@@ -110,6 +117,15 @@ parse_page_content_scenarios = {
         Fields.ETHNICITY: 'Other',
         Fields.GENDER: 'male',
         Fields.AGE: 54,
+    },
+    'traffic-fatality-16-4': {
+        **parse_twitter_fields_scenarios['traffic-fatality-16-4'],
+        Fields.DOB: '01/15/1994',
+        Fields.FIRST_NAME: 'Hannah',
+        Fields.LAST_NAME: 'Jaggers',
+        Fields.ETHNICITY: 'White',
+        Fields.GENDER: 'female',
+        Fields.AGE: 25
     }
 }
 

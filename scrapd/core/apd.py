@@ -265,6 +265,7 @@ def sanitize_fatality_entity(d):
 
     return d
 
+
 def dob_search(deceased_field, dob_tokens):
     """
     Look for D.O.B. information in deceased field string.
@@ -287,6 +288,7 @@ def dob_search(deceased_field, dob_tokens):
         else:
             break
     return dob_index
+
 
 def parse_deceased_field(deceased_field):
     """
@@ -355,6 +357,7 @@ def parse_page_content(detail_page, notes_parsed=False):
         match = re.search(search[1], normalized_detail_page)
         if match:
             d[search[0]] = match.groups()[0]
+
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
