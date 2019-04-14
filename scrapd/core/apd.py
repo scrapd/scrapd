@@ -265,6 +265,28 @@ def sanitize_fatality_entity(d):
 
     return d
 
+def dob_search(deceased_field, dob_tokens):
+    """
+    Look for D.O.B. information in deceased field string.
+
+    If it exists, return the index, else return -1.
+
+    :param list deceased_field: a list where each item is a word from the deceased field
+    :param list dob_tokens: tokens to search for date of birth information
+    :return: the index in the string of the date of birth
+    :rtype: int
+    """
+
+    dob_index = -1
+    while dob_index < 0 and dob_tokens:
+        dob_token = dob_tokens.pop()
+        try:
+            dob_index = deceased_field.index(dob_token)
+        except ValueError:
+            pass
+        else:
+            break
+    return dob_index
 
 def parse_deceased_field(deceased_field):
     """
@@ -277,16 +299,9 @@ def parse_deceased_field(deceased_field):
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
-    dob_index = -1
+
     dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
-    while dob_index < 0 and dob_tokens:
-        dob_token = dob_tokens.pop()
-        try:
-            dob_index = deceased_field.index(dob_token)
-        except ValueError:
-            pass
-        else:
-            break
+    dob_index = dob_search(deceased_field, dob_tokens)
 
     if dob_index < 0:
         raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
@@ -294,6 +309,11 @@ def parse_deceased_field(deceased_field):
     d = {}
     d[Fields.DOB] = deceased_field[dob_index + 1]
     notes = deceased_field[dob_index + 2:]
+
+    notes_index = dob_search(notes, dob_tokens)
+    while notes_index >= 0:
+        notes = notes[notes_index + 2:]
+        notes_index = dob_search(notes, dob_tokens)
     if notes:
         d[Fields.NOTES] = ' '.join(notes)
 
@@ -303,10 +323,10 @@ def parse_deceased_field(deceased_field):
     # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
     # For example, there is no first name and last name.
     try:
-        d[Fields.GENDER] = fleg.pop().replace(',', '')
-        d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-        d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
-        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
+        d[Fields.GENDER] = fleg.pop().replace(',', '').replace('|', '').lower()
+        d[Fields.ETHNICITY] = fleg.pop().replace(',', '').replace('|', '')
+        d[Fields.LAST_NAME] = fleg.pop().replace(',', '').replace('|', '')
+        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '').replace('|', '')
     except IndexError:
         pass
 
