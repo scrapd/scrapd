@@ -303,7 +303,7 @@ def parse_deceased_field(deceased_field):
     # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
     # For example, there is no first name and last name.
     try:
-        d[Fields.GENDER] = fleg.pop().replace(',', '')
+        d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
         d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
         d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
         d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
