@@ -265,6 +265,21 @@ def sanitize_fatality_entity(d):
 
     return d
 
+def parse_name(name):
+    """
+    Parse the victim's name.
+
+    :param list name: a list reprenting the deceased person's full name split on space characters
+    :return: a dictionary representing just the victim's first and last name
+    :rtype: dict
+    """
+    d = {}
+    try:
+        d["last"] = name.pop().replace(',', '')
+        d["first"] = name[0].replace(',', '')
+    except ValueError:
+        pass
+    return d
 
 def parse_deceased_field(deceased_field):
     """
@@ -305,11 +320,12 @@ def parse_deceased_field(deceased_field):
     try:
         d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
         d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-        d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
-        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
     except IndexError:
         pass
 
+    name = parse_name(fleg)
+    d[Fields.LAST_NAME] = name.get("last")
+    d[Fields.FIRST_NAME] = name.get("first")
     return d
 
 

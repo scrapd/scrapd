@@ -218,6 +218,24 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     ]
     assert actual == expected
 
+def test_parse_deceased_field():
+    field = "Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)".split()
+    d = apd.parse_deceased_field(field)
+    assert d[Fields.LAST_NAME] == "Tamez"
+    assert d[Fields.FIRST_NAME] == "Rosbel"
+
+@pytest.mark.parametrize(
+    'name,expected', (
+        (['Rosbel', '“Rudy”', 'Tamez'], {'first': 'Rosbel', 'last': 'Tamez'}),
+        (['Christopher', 'M', 'Peterson'], {'first': 'Christopher', 'last': 'Peterson'}),
+        (['David', 'Adam', 'Castro,'], {'first': 'David', 'last': 'Castro'}),
+        (['Delta', 'Olin,'], {'first': 'Delta', 'last': 'Olin'}),
+        ))
+def test_parse_name(name, expected):
+    """Ensure parser finds the first and last name given the full name."""
+    parsed = apd.parse_name(name)
+    assert parsed["first"] == expected["first"]
+    assert parsed["last"] == expected["last"]
 
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""
