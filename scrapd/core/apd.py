@@ -275,9 +275,9 @@ def parse_name(name):
     """
     d = {}
     try:
-        d["last"] = name.pop().replace(',', '')
+        d["last"] = name[-1].replace(',', '')
         d["first"] = name[0].replace(',', '')
-    except ValueError:
+    except IndexError:
         pass
     return d
 
