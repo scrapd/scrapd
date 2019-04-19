@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix gender value mix character cases.
+- Fix `fetch_text()` by adding retry ability with exponential backoff. [#85]
+
 ## [[1.5.0]] - 2019-03-19
 
 ### Fixed
@@ -108,3 +113,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#61]: https://github.com/scrapd/scrapd/pull/61
 [#64]: https://github.com/scrapd/scrapd/pull/64
 [#66]: https://github.com/scrapd/scrapd/pull/66
+[#85]: https://github.com/scrapd/scrapd/pull/85
