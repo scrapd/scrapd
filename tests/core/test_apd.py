@@ -1,4 +1,5 @@
 """Test the APD module."""
+import aiohttp
 from loguru import logger
 import asynctest
 import pytest
@@ -307,3 +308,24 @@ async def test_date_filtering_00(fake_details, fake_news):
     data, actual = await apd.async_retrieve(pages=-1, from_="2050-01-02", to="2050-01-03")
     assert actual == expected
     assert isinstance(data, list)
+
+
+@pytest.mark.asyncio
+async def test_fetch_text_00():
+    """Ensure `fetch_text` retries several times."""
+    text = None
+    async with aiohttp.ClientSession() as session:
+        try:
+            text = await apd.fetch_text(session, 'fake_url')
+        except Exception:
+            pass
+    assert not text
+    assert apd.fetch_text.retry.statistics['attempt_number'] > 1
+
+
+@asynctest.patch("scrapd.core.apd.fetch_news_page", side_effect=ValueError)
+@pytest.mark.asyncio
+async def test_async_retrieve_00(fake_news):
+    """Ensure `async_retrieve` raises `ValueError` when `fetch_news_page` fails to retrieve data."""
+    with pytest.raises(ValueError):
+        _, _ = await apd.async_retrieve()

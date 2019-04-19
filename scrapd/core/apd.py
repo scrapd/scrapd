@@ -7,6 +7,9 @@ from urllib.parse import urljoin
 import aiohttp
 from loguru import logger
 from lxml import html
+from tenacity import retry
+from tenacity import stop_after_attempt
+from tenacity import wait_exponential
 
 from scrapd.core.constant import Fields
 from scrapd.core import date_utils
@@ -15,6 +18,7 @@ APD_URL = 'http://austintexas.gov/department/news/296'
 PAGE_DETAILS_URL = 'http://austintexas.gov/'
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
 async def fetch_text(session, url, params=None):
     """
     Fetch the data from a URL as text.
@@ -35,8 +39,10 @@ async def fetch_text(session, url, params=None):
             aiohttp.http_exceptions.HttpProcessingError,
     ) as e:
         logger.error(f'aiohttp exception for {url} -> {e}')
+        raise e
     except Exception as e:
         logger.exception(f'non-aiohttp exception occured: {e}')
+        raise e
 
 
 async def fetch_news_page(session, page=1):
@@ -436,7 +442,10 @@ async def async_retrieve(pages=-1, from_=None, to=None):
         while True:
             # Fetch the news page.
             logger.info(f'Fetching page {page}...')
-            news_page = await fetch_news_page(session, page)
+            try:
+                news_page = await fetch_news_page(session, page)
+            except Exception:
+                raise ValueError(f'Cannot retrieve news page #{page}.')
 
             # Looks for traffic fatality links.
             page_details_links = extract_traffic_fatalities_page_details_link(news_page)
