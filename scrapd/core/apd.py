@@ -265,6 +265,7 @@ def sanitize_fatality_entity(d):
 
     return d
 
+
 def parse_name(name):
     """
     Parse the victim's name.
@@ -277,9 +278,10 @@ def parse_name(name):
     try:
         d["last"] = name[-1].replace(',', '')
         d["first"] = name[0].replace(',', '')
-    except IndexError:
+    except (IndexError, TypeError):
         pass
     return d
+
 
 def parse_deceased_field(deceased_field):
     """
@@ -324,8 +326,8 @@ def parse_deceased_field(deceased_field):
         pass
 
     name = parse_name(fleg)
-    d[Fields.LAST_NAME] = name.get("last")
-    d[Fields.FIRST_NAME] = name.get("first")
+    d[Fields.LAST_NAME] = name.get("last", '')
+    d[Fields.FIRST_NAME] = name.get("first", '')
     return d
 
 
