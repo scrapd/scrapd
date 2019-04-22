@@ -1,7 +1,9 @@
 """Test the APD module."""
+from unittest import mock
+
 import aiohttp
-from loguru import logger
 import asynctest
+from loguru import logger
 import pytest
 
 from scrapd.core import apd
@@ -130,32 +132,46 @@ parse_page_scenarios = {
 }
 
 
-def test_parse_twitter_title_00():
-    """Ensure the Twitter title gets parsed correct: """
-    actual = apd.parse_twitter_title(mock_data.twitter_title_00)
-    expected = {'Fatal crashes this year': '73'}
+@pytest.mark.parametrize('input_,expected', (
+    (
+        mock_data.twitter_title_00,
+        {
+            'Fatal crashes this year': '73'
+        },
+    ),
+    (None, {}),
+))
+def test_parse_twitter_title_00(input_, expected):
+    """Ensure the Twitter title gets parsed correct."""
+    actual = apd.parse_twitter_title(input_)
     assert actual == expected
 
 
-def test_parse_twitter_description_00():
+@pytest.mark.parametrize('input_,expected', (
+    (
+        mock_data.twitter_description_00,
+        {
+            'Case': '18-3640187',
+            'Date': '12/30/2018',
+            'Time': '2:24 a.m.',
+            'Location': '1400 E. Highway 71 eastbound',
+            'DOB': '02/09/1980',
+            'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
+            'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
+            'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
+            'and came to a stop north of the roadway.',
+            'Gender': 'male',
+            'Ethnicity': 'White',
+            'Last Name': 'Sabillon-Garcia',
+            'First Name': 'Corbin',
+            'Age': 38,
+        },
+    ),
+    (None, {}),
+))
+def test_parse_twitter_description_00(input_, expected):
     """Ensure the Twitter description gets parsed correctly."""
-    actual = apd.parse_twitter_description(mock_data.twitter_description_00)
-    expected = {
-        'Case': '18-3640187',
-        'Date': '12/30/2018',
-        'Time': '2:24 a.m.',
-        'Location': '1400 E. Highway 71 eastbound',
-        'DOB': '02/09/1980',
-        'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
-        'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
-        'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
-        'and came to a stop north of the roadway.',
-        'Gender': 'male',
-        'Ethnicity': 'White',
-        'Last Name': 'Sabillon-Garcia',
-        'First Name': 'Corbin',
-        'Age': 38,
-    }
+    actual = apd.parse_twitter_description(input_)
     assert actual == expected
 
 
@@ -310,10 +326,29 @@ async def test_date_filtering_00(fake_details, fake_news):
     assert isinstance(data, list)
 
 
+@asynctest.patch(
+    "scrapd.core.apd.fetch_news_page",
+    side_effect=[load_test_page(page) for page in [
+        '296',
+        '296?page=1',
+        '296?page=27',
+    ]])
+@asynctest.patch(
+    "scrapd.core.apd.fetch_detail_page",
+    return_value=load_test_page('traffic-fatality-2-3'),
+)
+@pytest.mark.asyncio
+async def test_date_filtering_01(fake_details, fake_news):
+    """Ensure the date filtering do not fetch unnecessary data."""
+    data, _ = await apd.async_retrieve(pages=-5, from_="2019-01-02", to="2019-01-03")
+    assert isinstance(data, list)
+
+
 @pytest.mark.asyncio
 async def test_fetch_text_00():
     """Ensure `fetch_text` retries several times."""
     text = None
+    apd.fetch_text.retry.sleep = mock.Mock()
     async with aiohttp.ClientSession() as session:
         try:
             text = await apd.fetch_text(session, 'fake_url')

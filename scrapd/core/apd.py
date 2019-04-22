@@ -18,7 +18,7 @@ APD_URL = 'http://austintexas.gov/department/news/296'
 PAGE_DETAILS_URL = 'http://austintexas.gov/'
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
 async def fetch_text(session, url, params=None):
     """
     Fetch the data from a URL as text.
@@ -39,9 +39,6 @@ async def fetch_text(session, url, params=None):
             aiohttp.http_exceptions.HttpProcessingError,
     ) as e:
         logger.error(f'aiohttp exception for {url} -> {e}')
-        raise e
-    except Exception as e:
-        logger.exception(f'non-aiohttp exception occured: {e}')
         raise e
 
 
