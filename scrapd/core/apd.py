@@ -169,7 +169,7 @@ def parse_twitter_description(twitter_description):
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
+            d.update(parse_deceased_field(' '.join(d.get(Fields.DECEASED))))
         except ValueError as e:
             logger.trace(e)
     else:
@@ -269,6 +269,23 @@ def sanitize_fatality_entity(d):
     return d
 
 
+def parse_name(name):
+    """
+    Parse the victim's name.
+
+    :param list name: a list reprenting the deceased person's full name split on space characters
+    :return: a dictionary representing just the victim's first and last name
+    :rtype: dict
+    """
+    d = {}
+    try:
+        d["last"] = name[-1].replace(',', '')
+        d["first"] = name[0].replace(',', '')
+    except (IndexError, TypeError):
+        pass
+    return d
+
+
 def parse_deceased_field(deceased_field):
     """
     Parse the deceased field.
@@ -276,10 +293,11 @@ def parse_deceased_field(deceased_field):
     At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
     Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
 
-    :param list deceased_field: a list where each item is a word from the deceased field
+    :param str deceased_field: the deceased field from the fatality report
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
+    deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
     dob_index = -1
     dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
     while dob_index < 0 and dob_tokens:
@@ -308,11 +326,12 @@ def parse_deceased_field(deceased_field):
     try:
         d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
         d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-        d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
-        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
     except IndexError:
         pass
 
+    name = parse_name(fleg)
+    d[Fields.LAST_NAME] = name.get("last", '')
+    d[Fields.FIRST_NAME] = name.get("first", '')
     return d
 
 
@@ -341,7 +360,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED).split()))
+            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
         except ValueError as e:
             logger.trace(e)
     else:

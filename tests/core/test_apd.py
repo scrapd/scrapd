@@ -236,6 +236,64 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     assert actual == expected
 
 
+@pytest.mark.parametrize('deceased,expected', (
+    ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
+        Fields.LAST_NAME: "Tamez",
+        Fields.FIRST_NAME: "Rosbel"
+    }),
+    ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
+        Fields.LAST_NAME: "Gonzales",
+        Fields.FIRST_NAME: "Eva",
+        Fields.GENDER: 'f'
+    }),
+    (
+        'DOB: 01-01-99',
+        {
+            Fields.DOB: '01-01-99',
+            Fields.LAST_NAME: '',
+            Fields.FIRST_NAME: '',
+        },
+    ),
+))
+def test_parse_deceased_field(deceased, expected):
+    d = apd.parse_deceased_field(deceased)
+    for key in expected:
+        assert d[key] == expected[key]
+
+
+@pytest.mark.parametrize('name,expected', (
+    (['Jonathan,', 'Garcia-Pineda,'], {
+        'first': 'Jonathan',
+        'last': 'Garcia-Pineda'
+    }),
+    (['Rosbel', '“Rudy”', 'Tamez'], {
+        'first': 'Rosbel',
+        'last': 'Tamez'
+    }),
+    (['Christopher', 'M', 'Peterson'], {
+        'first': 'Christopher',
+        'last': 'Peterson'
+    }),
+    (['David', 'Adam', 'Castro,'], {
+        'first': 'David',
+        'last': 'Castro'
+    }),
+    (['Delta', 'Olin,'], {
+        'first': 'Delta',
+        'last': 'Olin'
+    }),
+    (None, {
+        'first': None,
+        'last': None
+    }),
+))
+def test_parse_name(name, expected):
+    """Ensure parser finds the first and last name given the full name."""
+    parsed = apd.parse_name(name)
+    assert parsed.get("first") == expected["first"]
+    assert parsed.get("last") == expected["last"]
+
+
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""
     news_page = """
