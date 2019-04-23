@@ -330,8 +330,10 @@ def parse_deceased_field(deceased_field):
         pass
 
     name = parse_name(fleg)
-    d[Fields.LAST_NAME] = name.get("last", '')
-    d[Fields.FIRST_NAME] = name.get("first", '')
+    if name.get("last"):
+        d[Fields.LAST_NAME] = name.get("last", '')
+    if name.get("first"):
+        d[Fields.FIRST_NAME] = name.get("first", '')
     return d
 
 
