@@ -219,11 +219,18 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     assert actual == expected
 
 
-def test_parse_deceased_field():
-    field = "Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)".split()
-    d = apd.parse_deceased_field(field)
-    assert d[Fields.LAST_NAME] == "Tamez"
-    assert d[Fields.FIRST_NAME] == "Rosbel"
+@pytest.mark.parametrize('deceased,expected', (
+    ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)",
+    {Fields.LAST_NAME: "Tamez", Fields.FIRST_NAME: "Rosbel"}
+    ),
+    ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)",
+    {Fields.LAST_NAME: "Gonzales", Fields.FIRST_NAME: "Eva",
+    Fields.GENDER: 'female'}
+    )))
+def test_parse_deceased_field(deceased, expected):
+    d = apd.parse_deceased_field(deceased)
+    for key in expected:
+        assert d[key] == expected[key]
 
 
 @pytest.mark.parametrize('name,expected', (

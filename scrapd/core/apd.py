@@ -166,7 +166,7 @@ def parse_twitter_description(twitter_description):
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
+            d.update(parse_deceased_field(' '.join(d.get(Fields.DECEASED))))
         except ValueError as e:
             logger.trace(e)
     else:
@@ -290,10 +290,11 @@ def parse_deceased_field(deceased_field):
     At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
     Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
 
-    :param list deceased_field: a list where each item is a word from the deceased field
+    :param str deceased_field: the deceased field from the fatality report
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
+    deceased_field = deceased_field.split()
     dob_index = -1
     dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
     while dob_index < 0 and dob_tokens:
@@ -356,7 +357,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED).split()))
+            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
         except ValueError as e:
             logger.trace(e)
     else:
