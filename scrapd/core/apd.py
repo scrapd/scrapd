@@ -294,7 +294,7 @@ def parse_deceased_field(deceased_field):
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
-    deceased_field = deceased_field.split()
+    deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
     dob_index = -1
     dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
     while dob_index < 0 and dob_tokens:
