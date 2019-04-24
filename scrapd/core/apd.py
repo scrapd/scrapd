@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 import aiohttp
 from loguru import logger
 from lxml import html
+from datetime import datetime
 
 from scrapd.core.constant import Fields
 from scrapd.core import date_utils
@@ -301,26 +302,31 @@ def parse_deceased_field(deceased_field):
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
-
     dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
     dob_index = dob_search(deceased_field, dob_tokens)
 
-    if dob_index < 0:
-        raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
-
     d = {}
-    d[Fields.DOB] = deceased_field[dob_index + 1]
-    notes = deceased_field[dob_index + 2:]
+    date_index = -1
+    if dob_index > 0:
+        date_index = dob_index + 1
+    else:
+        for field in deceased_field:
+            try:
+                if datetime.strptime(field, '%m/%d/%Y'):
+                    date_index = deceased_field.index(field)
+            except ValueError:
+                pass
 
-    notes_index = dob_search(notes, dob_tokens)
-    while notes_index >= 0:
-        notes = notes[notes_index + 2:]
-        notes_index = dob_search(notes, dob_tokens)
+    if date_index < 0:
+        raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
+    d[Fields.DOB] = deceased_field[date_index]
+    notes = deceased_field[date_index + 1:]
+    fleg = deceased_field[:date_index]
+
     if notes:
         d[Fields.NOTES] = ' '.join(notes)
 
     # `fleg` stands for First, Last, Ethnicity, Gender. It represents the info stored before the DOB.
-    fleg = deceased_field[:dob_index]
 
     # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
     # For example, there is no first name and last name.
@@ -345,18 +351,18 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     searches = [
-        (Fields.CASE, re.compile(r'Case:.*\s([0-9\-]+)<')),
+        (Fields.CASE, re.compile(r'Case:.*\s(?:</strong>)?([0-9\-]+)<')),
         (Fields.CRASHES, re.compile(r'Traffic Fatality #(\d{1,3})')),
-        (Fields.DATE, re.compile(r'>Date:.*\s{2,}([^<]*)</')),
-        (Fields.DECEASED, re.compile(r'>Deceased:.*\s{2,}([^<]*\d)\)?<')),
-        (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}([^<]+)')),
-        (Fields.TIME, re.compile(r'>Time:.*>\s{2,}([^<]+)')),
+        (Fields.DATE, re.compile(r'>Date:.*\s{2,}(?:</strong>)?([^<]*)</')),
+        (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
+        (Fields.LOCATION, re.compile(r'>Location:.*\s{2,}(?:</strong>)?([^<]+)')),
+        (Fields.TIME, re.compile(r'>Time:.*\s{2,}(?:</strong>)?([^<]+)')),
     ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
     for search in searches:
         match = re.search(search[1], normalized_detail_page)
         if match:
-            d[search[0]] = match.groups()[0]
+            d[search[0]] = match.groups()[0].strip()
 
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):

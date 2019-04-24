@@ -77,6 +77,7 @@ parse_page_content_scenarios = {
     'traffic-fatality-2-3': {
         **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
         Fields.AGE: 58,
+        Fields.CASE: '19-0161105',
         Fields.CRASHES: '2',
         Fields.DOB: '02/15/1960',
         Fields.DATE: '01/16/2019',
@@ -119,8 +120,7 @@ parse_page_content_scenarios = {
         Fields.AGE: 54,
     },
     'traffic-fatality-16-4': {
-        **parse_twitter_fields_scenarios['traffic-fatality-16-4'],
-        Fields.DOB: '01/15/1994',
+        **parse_twitter_fields_scenarios['traffic-fatality-16-4'], Fields.DOB: '01/15/1994',
         Fields.FIRST_NAME: 'Hannah',
         Fields.LAST_NAME: 'Jaggers',
         Fields.ETHNICITY: 'White',
@@ -281,6 +281,8 @@ def test_parse_page_content_00(filename, expected):
     actual = apd.parse_page_content(page)
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
+    print(actual)
+    print(expected)
     assert actual == expected
 
 
