@@ -250,8 +250,6 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         'DOB: 01-01-99',
         {
             Fields.DOB: '01-01-99',
-            Fields.LAST_NAME: '',
-            Fields.FIRST_NAME: '',
         },
     ),
 ))
