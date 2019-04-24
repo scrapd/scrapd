@@ -8,7 +8,9 @@ import aiohttp
 from loguru import logger
 from lxml import html
 from datetime import datetime
-
+from tenacity import retry
+from tenacity import stop_after_attempt
+from tenacity import wait_exponential
 from scrapd.core.constant import Fields
 from scrapd.core import date_utils
 
@@ -16,6 +18,7 @@ APD_URL = 'http://austintexas.gov/department/news/296'
 PAGE_DETAILS_URL = 'http://austintexas.gov/'
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
 async def fetch_text(session, url, params=None):
     """
     Fetch the data from a URL as text.
@@ -36,8 +39,7 @@ async def fetch_text(session, url, params=None):
             aiohttp.http_exceptions.HttpProcessingError,
     ) as e:
         logger.error(f'aiohttp exception for {url} -> {e}')
-    except Exception as e:
-        logger.exception(f'non-aiohttp exception occured: {e}')
+        raise e
 
 
 async def fetch_news_page(session, page=1):
@@ -167,7 +169,7 @@ def parse_twitter_description(twitter_description):
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
+            d.update(parse_deceased_field(' '.join(d.get(Fields.DECEASED))))
         except ValueError as e:
             logger.trace(e)
     else:
@@ -266,20 +268,8 @@ def sanitize_fatality_entity(d):
 
     return d
 
-
 def dob_search(deceased_field, dob_tokens):
-    """
-    Look for D.O.B. information in deceased field string.
-
-    If it exists, return the index, else return -1.
-
-    :param list deceased_field: a list where each item is a word from the deceased field
-    :param list dob_tokens: tokens to search for date of birth information
-    :return: the index in the string of the date of birth
-    :rtype: int
-    """
-
-    dob_index = -1
+      dob_index = -1
     while dob_index < 0 and dob_tokens:
         dob_token = dob_tokens.pop()
         try:
@@ -290,6 +280,21 @@ def dob_search(deceased_field, dob_tokens):
             break
     return dob_index
 
+def parse_name(name):
+    """
+    Parse the victim's name.
+
+    :param list name: a list reprenting the deceased person's full name split on space characters
+    :return: a dictionary representing just the victim's first and last name
+    :rtype: dict
+    """
+    d = {}
+    try:
+        d["last"] = name[-1].replace(',', '')
+        d["first"] = name[0].replace(',', '')
+    except (IndexError, TypeError):
+        pass
+    return d
 
 def parse_deceased_field(deceased_field):
     """
@@ -331,13 +336,16 @@ def parse_deceased_field(deceased_field):
     # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
     # For example, there is no first name and last name.
     try:
-        d[Fields.GENDER] = fleg.pop().replace(',', '').replace('|', '').lower()
-        d[Fields.ETHNICITY] = fleg.pop().replace(',', '').replace('|', '')
-        d[Fields.LAST_NAME] = fleg.pop().replace(',', '').replace('|', '')
-        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '').replace('|', '')
+        d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
+        d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
     except IndexError:
         pass
 
+    name = parse_name(fleg)
+    if name.get("last"):
+        d[Fields.LAST_NAME] = name.get("last", '')
+    if name.get("first"):
+        d[Fields.FIRST_NAME] = name.get("first", '')
     return d
 
 
@@ -367,7 +375,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     # Parse the Deceased field.
     if d.get(Fields.DECEASED):
         try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED).split()))
+            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
         except ValueError as e:
             logger.trace(e)
     else:
@@ -465,7 +473,10 @@ async def async_retrieve(pages=-1, from_=None, to=None):
         while True:
             # Fetch the news page.
             logger.info(f'Fetching page {page}...')
-            news_page = await fetch_news_page(session, page)
+            try:
+                news_page = await fetch_news_page(session, page)
+            except Exception:
+                raise ValueError(f'Cannot retrieve news page #{page}.')
 
             # Looks for traffic fatality links.
             page_details_links = extract_traffic_fatalities_page_details_link(news_page)

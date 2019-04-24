@@ -10,6 +10,7 @@ loguru==0.2.4
 lxml==4.3.0
 pbr==5.1.1
 tabulate==0.8.2
+tenacity==5.0.4
 
 # TODO(remyg): These libraries are deprecated. Use a modern authentication method and remove them.
 oauth2client
