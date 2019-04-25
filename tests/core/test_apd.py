@@ -238,22 +238,69 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
 
 @pytest.mark.parametrize('deceased,expected', (
     ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
+        Fields.FIRST_NAME: "Rosbel",
         Fields.LAST_NAME: "Tamez",
-        Fields.FIRST_NAME: "Rosbel"
+        Fields.ETHNICITY: "Hispanic",
+        Fields.GENDER: "male",
+        Fields.DOB: '10/10/1954',
     }),
     ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
-        Fields.LAST_NAME: "Gonzales",
         Fields.FIRST_NAME: "Eva",
-        Fields.GENDER: 'f'
+        Fields.LAST_NAME: "Gonzales",
+        Fields.ETHNICITY: "White",
+        Fields.GENDER: 'female',
+        Fields.DOB: '01/22/1961',
     }),
     (
         'DOB: 01-01-99',
         {
-            Fields.DOB: '01-01-99',
+            Fields.DOB: '01/01/1999',
+        },
+    ),
+    (
+        'Wing Cheung Chou | Asian male | 08/01/1949',
+        {
+            Fields.FIRST_NAME: "Wing",
+            Fields.LAST_NAME: "Chou",
+            Fields.ETHNICITY: "Asian",
+            Fields.GENDER: "male",
+            Fields.DOB: '08/01/1949',
+        },
+    ),
+    (
+        'Christopher M Peterson W/M 10-8-1981',
+        {
+            Fields.FIRST_NAME: "Christopher",
+            Fields.LAST_NAME: "Peterson",
+            Fields.ETHNICITY: "White",
+            Fields.GENDER: "male",
+            Fields.DOB: '10/08/1981',
+        },
+    ),
+    (
+        'Luis Angel Tinoco, Hispanic male (11-12-07',
+        {
+            Fields.FIRST_NAME: "Luis",
+            Fields.LAST_NAME: "Tinoco",
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.DOB: '11/12/2007'
+        },
+    ),
+    (
+        'Ronnie Lee Hall, White male, 8-28-51',
+        {
+            Fields.FIRST_NAME: "Ronnie",
+            Fields.LAST_NAME: "Hall",
+            Fields.ETHNICITY: "White",
+            Fields.GENDER: "male",
+            Fields.DOB: '08/28/1951'
         },
     ),
 ))
-def test_parse_deceased_field(deceased, expected):
+def test_parse_deceased_field_00(deceased, expected):
+    """Ensure a deceased field is parsed correctly."""
+    d = {}
     d = apd.parse_deceased_field(deceased)
     for key in expected:
         assert d[key] == expected[key]
@@ -339,6 +386,14 @@ def test_parse_page_content_00(filename, expected):
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
+
+
+def test_parse_page_content_01(mocker):
+    """Ensure a `parse_deceased_field` exception is caught and does not propagate."""
+    page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
+    page = page_fd.read_text()
+    mocker.patch('scrapd.core.apd.parse_deceased_field', side_effect=ValueError)
+    apd.parse_page_content(page)
 
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_twitter_fields_scenarios.items()])

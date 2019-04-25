@@ -68,7 +68,6 @@ async def fetch_detail_page(session, url):
     :return: the page content.
     :rtype: str
     """
-
     return await fetch_text(session, url)
 
 
@@ -286,6 +285,28 @@ def parse_name(name):
     return d
 
 
+def dob_search(split_deceased_field):
+    """
+    Search for the DOB in a deceased field.
+
+    :param list split_deceased_field: a list representing the deceased field
+    :return: the DOB index within the split deceased field.
+    :rtype: int
+    """
+    dob_index = -1
+    dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
+    while dob_index < 0 and dob_tokens:
+        dob_token = dob_tokens.pop()
+        try:
+            dob_index = split_deceased_field.index(dob_token)
+        except ValueError:
+            pass
+        else:
+            break
+
+    return dob_index
+
+
 def parse_deceased_field(deceased_field):
     """
     Parse the deceased field.
@@ -297,35 +318,107 @@ def parse_deceased_field(deceased_field):
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
-    deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
-    dob_index = -1
-    dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
-    while dob_index < 0 and dob_tokens:
-        dob_token = dob_tokens.pop()
-        try:
-            dob_index = deceased_field.index(dob_token)
-        except ValueError:
-            pass
-        else:
-            break
+    # Try to parse the deceased fields when the fields are comma separated.
+    try:
+        return parse_comma_delimited_deceased_field(deceased_field)
+    except Exception:
+        pass
 
-    if dob_index < 0:
-        raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
+    # Try to parse the deceased fields when the fields are pipe separated.
+    try:
+        return parse_pipe_delimited_deceased_field(deceased_field)
+    except Exception:
+        pass
 
+    try:
+        return parse_space_delimited_deceased_field(deceased_field)
+    except Exception:
+        pass
+
+    raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
+
+
+def parse_comma_delimited_deceased_field(deceased_field):
+    """Parse deceased fields seperated with commas.
+
+    :param list split_deceased_field: a list representing the deceased field
+    :return: a dictionary representing the deceased field.
+    :rtype: dict
+    """
     d = {}
-    d[Fields.DOB] = deceased_field[dob_index + 1]
-    notes = deceased_field[dob_index + 2:]
+    split_deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
+    dob_index = dob_search(split_deceased_field)
+    if dob_index < 0:
+        raise ValueError(f'Cannot find DOB in the deceased field: {deceased_field}')
+    raw_dob = split_deceased_field[dob_index + 1]
+    validated_dob = date_utils.clean_date_string(raw_dob, True)
+    d[Fields.DOB] = validated_dob
+    notes = split_deceased_field[dob_index + 2:]
     if notes:
         d[Fields.NOTES] = ' '.join(notes)
 
     # `fleg` stands for First, Last, Ethnicity, Gender. It represents the info stored before the DOB.
-    fleg = deceased_field[:dob_index]
+    fleg = split_deceased_field[:dob_index]
+    d.update(parse_fleg(fleg))
+    return d
 
+
+def parse_pipe_delimited_deceased_field(deceased_field):
+    """
+    Parse deceased fields separated with pipes.
+
+    :param str deceased_field: the deceased field as a string.
+    :return: a dictionary representing the deceased field.
+    :rtype: dict
+    """
+    d = {}
+    split_deceased_field = deceased_field.split('|')
+    raw_dob = split_deceased_field[-1].strip()
+    d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
+
+    fleg = (split_deceased_field[0] + split_deceased_field[1]).split()
+    d.update(parse_fleg(fleg))
+    return d
+
+
+def parse_space_delimited_deceased_field(deceased_field):
+    """
+    Parse deceased fields separated with spaces.
+
+    :param str deceased_field: the deceased field as a string.
+    :return: a dictionary representing the deceased field.
+    :rtype: dict
+    """
+    d = {}
+    split_deceased_field = re.split(r' |/', deceased_field)
+    raw_dob = split_deceased_field[-1].strip()
+    d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
+
+    fleg = split_deceased_field[:-1]
+    d.update(parse_fleg(fleg))
+    return d
+
+
+def parse_fleg(fleg):
+    """
+    Parse FLEG.
+
+    :param list fleg: [description]
+    :return: [description]
+    :rtype: dict
+    """
     # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
-    # For example, there is no first name and last name.
+    d = {}
     try:
         d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
+        if d.get(Fields.GENDER) == 'f':
+            d[Fields.GENDER] = 'female'
+        elif d.get(Fields.GENDER) == 'm':
+            d[Fields.GENDER] = 'male'
+
         d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
+        if d.get(Fields.ETHNICITY) == 'W':
+            d[Fields.ETHNICITY] = 'White'
     except IndexError:
         pass
 
@@ -350,7 +443,7 @@ def parse_page_content(detail_page, notes_parsed=False):
         (Fields.CASE, re.compile(r'Case:.*\s([0-9\-]+)<')),
         (Fields.CRASHES, re.compile(r'Traffic Fatality #(\d{1,3})')),
         (Fields.DATE, re.compile(r'>Date:.*\s{2,}([^<]*)</')),
-        (Fields.DECEASED, re.compile(r'>Deceased:.*\s{2,}([^<]*\d)\)?<')),
+        (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}([^<]+)')),
         (Fields.TIME, re.compile(r'>Time:.*>\s{2,}([^<]+)')),
     ]
