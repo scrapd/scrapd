@@ -29,10 +29,20 @@ def test_parse_date_01():
         date_utils.parse_date('Not a date')
 
 
-@pytest.mark.parametrize('date, expected', [
-    ('Jan 10 2019', '01/10/2019'),
-    ('2019-01-10', '01/10/2019'),
+@pytest.mark.parametrize('date, dob, expected', [
+    ('Jan 10 2019', False, '01/10/2019'),
+    ('2019-01-10', False, '01/10/2019'),
+    ('10-10-54', True, '10/10/1954'),
 ])
-def test_clean_date_string_00(date, expected):
+def test_clean_date_string_00(date, dob, expected):
     """Ensure date string is properly formatted."""
-    assert date_utils.clean_date_string(date) == expected
+    assert date_utils.clean_date_string(date, dob) == expected
+
+
+@pytest.mark.parametrize('date, expected', [
+    (datetime.datetime(2019, 1, 10, 0, 0), datetime.datetime(2019, 1, 10, 0, 0)),
+    (datetime.datetime(2054, 10, 10, 0, 0), datetime.datetime(1954, 10, 10, 0, 0)),
+])
+def test_check_dob_00(date, expected):
+    """Ensure a DOB is valid."""
+    assert date_utils.check_dob(date) == expected

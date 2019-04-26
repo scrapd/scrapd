@@ -1,6 +1,9 @@
 """Test the APD module."""
-from loguru import logger
+from unittest import mock
+
+import aiohttp
 import asynctest
+from loguru import logger
 import pytest
 
 from scrapd.core import apd
@@ -129,32 +132,46 @@ parse_page_scenarios = {
 }
 
 
-def test_parse_twitter_title_00():
-    """Ensure the Twitter title gets parsed correct: """
-    actual = apd.parse_twitter_title(mock_data.twitter_title_00)
-    expected = {'Fatal crashes this year': '73'}
+@pytest.mark.parametrize('input_,expected', (
+    (
+        mock_data.twitter_title_00,
+        {
+            'Fatal crashes this year': '73'
+        },
+    ),
+    (None, {}),
+))
+def test_parse_twitter_title_00(input_, expected):
+    """Ensure the Twitter title gets parsed correct."""
+    actual = apd.parse_twitter_title(input_)
     assert actual == expected
 
 
-def test_parse_twitter_description_00():
+@pytest.mark.parametrize('input_,expected', (
+    (
+        mock_data.twitter_description_00,
+        {
+            'Case': '18-3640187',
+            'Date': '12/30/2018',
+            'Time': '2:24 a.m.',
+            'Location': '1400 E. Highway 71 eastbound',
+            'DOB': '02/09/1980',
+            'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
+            'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
+            'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
+            'and came to a stop north of the roadway.',
+            'Gender': 'male',
+            'Ethnicity': 'White',
+            'Last Name': 'Sabillon-Garcia',
+            'First Name': 'Corbin',
+            'Age': 38,
+        },
+    ),
+    (None, {}),
+))
+def test_parse_twitter_description_00(input_, expected):
     """Ensure the Twitter description gets parsed correctly."""
-    actual = apd.parse_twitter_description(mock_data.twitter_description_00)
-    expected = {
-        'Case': '18-3640187',
-        'Date': '12/30/2018',
-        'Time': '2:24 a.m.',
-        'Location': '1400 E. Highway 71 eastbound',
-        'DOB': '02/09/1980',
-        'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
-        'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
-        'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
-        'and came to a stop north of the roadway.',
-        'Gender': 'male',
-        'Ethnicity': 'White',
-        'Last Name': 'Sabillon-Garcia',
-        'First Name': 'Corbin',
-        'Age': 38,
-    }
+    actual = apd.parse_twitter_description(input_)
     assert actual == expected
 
 
@@ -219,6 +236,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     assert actual == expected
 
 
+<<<<<<< HEAD
 @pytest.mark.parametrize('deceased,expected', (
     ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
         Fields.LAST_NAME: "Tamez",
@@ -277,6 +295,112 @@ def test_parse_name(name, expected):
     assert parsed.get("last") == expected["last"]
 
 
+||||||| merged common ancestors
+=======
+@pytest.mark.parametrize('deceased,expected', (
+    ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
+        Fields.FIRST_NAME: "Rosbel",
+        Fields.LAST_NAME: "Tamez",
+        Fields.ETHNICITY: "Hispanic",
+        Fields.GENDER: "male",
+        Fields.DOB: '10/10/1954',
+    }),
+    ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
+        Fields.FIRST_NAME: "Eva",
+        Fields.LAST_NAME: "Gonzales",
+        Fields.ETHNICITY: "White",
+        Fields.GENDER: 'female',
+        Fields.DOB: '01/22/1961',
+    }),
+    (
+        'DOB: 01-01-99',
+        {
+            Fields.DOB: '01/01/1999',
+        },
+    ),
+    (
+        'Wing Cheung Chou | Asian male | 08/01/1949',
+        {
+            Fields.FIRST_NAME: "Wing",
+            Fields.LAST_NAME: "Chou",
+            Fields.ETHNICITY: "Asian",
+            Fields.GENDER: "male",
+            Fields.DOB: '08/01/1949',
+        },
+    ),
+    (
+        'Christopher M Peterson W/M 10-8-1981',
+        {
+            Fields.FIRST_NAME: "Christopher",
+            Fields.LAST_NAME: "Peterson",
+            Fields.ETHNICITY: "White",
+            Fields.GENDER: "male",
+            Fields.DOB: '10/08/1981',
+        },
+    ),
+    (
+        'Luis Angel Tinoco, Hispanic male (11-12-07',
+        {
+            Fields.FIRST_NAME: "Luis",
+            Fields.LAST_NAME: "Tinoco",
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.DOB: '11/12/2007'
+        },
+    ),
+    (
+        'Ronnie Lee Hall, White male, 8-28-51',
+        {
+            Fields.FIRST_NAME: "Ronnie",
+            Fields.LAST_NAME: "Hall",
+            Fields.ETHNICITY: "White",
+            Fields.GENDER: "male",
+            Fields.DOB: '08/28/1951'
+        },
+    ),
+))
+def test_parse_deceased_field_00(deceased, expected):
+    """Ensure a deceased field is parsed correctly."""
+    d = {}
+    d = apd.parse_deceased_field(deceased)
+    for key in expected:
+        assert d[key] == expected[key]
+
+
+@pytest.mark.parametrize('name,expected', (
+    (['Jonathan,', 'Garcia-Pineda,'], {
+        'first': 'Jonathan',
+        'last': 'Garcia-Pineda'
+    }),
+    (['Rosbel', '“Rudy”', 'Tamez'], {
+        'first': 'Rosbel',
+        'last': 'Tamez'
+    }),
+    (['Christopher', 'M', 'Peterson'], {
+        'first': 'Christopher',
+        'last': 'Peterson'
+    }),
+    (['David', 'Adam', 'Castro,'], {
+        'first': 'David',
+        'last': 'Castro'
+    }),
+    (['Delta', 'Olin,'], {
+        'first': 'Delta',
+        'last': 'Olin'
+    }),
+    (None, {
+        'first': None,
+        'last': None
+    }),
+))
+def test_parse_name(name, expected):
+    """Ensure parser finds the first and last name given the full name."""
+    parsed = apd.parse_name(name)
+    assert parsed.get("first") == expected["first"]
+    assert parsed.get("last") == expected["last"]
+
+
+>>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""
     news_page = """
@@ -326,6 +450,14 @@ def test_parse_page_content_00(filename, expected):
     assert actual == expected
 
 
+def test_parse_page_content_01(mocker):
+    """Ensure a `parse_deceased_field` exception is caught and does not propagate."""
+    page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
+    page = page_fd.read_text()
+    mocker.patch('scrapd.core.apd.parse_deceased_field', side_effect=ValueError)
+    apd.parse_page_content(page)
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_twitter_fields_scenarios.items()])
 def test_parse_twitter_fields_00(filename, expected):
     """Ensure information are properly extracted from the twitter fields on detail page."""
@@ -365,3 +497,43 @@ async def test_date_filtering_00(fake_details, fake_news):
     data, actual = await apd.async_retrieve(pages=-1, from_="2050-01-02", to="2050-01-03")
     assert actual == expected
     assert isinstance(data, list)
+
+
+@asynctest.patch(
+    "scrapd.core.apd.fetch_news_page",
+    side_effect=[load_test_page(page) for page in [
+        '296',
+        '296?page=1',
+        '296?page=27',
+    ]])
+@asynctest.patch(
+    "scrapd.core.apd.fetch_detail_page",
+    return_value=load_test_page('traffic-fatality-2-3'),
+)
+@pytest.mark.asyncio
+async def test_date_filtering_01(fake_details, fake_news):
+    """Ensure the date filtering do not fetch unnecessary data."""
+    data, _ = await apd.async_retrieve(pages=-5, from_="2019-01-02", to="2019-01-03")
+    assert isinstance(data, list)
+
+
+@pytest.mark.asyncio
+async def test_fetch_text_00():
+    """Ensure `fetch_text` retries several times."""
+    text = None
+    apd.fetch_text.retry.sleep = mock.Mock()
+    async with aiohttp.ClientSession() as session:
+        try:
+            text = await apd.fetch_text(session, 'fake_url')
+        except Exception:
+            pass
+    assert not text
+    assert apd.fetch_text.retry.statistics['attempt_number'] > 1
+
+
+@asynctest.patch("scrapd.core.apd.fetch_news_page", side_effect=ValueError)
+@pytest.mark.asyncio
+async def test_async_retrieve_00(fake_news):
+    """Ensure `async_retrieve` raises `ValueError` when `fetch_news_page` fails to retrieve data."""
+    with pytest.raises(ValueError):
+        _, _ = await apd.async_retrieve()
