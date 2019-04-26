@@ -440,12 +440,12 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     searches = [
-        (Fields.CASE, re.compile(r'Case:.*\s([0-9\-]+)<')),
+        (Fields.CASE, re.compile(r'Case:.*\s(?:</strong>)?([0-9\-]+)<')),
         (Fields.CRASHES, re.compile(r'Traffic Fatality #(\d{1,3})')),
-        (Fields.DATE, re.compile(r'>Date:.*\s{2,}([^<]*)</')),
+        (Fields.DATE, re.compile(r'>Date:.*\s{2,}(?:</strong>)?([^<]*)</')),
         (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
-        (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}([^<]+)')),
-        (Fields.TIME, re.compile(r'>Time:.*>\s{2,}([^<]+)')),
+        (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
+        (Fields.TIME, re.compile(r'>Time:.*>\s{2,}(?:</strong>)?([^<]+)')),
     ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
     for search in searches:

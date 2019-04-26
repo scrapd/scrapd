@@ -109,7 +109,7 @@ venv/bin/activate: requirements.txt
 		&& pip install -e .
 	echo "[ -f $(VENV_BIN)/postactivate ] && . $(VENV_BIN)/postactivate" >> $(VENV_BIN)/activate
 	echo "export PYTHONBREAKPOINT=bpdb.set_trace" > $(VENV_BIN)/postactivate
-	echo "source contrib/scrapd-complete.sh" > $(VENV_BIN)/postactivate
+	echo "source contrib/scrapd-complete.sh" >> $(VENV_BIN)/postactivate
 	echo "unset PYTHONBREAKPOINT" > $(VENV_BIN)/predeactivate
 
 .PHONY: wheel
