@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix gender value mix character cases.
 - Fix `fetch_text()` by adding retry ability with exponential backoff. [#85]
 - Fix incorrect name parsing when a nickname or a middle name was specified. [#84]
+- Fix and improve the `Deceased` field parsing. The parser now supports pipe and space delimited fields. [#90]
 
 ## [[1.5.0]] - 2019-03-19
 
@@ -116,3 +117,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#66]: https://github.com/scrapd/scrapd/pull/66
 [#84]: https://github.com/scrapd/scrapd/pull/84
 [#85]: https://github.com/scrapd/scrapd/pull/85
+[#90]: https://github.com/scrapd/scrapd/pull/90
