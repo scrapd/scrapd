@@ -174,13 +174,13 @@ rate**.
 
 Some statistics:
 
-* 141 entries in total
 * **100% of entries detected**
-* 128 entries correctly parsed (90%)
+* 95% of entries correctly parsed
 
-  * 13 entries failed the parsing at least partially
+  * 5% of entries failed the parsing only **partially**
+  * 0 complete failure
 
-* processing time: ~1m00s
+* processing time: ~2m00s for ~140 entries
 
 Who uses ScrAPD?
 ----------------
@@ -195,3 +195,5 @@ Related resources
 
 * The Statesman published an article about `pedestrian deaths reaching a record high level in 2018
   <https://www.statesman.com/news/20190215/pedestrian-deaths-reached-record-levels-in-2018-police-data-show>`_.
+* NPR's view on the same subject `Pedestrian Deaths Reach Highest Level In Decades
+  <https://www.npr.org/2019/02/28/699195211/pedestrian-deaths-reach-highest-level-in-decades-report-says>`_

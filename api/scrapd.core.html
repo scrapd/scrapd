@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>scrapd.core package &#8212; scrapd 1.5.0 documentation</title>
+    <title>scrapd.core package &#8212; scrapd 1.5.1 documentation</title>
     <link rel="stylesheet" href="../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -43,6 +43,24 @@
 <dt id="scrapd.core.apd.async_retrieve">
 <code class="descclassname">scrapd.core.apd.</code><code class="descname">async_retrieve</code><span class="sig-paren">(</span><em>pages=-1</em>, <em>from_=None</em>, <em>to=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#async_retrieve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.async_retrieve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve fatality data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.apd.dob_search">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">dob_search</code><span class="sig-paren">(</span><em>split_deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#dob_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.dob_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search for the DOB in a deceased field.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>split_deceased_field</strong> (<em>list</em>) – a list representing the deceased field</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the DOB index within the split deceased field.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -198,6 +216,24 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="scrapd.core.apd.parse_comma_delimited_deceased_field">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_comma_delimited_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_comma_delimited_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_comma_delimited_deceased_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse deceased fields seperated with commas.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>split_deceased_field</strong> (<em>list</em>) – a list representing the deceased field</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dictionary representing the deceased field.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="scrapd.core.apd.parse_deceased_field">
 <code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_deceased_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the deceased field.</p>
@@ -207,7 +243,7 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deceased_field</strong> (<em>list</em>) – a list where each item is a word from the deceased field</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deceased_field</strong> (<em>str</em>) – the deceased field from the fatality report</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dictionary representing a deceased field.</td>
 </tr>
@@ -239,6 +275,42 @@ a perfectly parsed sentence as the HTML syntax varies widely.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="scrapd.core.apd.parse_fleg">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_fleg</code><span class="sig-paren">(</span><em>fleg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_fleg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_fleg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse FLEG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fleg</strong> (<em>list</em>) – [description]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[description]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.apd.parse_name">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the victim’s name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>list</em>) – a list reprenting the deceased person’s full name split on space characters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dictionary representing just the victim’s first and last name</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="scrapd.core.apd.parse_page">
 <code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_page</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_page" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the page using all parsing methods available.</p>
@@ -263,6 +335,42 @@ a perfectly parsed sentence as the HTML syntax varies widely.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>news_page</strong> (<em>str</em>) – the content of the fatality page</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dictionary representing a fatality.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.apd.parse_pipe_delimited_deceased_field">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_pipe_delimited_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_pipe_delimited_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_pipe_delimited_deceased_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse deceased fields separated with pipes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deceased_field</strong> (<em>str</em>) – the deceased field as a string.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dictionary representing the deceased field.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.apd.parse_space_delimited_deceased_field">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_space_delimited_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_space_delimited_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_space_delimited_deceased_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse deceased fields separated with spaces.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deceased_field</strong> (<em>str</em>) – the deceased field as a string.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dictionary representing the deceased field.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
 </tr>
