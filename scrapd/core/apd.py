@@ -452,8 +452,6 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     searches = [
-        (Fields.CASE, re.compile(r'Case:.*\s(?:</strong>)?([0-9\-]+)<')),
-        (Fields.CRASHES, re.compile(r'Traffic Fatality #(\d{1,3})')),
         (Fields.DATE, re.compile(r'>Date:.*\s{2,}(?:</strong>)?([^<]*)</')),
         (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
@@ -467,6 +465,9 @@ def parse_page_content(detail_page, notes_parsed=False):
 
     # Parse the `Case` field.
     d[Fields.CASE] = parse_case_field(normalized_detail_page)
+
+    # Parse the `Crashes` field.
+    d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
 
     # Parse the `Deceased` field.
     if d.get(Fields.DECEASED):
@@ -510,8 +511,33 @@ def parse_case_field(page):
         ''',
         re.VERBOSE,
     )
-    match = re.search(case_pattern, page)
-    return match.groups()[0] if match else ''
+    return match_pattern(page, case_pattern)
+
+
+def parse_crashes_field(page):
+    """
+    Extract the crash number from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the crash number.
+    :rtype: str
+    """
+    crashes_pattern = re.compile(r'Traffic Fatality #(\d{1,3})')
+    return match_pattern(page, crashes_pattern)
+
+
+def match_pattern(text, pattern, group_number=0):
+    """
+    Match a pattern.
+
+    :param str text: the text to match the pattern against
+    :param compiled regex pattern: the pattern to look for
+    :param int group_number: the capturing group number
+    :return: a string representing the captured group.
+    :rtype: str
+    """
+    match = re.search(pattern, text)
+    return match.groups()[group_number] if match else ''
 
 
 def parse_twitter_fields(page):
