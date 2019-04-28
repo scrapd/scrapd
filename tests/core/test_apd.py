@@ -475,3 +475,18 @@ async def test_async_retrieve_00(fake_news):
     """Ensure `async_retrieve` raises `ValueError` when `fetch_news_page` fails to retrieve data."""
     with pytest.raises(ValueError):
         _, _ = await apd.async_retrieve()
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('<p><strong>Case:         </strong>19-0881844</p>', '19-0881844'),
+    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
+    ('<strong>Case:</strong></span><span style="color: rgb(32, 32, 32); '
+     'font-family: &quot;Verdana&quot;,sans-serif; font-size: 10.5pt; '
+     'mso-fareast-font-family: &quot;Times New Roman&quot;; '
+     'mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA; '
+     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
+))
+def test_parse_case_field_00(input_, expected):
+    """Ensure a case field gets parsed correctly."""
+    actual = apd.parse_case_field(input_)
+    assert actual == expected

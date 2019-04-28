@@ -452,7 +452,11 @@ def parse_page_content(detail_page, notes_parsed=False):
         match = re.search(search[1], normalized_detail_page)
         if match:
             d[search[0]] = match.groups()[0]
-    # Parse the Deceased field.
+
+    # Parse the `Case` field.
+    d[Fields.CASE] = parse_case_field(normalized_detail_page)
+
+    # Parse the `Deceased` field.
     if d.get(Fields.DECEASED):
         try:
             d.update(parse_deceased_field(d.get(Fields.DECEASED)))
@@ -473,6 +477,29 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
 
     return sanitize_fatality_entity(d)
+
+
+def parse_case_field(page):
+    """
+    Extract the case number from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the case number.
+    :rtype: str
+    """
+    case_pattern = re.compile(
+        r'''
+        Case:           # The name of the field we are looking for.
+        .*              # Some times ther are characters
+        \s              # or spaces
+        (?:</strong>)?  # or even some HTML style keywords before the case number.
+        ([0-9\-]+)      # This is the number we are looking for.
+        <               # It is immediately followed by and HTML tag, usually a <br /> or a </p>.
+        ''',
+        re.VERBOSE,
+    )
+    match = re.search(case_pattern, page)
+    return match.groups()[0] if match else ''
 
 
 def parse_twitter_fields(page):
