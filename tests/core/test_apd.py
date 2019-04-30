@@ -396,6 +396,12 @@ def test_parse_page_content_01(mocker):
     apd.parse_page_content(page)
 
 
+def test_parse_page_content_02():
+    """Ensure a missing case number raises an exception."""
+    with pytest.raises(ValueError):
+        apd.parse_page_content('The is no case number here.')
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_twitter_fields_scenarios.items()])
 def test_parse_twitter_fields_00(filename, expected):
     """Ensure information are properly extracted from the twitter fields on detail page."""
@@ -474,7 +480,7 @@ async def test_fetch_text_00():
 async def test_async_retrieve_00(fake_news):
     """Ensure `async_retrieve` raises `ValueError` when `fetch_news_page` fails to retrieve data."""
     with pytest.raises(ValueError):
-        _, _ = await apd.async_retrieve()
+        await apd.async_retrieve()
 
 
 @pytest.mark.parametrize('input_,expected', (
@@ -485,6 +491,8 @@ async def test_async_retrieve_00(fake_news):
      'mso-fareast-font-family: &quot;Times New Roman&quot;; '
      'mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA; '
      'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
+    ('<p><strong>Case:</strong>            18-1591949 </p>', '18-1591949'),
+    ('<p><strong>Case:</strong>            18-590287<br />', '18-590287'),
 ))
 def test_parse_case_field_00(input_, expected):
     """Ensure a case field gets parsed correctly."""
