@@ -212,10 +212,9 @@ parse_details_page_notes_scenarios = [
 ]
 
 
-@pytest.mark.parametrize(
-    'input_,expected',
-    scenario_inputs(parse_details_page_notes_scenarios),
-    ids=scenario_ids(parse_details_page_notes_scenarios))
+@pytest.mark.parametrize('input_,expected',
+                         scenario_inputs(parse_details_page_notes_scenarios),
+                         ids=scenario_ids(parse_details_page_notes_scenarios))
 def test_parse_details_page_notes_01(input_, expected):
     """Ensure details page notes parsed correctly."""
     actual = apd.parse_details_page_notes(input_)
@@ -423,13 +422,12 @@ def test_parse_page_00(filename, expected):
     assert actual == expected
 
 
-@asynctest.patch(
-    "scrapd.core.apd.fetch_news_page",
-    side_effect=[load_test_page(page) for page in [
-        '296',
-        '296?page=1',
-        '296?page=27',
-    ]])
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in [
+                     '296',
+                     '296?page=1',
+                     '296?page=27',
+                 ]])
 @asynctest.patch(
     "scrapd.core.apd.fetch_detail_page",
     return_value=load_test_page('traffic-fatality-2-3'),
@@ -443,13 +441,12 @@ async def test_date_filtering_00(fake_details, fake_news):
     assert isinstance(data, list)
 
 
-@asynctest.patch(
-    "scrapd.core.apd.fetch_news_page",
-    side_effect=[load_test_page(page) for page in [
-        '296',
-        '296?page=1',
-        '296?page=27',
-    ]])
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in [
+                     '296',
+                     '296?page=1',
+                     '296?page=27',
+                 ]])
 @asynctest.patch(
     "scrapd.core.apd.fetch_detail_page",
     return_value=load_test_page('traffic-fatality-2-3'),
@@ -497,4 +494,12 @@ async def test_async_retrieve_00(fake_news):
 def test_parse_case_field_00(input_, expected):
     """Ensure a case field gets parsed correctly."""
     actual = apd.parse_case_field(input_)
+
+
+@pytest.mark.parametrize(
+    'input_, expected',
+    (('<span property="dc:title" content="Traffic Fatality #12" class="rdf-meta element-hidden"></span>', '12'), ))
+def test_parse_crashes_field_00(input_, expected):
+    """Ensure the crashes field gets parsed correctly."""
+    actual = apd.parse_crashes_field(input_)
     assert actual == expected

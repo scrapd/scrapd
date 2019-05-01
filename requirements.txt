@@ -1,15 +1,15 @@
 aiohttp==3.5.4
-anyconfig==0.9.8
+anyconfig==0.9.9
 click==7.0
-dateparser==0.7.0
+dateparser==0.7.1
 google-api-python-client==1.7.8
 google-auth-httplib2==0.0.3
 google-auth-oauthlib==0.2.0
 gspread==3.1.0
-loguru==0.2.4
-lxml==4.3.0
-pbr==5.1.1
-tabulate==0.8.2
+loguru==0.2.5
+lxml==4.3.3
+pbr==5.2.0
+tabulate==0.8.3
 tenacity==5.0.4
 
 # TODO(remyg): These libraries are deprecated. Use a modern authentication method and remove them.
