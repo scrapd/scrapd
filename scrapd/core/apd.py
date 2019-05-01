@@ -592,7 +592,6 @@ async def fetch_and_parse(session, url):
     :rtype: dict
     """
     # Retrieve the page.
-    # page = await fetch_text(session, url)
     page = await fetch_detail_page(session, url)
     if not page:
         raise ValueError(f'The URL {url} returned a 0-length content.')
