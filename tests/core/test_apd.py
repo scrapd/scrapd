@@ -489,4 +489,12 @@ async def test_async_retrieve_00(fake_news):
 def test_parse_case_field_00(input_, expected):
     """Ensure a case field gets parsed correctly."""
     actual = apd.parse_case_field(input_)
+
+
+@pytest.mark.parametrize(
+    'input_, expected',
+    (('<span property="dc:title" content="Traffic Fatality #12" class="rdf-meta element-hidden"></span>', '12'), ))
+def test_parse_crashes_field_00(input_, expected):
+    """Ensure the crashes field gets parsed correctly."""
+    actual = apd.parse_crashes_field(input_)
     assert actual == expected
