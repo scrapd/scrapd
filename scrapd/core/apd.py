@@ -465,6 +465,8 @@ def parse_page_content(detail_page, notes_parsed=False):
 
     # Parse the `Case` field.
     d[Fields.CASE] = parse_case_field(normalized_detail_page)
+    if not d.get(Fields.CASE):
+        raise ValueError('A case number is mandatory.')
 
     # Parse the `Crashes` field.
     d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
@@ -503,11 +505,8 @@ def parse_case_field(page):
     case_pattern = re.compile(
         r'''
         Case:           # The name of the field we are looking for.
-        .*              # Some times ther are characters
-        \s              # or spaces
-        (?:</strong>)?  # or even some HTML style keywords before the case number.
-        ([0-9\-]+)      # This is the number we are looking for.
-        <               # It is immediately followed by and HTML tag, usually a <br /> or a </p>.
+        .*              # Any character.
+        (\d{2}-\d{6,7}) # The case the number we are looking for.
         ''',
         re.VERBOSE,
     )
