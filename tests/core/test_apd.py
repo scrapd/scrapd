@@ -5,6 +5,8 @@ import aiohttp
 import asynctest
 from loguru import logger
 import pytest
+from tenacity import RetryError
+from tenacity import stop_after_attempt
 
 from scrapd.core import apd
 from scrapd.core.constant import Fields
@@ -495,3 +497,22 @@ def test_parse_crashes_field_00(input_, expected):
     """Ensure the crashes field gets parsed correctly."""
     actual = apd.parse_crashes_field(input_)
     assert actual == expected
+
+
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='')
+@pytest.mark.asyncio
+async def test_fetch_and_parse_00(empty_page):
+    """Ensure an empty page raises an exception."""
+    with pytest.raises(RetryError):
+        apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
+        await apd.fetch_and_parse(None, 'url')
+
+
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='Not empty page')
+@pytest.mark.asyncio
+async def test_fetch_and_parse_01(page, mocker):
+    """Ensure an empty page raises an exception."""
+    mocker.patch("scrapd.core.apd.parse_page", return_value={})
+    with pytest.raises(RetryError):
+        apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
+        await apd.fetch_and_parse(None, 'url')

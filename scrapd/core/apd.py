@@ -582,6 +582,7 @@ def parse_page(page):
     return d
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
@@ -594,9 +595,13 @@ async def fetch_and_parse(session, url):
     # Retrieve the page.
     # page = await fetch_text(session, url)
     page = await fetch_detail_page(session, url)
+    if not page:
+        raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
     d = parse_page(page)
+    if not d:
+        raise ValueError(f'No data could be extracted from the page {url}.')
 
     # Add the link.
     d[Fields.LINK] = url
