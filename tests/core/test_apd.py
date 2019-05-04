@@ -5,6 +5,8 @@ import aiohttp
 import asynctest
 from loguru import logger
 import pytest
+from tenacity import RetryError
+from tenacity import stop_after_attempt
 
 from scrapd.core import apd
 from scrapd.core.constant import Fields
@@ -212,10 +214,9 @@ parse_details_page_notes_scenarios = [
 ]
 
 
-@pytest.mark.parametrize(
-    'input_,expected',
-    scenario_inputs(parse_details_page_notes_scenarios),
-    ids=scenario_ids(parse_details_page_notes_scenarios))
+@pytest.mark.parametrize('input_,expected',
+                         scenario_inputs(parse_details_page_notes_scenarios),
+                         ids=scenario_ids(parse_details_page_notes_scenarios))
 def test_parse_details_page_notes_01(input_, expected):
     """Ensure details page notes parsed correctly."""
     actual = apd.parse_details_page_notes(input_)
@@ -396,6 +397,12 @@ def test_parse_page_content_01(mocker):
     apd.parse_page_content(page)
 
 
+def test_parse_page_content_02():
+    """Ensure a missing case number raises an exception."""
+    with pytest.raises(ValueError):
+        apd.parse_page_content('The is no case number here.')
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_twitter_fields_scenarios.items()])
 def test_parse_twitter_fields_00(filename, expected):
     """Ensure information are properly extracted from the twitter fields on detail page."""
@@ -417,13 +424,12 @@ def test_parse_page_00(filename, expected):
     assert actual == expected
 
 
-@asynctest.patch(
-    "scrapd.core.apd.fetch_news_page",
-    side_effect=[load_test_page(page) for page in [
-        '296',
-        '296?page=1',
-        '296?page=27',
-    ]])
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in [
+                     '296',
+                     '296?page=1',
+                     '296?page=27',
+                 ]])
 @asynctest.patch(
     "scrapd.core.apd.fetch_detail_page",
     return_value=load_test_page('traffic-fatality-2-3'),
@@ -437,13 +443,12 @@ async def test_date_filtering_00(fake_details, fake_news):
     assert isinstance(data, list)
 
 
-@asynctest.patch(
-    "scrapd.core.apd.fetch_news_page",
-    side_effect=[load_test_page(page) for page in [
-        '296',
-        '296?page=1',
-        '296?page=27',
-    ]])
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in [
+                     '296',
+                     '296?page=1',
+                     '296?page=27',
+                 ]])
 @asynctest.patch(
     "scrapd.core.apd.fetch_detail_page",
     return_value=load_test_page('traffic-fatality-2-3'),
@@ -474,4 +479,48 @@ async def test_fetch_text_00():
 async def test_async_retrieve_00(fake_news):
     """Ensure `async_retrieve` raises `ValueError` when `fetch_news_page` fails to retrieve data."""
     with pytest.raises(ValueError):
-        _, _ = await apd.async_retrieve()
+        await apd.async_retrieve()
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('<p><strong>Case:         </strong>19-0881844</p>', '19-0881844'),
+    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
+    ('<strong>Case:</strong></span><span style="color: rgb(32, 32, 32); '
+     'font-family: &quot;Verdana&quot;,sans-serif; font-size: 10.5pt; '
+     'mso-fareast-font-family: &quot;Times New Roman&quot;; '
+     'mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA; '
+     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
+    ('<p><strong>Case:</strong>            18-1591949 </p>', '18-1591949'),
+    ('<p><strong>Case:</strong>            18-590287<br />', '18-590287'),
+))
+def test_parse_case_field_00(input_, expected):
+    """Ensure a case field gets parsed correctly."""
+    actual = apd.parse_case_field(input_)
+
+
+@pytest.mark.parametrize(
+    'input_, expected',
+    (('<span property="dc:title" content="Traffic Fatality #12" class="rdf-meta element-hidden"></span>', '12'), ))
+def test_parse_crashes_field_00(input_, expected):
+    """Ensure the crashes field gets parsed correctly."""
+    actual = apd.parse_crashes_field(input_)
+    assert actual == expected
+
+
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='')
+@pytest.mark.asyncio
+async def test_fetch_and_parse_00(empty_page):
+    """Ensure an empty page raises an exception."""
+    with pytest.raises(RetryError):
+        apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
+        await apd.fetch_and_parse(None, 'url')
+
+
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='Not empty page')
+@pytest.mark.asyncio
+async def test_fetch_and_parse_01(page, mocker):
+    """Ensure an empty page raises an exception."""
+    mocker.patch("scrapd.core.apd.parse_page", return_value={})
+    with pytest.raises(RetryError):
+        apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
+        await apd.fetch_and_parse(None, 'url')

@@ -330,6 +330,7 @@ def parse_deceased_field(deceased_field):
     except Exception:
         pass
 
+    # Try to parse the deceased fields when the fields are space separated.
     try:
         return parse_space_delimited_deceased_field(deceased_field)
     except Exception:
@@ -339,27 +340,29 @@ def parse_deceased_field(deceased_field):
 
 
 def parse_comma_delimited_deceased_field(deceased_field):
-    """Parse deceased fields seperated with commas.
+    """
+    Parse deceased fields seperated with commas.
 
     :param list split_deceased_field: a list representing the deceased field
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
-    d = {}
     split_deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
+
+    # Find the DOB token as we use it as a delimiter.
     dob_index = dob_search(split_deceased_field)
     if dob_index < 0:
         raise ValueError(f'Cannot find DOB in the deceased field: {deceased_field}')
     raw_dob = split_deceased_field[dob_index + 1]
-    validated_dob = date_utils.clean_date_string(raw_dob, True)
-    d[Fields.DOB] = validated_dob
+
+    # Parse the field.
+    fleg = split_deceased_field[:dob_index]
+    d = parse_deceased_field_common([raw_dob], fleg)
+
+    # Add the notes.
     notes = split_deceased_field[dob_index + 2:]
     if notes:
         d[Fields.NOTES] = ' '.join(notes)
-
-    # `fleg` stands for First, Last, Ethnicity, Gender. It represents the info stored before the DOB.
-    fleg = split_deceased_field[:dob_index]
-    d.update(parse_fleg(fleg))
     return d
 
 
@@ -371,14 +374,9 @@ def parse_pipe_delimited_deceased_field(deceased_field):
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
-    d = {}
     split_deceased_field = deceased_field.split('|')
-    raw_dob = split_deceased_field[-1].strip()
-    d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
-
     fleg = (split_deceased_field[0] + split_deceased_field[1]).split()
-    d.update(parse_fleg(fleg))
-    return d
+    return parse_deceased_field_common(split_deceased_field, fleg)
 
 
 def parse_space_delimited_deceased_field(deceased_field):
@@ -389,25 +387,39 @@ def parse_space_delimited_deceased_field(deceased_field):
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
-    d = {}
     split_deceased_field = re.split(r' |/', deceased_field)
+    fleg = split_deceased_field[:-1]
+    return parse_deceased_field_common(split_deceased_field, fleg)
+
+
+def parse_deceased_field_common(split_deceased_field, fleg):
+    """
+    Parse the deceased field.
+
+    :param list split_deceased_field: [description]
+    :param dict fleg: a dictionary containing First, Last, Ethnicity, Gender fields
+    :return: a dictionary representing the deceased field.
+    :rtype: dict
+    """
+    # Populate FLEG.
+    d = parse_fleg(fleg)
+
+    # Extract and clean up DOB.
     raw_dob = split_deceased_field[-1].strip()
     d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
 
-    fleg = split_deceased_field[:-1]
-    d.update(parse_fleg(fleg))
     return d
 
 
 def parse_fleg(fleg):
     """
-    Parse FLEG.
+    Parse FLEG. `fleg` stands for First, Last, Ethnicity, Gender.
 
-    :param list fleg: [description]
-    :return: [description]
+    :param list fleg: values representing the fleg.
+    :return: a dictionary containing First, Last, Ethnicity, Gender fields
     :rtype: dict
     """
-    # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
+    # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve.
     d = {}
     try:
         d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
@@ -440,8 +452,6 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     searches = [
-        (Fields.CASE, re.compile(r'Case:.*\s(?:</strong>)?([0-9\-]+)<')),
-        (Fields.CRASHES, re.compile(r'Traffic Fatality #(\d{1,3})')),
         (Fields.DATE, re.compile(r'>Date:.*\s{2,}(?:</strong>)?([^<]*)</')),
         (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
@@ -452,7 +462,16 @@ def parse_page_content(detail_page, notes_parsed=False):
         match = re.search(search[1], normalized_detail_page)
         if match:
             d[search[0]] = match.groups()[0]
-    # Parse the Deceased field.
+
+    # Parse the `Case` field.
+    d[Fields.CASE] = parse_case_field(normalized_detail_page)
+    if not d.get(Fields.CASE):
+        raise ValueError('A case number is mandatory.')
+
+    # Parse the `Crashes` field.
+    d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
+
+    # Parse the `Deceased` field.
     if d.get(Fields.DECEASED):
         try:
             d.update(parse_deceased_field(d.get(Fields.DECEASED)))
@@ -473,6 +492,51 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
 
     return sanitize_fatality_entity(d)
+
+
+def parse_case_field(page):
+    """
+    Extract the case number from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the case number.
+    :rtype: str
+    """
+    case_pattern = re.compile(
+        r'''
+        Case:           # The name of the field we are looking for.
+        .*              # Any character.
+        (\d{2}-\d{6,7}) # The case the number we are looking for.
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, case_pattern)
+
+
+def parse_crashes_field(page):
+    """
+    Extract the crash number from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the crash number.
+    :rtype: str
+    """
+    crashes_pattern = re.compile(r'Traffic Fatality #(\d{1,3})')
+    return match_pattern(page, crashes_pattern)
+
+
+def match_pattern(text, pattern, group_number=0):
+    """
+    Match a pattern.
+
+    :param str text: the text to match the pattern against
+    :param compiled regex pattern: the pattern to look for
+    :param int group_number: the capturing group number
+    :return: a string representing the captured group.
+    :rtype: str
+    """
+    match = re.search(pattern, text)
+    return match.groups()[group_number] if match else ''
 
 
 def parse_twitter_fields(page):
@@ -517,6 +581,7 @@ def parse_page(page):
     return d
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
@@ -529,9 +594,13 @@ async def fetch_and_parse(session, url):
     # Retrieve the page.
     # page = await fetch_text(session, url)
     page = await fetch_detail_page(session, url)
+    if not page:
+        raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
     d = parse_page(page)
+    if not d:
+        raise ValueError(f'No data could be extracted from the page {url}.')
 
     # Add the link.
     d[Fields.LINK] = url
