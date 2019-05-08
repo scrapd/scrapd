@@ -382,6 +382,17 @@ def test_has_next_01():
     assert apd.has_next(None) is False
 
 
+@pytest.mark.parametrize(
+    'input_,expected',
+    (('<div class="item-list"><ul class="pager"><li class="pager-previous first">&nbsp;</li>'
+      '<li class="pager-current">1 of 27</li>'
+      '<li class="pager-next last"><a title="Go to next page" href="/department/news/296?page=1">next ›</a></li>'
+      '</ul></div>', True), ))
+def test_has_next_02(input_, expected):
+    """Ensure we detect whether there are more news pages."""
+    assert apd.has_next(input_) == expected
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_content_scenarios.items()])
 def test_parse_page_content_00(filename, expected):
     """Ensure information are properly extracted from the content detail page.
@@ -574,3 +585,24 @@ async def test_fetch_detail_page_00(fetch_text):
         except Exception:
             pass
     fetch_text.assert_called_once_with(session, url)
+
+
+@pytest.mark.parametrize('input_,expected',
+                         (('<meta name="twitter:title" content="Traffic Fatality #2" />', 'Traffic Fatality #2'), ))
+def test_extract_twitter_tittle_meta_00(input_, expected):
+    """Ensure we can extract the twitter tittle from the meta tag."""
+    actual = apd.extract_twitter_tittle_meta(input_)
+    assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('<meta name="twitter:description" content="Case:           18-3551763 Date:            December 21, 2018 '
+     'Time:            8:20 p.m. Location:     9500 N Mopac SB" />',
+     'Case:           18-3551763 Date:            December 21, 2018 Time:            8:20 p.m. '
+     'Location:     9500 N Mopac SB'),
+    ('<meta name="twitter:description" content="Case:           19-0161105" />', 'Case:           19-0161105'),
+))
+def test_extract_twitter_description_meta_00(input_, expected):
+    """Ensure we can extract the twitter tittle from the meta tag."""
+    actual = apd.extract_twitter_description_meta(input_)
+    assert actual == expected
