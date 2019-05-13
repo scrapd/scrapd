@@ -4,6 +4,7 @@ import re
 import unicodedata
 from urllib.parse import urljoin
 
+import dateparser
 import aiohttp
 from loguru import logger
 from tenacity import retry
@@ -315,6 +316,22 @@ def dob_search(split_deceased_field):
 
     return dob_index
 
+def get_best_delimiter(deceased_field):
+    """
+    Among parsing options for deceased field, select the most likely.
+
+    At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
+    Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
+
+    :param str deceased: the deceased fields from the fatality report parsed with possible delimiters
+    :return: a str representing the most likely delimiter
+    :rtype: str
+    """
+    if '|' in deceased_field:
+        return '|'
+    if deceased_field.count(',') < 2:
+        return ' '
+    return ','
 
 def parse_deceased_field(deceased_field):
     """
@@ -327,21 +344,16 @@ def parse_deceased_field(deceased_field):
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
-    # Try to parse the deceased fields when the fields are comma separated.
-    try:
-        return parse_comma_delimited_deceased_field(deceased_field)
-    except Exception:
-        pass
 
-    # Try to parse the deceased fields when the fields are pipe separated.
-    try:
-        return parse_pipe_delimited_deceased_field(deceased_field)
-    except Exception:
-        pass
+    delim = get_best_delimiter(deceased_field)
 
-    # Try to parse the deceased fields when the fields are space separated.
     try:
-        return parse_space_delimited_deceased_field(deceased_field)
+        if delim == ',':
+            return parse_comma_delimited_deceased_field(deceased_field)
+        if delim == '|':
+            return parse_pipe_delimited_deceased_field(deceased_field)
+        if delim == ' ':
+            return parse_space_delimited_deceased_field(deceased_field)
     except Exception:
         pass
 
@@ -361,7 +373,11 @@ def parse_comma_delimited_deceased_field(deceased_field):
     # Find the DOB token as we use it as a delimiter.
     dob_index = dob_search(split_deceased_field)
     if dob_index < 0:
-        raise ValueError(f'Cannot find DOB in the deceased field: {deceased_field}')
+        if dateparser.parse(split_deceased_field[-1]) is None:
+            raise ValueError(f'Cannot find DOB in the deceased field: {deceased_field}')
+        fleg = split_deceased_field[:-1]
+        return parse_deceased_field_common(split_deceased_field, fleg)
+
     raw_dob = split_deceased_field[dob_index + 1]
 
     # Parse the field.
