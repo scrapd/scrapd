@@ -386,7 +386,7 @@ def test_has_next_01():
     'input_,expected',
     (('<div class="item-list"><ul class="pager"><li class="pager-previous first">&nbsp;</li>'
       '<li class="pager-current">1 of 27</li>'
-      '<li class="pager-next last"><a title="Go to next page" href="/department/news/296?page=1">next ›</a></li>'
+      '<li class="pager-next last"><a title="Go to next page" href="/department/news/296-page=1">next ›</a></li>'
       '</ul></div>', True), ))
 def test_has_next_02(input_, expected):
     """Ensure we detect whether there are more news pages."""
@@ -448,7 +448,7 @@ def test_parse_page_00(filename, expected):
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
-                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+                 side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
 @asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('traffic-fatality-2-3'))
 @pytest.mark.asyncio
 async def test_date_filtering_00(fake_details, fake_news):
@@ -460,7 +460,7 @@ async def test_date_filtering_00(fake_details, fake_news):
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
-                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+                 side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
 @asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('traffic-fatality-2-3'))
 @pytest.mark.asyncio
 async def test_date_filtering_01(fake_details, fake_news):
@@ -470,7 +470,7 @@ async def test_date_filtering_01(fake_details, fake_news):
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
-                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+                 side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
 @asynctest.patch(
     "scrapd.core.apd.fetch_detail_page",
     side_effect=[load_test_page(page) for page in ['traffic-fatality-2-3'] + ['traffic-fatality-71-2'] * 14])
