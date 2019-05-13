@@ -1,6 +1,4 @@
 """Define the scenarios for the feature tests."""
-import asyncio
-
 import pytest
 from pytest_bdd import given
 from pytest_bdd import scenario
@@ -8,7 +6,6 @@ from pytest_bdd import then
 
 from scrapd.core import apd
 from tests.test_common import TEST_ROOT_DIR
-from tests.test_common import TEST_DATA_DIR
 
 
 @scenario(
@@ -45,5 +42,5 @@ def ensure_results(mocker, event_loop, output_format, time_range, entry_count):
     assert result is not None
     assert len(result) == entry_count
     assert isinstance(result, list)
-    if len(result) > 0:
+    if result:
         assert isinstance(result[0], dict)

@@ -95,7 +95,7 @@ test-units: venv ## Run the unit tests
 
 .PHONY: test-integrations
 test-integrations: venv ## Run the unit tests
-	$(RUN_CMD) tox -- -m "integrations"
+	$(RUN_CMD) tox -- -m "integrations" --reruns 3 --reruns-delay 5
 
 setup: venv ## Setup the full environment (default)
 

@@ -6,7 +6,6 @@ from urllib.parse import urljoin
 
 import aiohttp
 from loguru import logger
-from lxml import html
 from tenacity import retry
 from tenacity import stop_after_attempt
 from tenacity import wait_exponential
@@ -107,10 +106,20 @@ def has_next(news_page):
     if not news_page:
         return False
 
-    NEXT_XPATH = '/html/body/div[3]/div[2]/div[2]/div[2]/div/div/div/div/div[2]/div[3]/div/div/div/div[3]/ul/li[3]/a'
-    root = html.fromstring(news_page)
-    elements = root.xpath(NEXT_XPATH)
-    return bool(elements)
+    pattern = re.compile(
+        r'''
+        <a                  # Beginning of the anchor
+        \s+
+        title=\"[^\"]*\"    # Anchor tittle
+        \s+
+        href=\"[^\"]*\">    # Anchor href
+        (next\s›)            # Test indicating a next page
+        </a>                # End of the anchor.
+        ''',
+        re.VERBOSE | re.MULTILINE,
+    )
+    element = match_pattern(news_page, pattern)
+    return bool(element)
 
 
 def parse_twitter_title(twitter_title):
@@ -126,9 +135,9 @@ def parse_twitter_title(twitter_title):
         return d
 
     # Extract the fatality number from the title.
-    match = re.search(r'\d{1,3}', twitter_title)
+    match = parse_crashes_field(twitter_title)
     if match:
-        d[Fields.CRASHES] = match.group()
+        d[Fields.CRASHES] = match
 
     return d
 
@@ -539,6 +548,52 @@ def match_pattern(text, pattern, group_number=0):
     return match.groups()[group_number] if match else ''
 
 
+def extract_twitter_tittle_meta(page):
+    """
+    Extract the twitter title from the metadata fields.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the twitter tittle.
+    :rtype: str
+    """
+    pattern = re.compile(
+        r'''
+        <meta
+        \s+
+        name=\"twitter:title\"
+        \s+
+        content=\"(.*)\"
+        \s+
+        />
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, pattern)
+
+
+def extract_twitter_description_meta(page):
+    """
+    Extract the twitter description from the metadata fields.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the twitter description.
+    :rtype: str
+    """
+    pattern = re.compile(
+        r'''
+        <meta
+        \s+
+        name=\"twitter:description\"
+        \s+
+        content=\"(.*)\"
+        \s+
+        />
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, pattern)
+
+
 def parse_twitter_fields(page):
     """
     Parse the Twitter fields on a detail page.
@@ -547,15 +602,8 @@ def parse_twitter_fields(page):
     :return: a dictionary representing a fatality.
     :rtype: dict
     """
-    TWITTER_TITLE_XPATH = '/html/head/meta[@name="twitter:title"]'
-    TWITTER_DESCRIPTION_XPATH = '/html/head/meta[@name="twitter:description"]'
-
-    # Collect the elements.
-    html_ = html.fromstring(page)
-    elements = html_.xpath(TWITTER_TITLE_XPATH)
-    twitter_title = elements[0].get('content') if elements else ''
-    elements = html_.xpath(TWITTER_DESCRIPTION_XPATH)
-    twitter_description = elements[0].get('content') if elements else ''
+    twitter_title = extract_twitter_tittle_meta(page)
+    twitter_description = extract_twitter_description_meta(page)
 
     # Parse the elements.
     title_d = parse_twitter_title(twitter_title)
@@ -592,7 +640,6 @@ async def fetch_and_parse(session, url):
     :rtype: dict
     """
     # Retrieve the page.
-    # page = await fetch_text(session, url)
     page = await fetch_detail_page(session, url)
     if not page:
         raise ValueError(f'The URL {url} returned a 0-length content.')

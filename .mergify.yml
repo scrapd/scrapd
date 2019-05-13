@@ -10,5 +10,6 @@ pull_request_rules:
   - 'status-success=ci/circleci: format'
   - 'status-success=ci/circleci: lint'
   - 'status-success=ci/circleci: prepare'
-  - 'status-success=ci/circleci: test'
+  - 'status-success=ci/circleci: test-units'
+  - 'status-success=ci/circleci: test-integrations'
   name: master

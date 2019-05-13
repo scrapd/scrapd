@@ -1,6 +1,7 @@
 Faker==1.0.5
 Sphinx==2.0.1
 aiohttp-theme==0.1.5
+aioresponses==0.6.0
 asynctest==0.12.4
 bpython
 flake8==3.7.7
@@ -10,6 +11,7 @@ pytest-asyncio==0.10.0
 pytest-bdd==3.1.0
 pytest-cov==2.6.1
 pytest-mock==1.10.4
+pytest-rerunfailures==7.0
 pytest-socket==0.3.3
 pytest-xdist==1.28.0
 pytest==4.4.1

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add retries around functions fecthing data from remote sources. [#116]
+
+### Changed
+
+- Refactor the functions parsing the fields to simplify their maintenance.
+- Remove LXML as a dependency. [#]
+
 ## [[1.5.1]] - 2019-04-25
 
 ### Fixed
@@ -121,3 +130,5 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#84]: https://github.com/scrapd/scrapd/pull/84
 [#85]: https://github.com/scrapd/scrapd/pull/85
 [#90]: https://github.com/scrapd/scrapd/pull/90
+[#116]: https://github.com/scrapd/scrapd/pull/116
+[#]: https://github.com/scrapd/scrapd/pull/
