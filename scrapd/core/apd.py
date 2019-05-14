@@ -534,6 +534,27 @@ def parse_crashes_field(page):
     return match_pattern(page, crashes_pattern)
 
 
+def parse_time_field(page):
+    """
+    Extract the time from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the case number.
+    :rtype: str
+    """
+    time_pattern = re.compile(
+        r'''
+        Time:           # The name of the desired field.
+        .*?             # Any character (lazy).
+        (\d{1,2}:\d{2}  # Time format (##:## or #:##).
+        \s*             # Any whitespace.
+        [AaPp]\.[Mm]\.) # a.m./p.m. (upper or lower).
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, time_pattern)
+
+
 def match_pattern(text, pattern, group_number=0):
     """
     Match a pattern.
