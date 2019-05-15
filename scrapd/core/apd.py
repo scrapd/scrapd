@@ -6,7 +6,6 @@ from urllib.parse import urljoin
 
 import aiohttp
 from loguru import logger
-from lxml import html
 from tenacity import retry
 from tenacity import stop_after_attempt
 from tenacity import wait_exponential
@@ -107,10 +106,20 @@ def has_next(news_page):
     if not news_page:
         return False
 
-    NEXT_XPATH = '/html/body/div[3]/div[2]/div[2]/div[2]/div/div/div/div/div[2]/div[3]/div/div/div/div[3]/ul/li[3]/a'
-    root = html.fromstring(news_page)
-    elements = root.xpath(NEXT_XPATH)
-    return bool(elements)
+    pattern = re.compile(
+        r'''
+        <a                  # Beginning of the anchor
+        \s+
+        title=\"[^\"]*\"    # Anchor tittle
+        \s+
+        href=\"[^\"]*\">    # Anchor href
+        (next\s›)            # Test indicating a next page
+        </a>                # End of the anchor.
+        ''',
+        re.VERBOSE | re.MULTILINE,
+    )
+    element = match_pattern(news_page, pattern)
+    return bool(element)
 
 
 def parse_twitter_title(twitter_title):
@@ -126,9 +135,9 @@ def parse_twitter_title(twitter_title):
         return d
 
     # Extract the fatality number from the title.
-    match = re.search(r'\d{1,3}', twitter_title)
+    match = parse_crashes_field(twitter_title)
     if match:
-        d[Fields.CRASHES] = match.group()
+        d[Fields.CRASHES] = match
 
     return d
 
@@ -372,6 +381,7 @@ def parse_deceased_field(deceased_field):
     except Exception:
         pass
 
+    # Try to parse the deceased fields when the fields are space separated.
     try:
         return parse_space_delimited_deceased_field(deceased_field)
     except Exception:
@@ -381,27 +391,29 @@ def parse_deceased_field(deceased_field):
 
 
 def parse_comma_delimited_deceased_field(deceased_field):
-    """Parse deceased fields seperated with commas.
+    """
+    Parse deceased fields seperated with commas.
 
     :param list split_deceased_field: a list representing the deceased field
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
-    d = {}
     split_deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
+
+    # Find the DOB token as we use it as a delimiter.
     dob_index = dob_search(split_deceased_field)
     if dob_index < 0:
         raise ValueError(f'Cannot find DOB in the deceased field: {deceased_field}')
     raw_dob = split_deceased_field[dob_index + 1]
-    validated_dob = date_utils.clean_date_string(raw_dob, True)
-    d[Fields.DOB] = validated_dob
+
+    # Parse the field.
+    fleg = split_deceased_field[:dob_index]
+    d = parse_deceased_field_common([raw_dob], fleg)
+
+    # Add the notes.
     notes = split_deceased_field[dob_index + 2:]
     if notes:
         d[Fields.NOTES] = ' '.join(notes)
-
-    # `fleg` stands for First, Last, Ethnicity, Gender. It represents the info stored before the DOB.
-    fleg = split_deceased_field[:dob_index]
-    d.update(parse_fleg(fleg))
     return d
 
 
@@ -413,14 +425,9 @@ def parse_pipe_delimited_deceased_field(deceased_field):
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
-    d = {}
     split_deceased_field = deceased_field.split('|')
-    raw_dob = split_deceased_field[-1].strip()
-    d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
-
     fleg = (split_deceased_field[0] + split_deceased_field[1]).split()
-    d.update(parse_fleg(fleg))
-    return d
+    return parse_deceased_field_common(split_deceased_field, fleg)
 
 
 def parse_space_delimited_deceased_field(deceased_field):
@@ -431,25 +438,39 @@ def parse_space_delimited_deceased_field(deceased_field):
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
-    d = {}
     split_deceased_field = re.split(r' |/', deceased_field)
+    fleg = split_deceased_field[:-1]
+    return parse_deceased_field_common(split_deceased_field, fleg)
+
+
+def parse_deceased_field_common(split_deceased_field, fleg):
+    """
+    Parse the deceased field.
+
+    :param list split_deceased_field: [description]
+    :param dict fleg: a dictionary containing First, Last, Ethnicity, Gender fields
+    :return: a dictionary representing the deceased field.
+    :rtype: dict
+    """
+    # Populate FLEG.
+    d = parse_fleg(fleg)
+
+    # Extract and clean up DOB.
     raw_dob = split_deceased_field[-1].strip()
     d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
 
-    fleg = split_deceased_field[:-1]
-    d.update(parse_fleg(fleg))
     return d
 
 
 def parse_fleg(fleg):
     """
-    Parse FLEG.
+    Parse FLEG. `fleg` stands for First, Last, Ethnicity, Gender.
 
-    :param list fleg: [description]
-    :return: [description]
+    :param list fleg: values representing the fleg.
+    :return: a dictionary containing First, Last, Ethnicity, Gender fields
     :rtype: dict
     """
-    # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve,
+    # Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve.
     d = {}
     try:
         d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
@@ -495,8 +516,6 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     searches = [
-        (Fields.CASE, re.compile(r'Case:.*\s(?:</strong>)?([0-9\-]+)<')),
-        (Fields.CRASHES, re.compile(r'Traffic Fatality #(\d{1,3})')),
         (Fields.DATE, re.compile(r'>Date:.*\s{2,}(?:</strong>)?([^<]*)</')),
         (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
@@ -507,7 +526,16 @@ def parse_page_content(detail_page, notes_parsed=False):
         match = re.search(search[1], normalized_detail_page)
         if match:
             d[search[0]] = match.groups()[0]
-    # Parse the Deceased field.
+
+    # Parse the `Case` field.
+    d[Fields.CASE] = parse_case_field(normalized_detail_page)
+    if not d.get(Fields.CASE):
+        raise ValueError('A case number is mandatory.')
+
+    # Parse the `Crashes` field.
+    d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
+
+    # Parse the `Deceased` field.
     if d.get(Fields.DECEASED):
         try:
             d.update(parse_deceased_field(d.get(Fields.DECEASED)))
@@ -530,6 +558,97 @@ def parse_page_content(detail_page, notes_parsed=False):
     return sanitize_fatality_entity(d)
 
 
+def parse_case_field(page):
+    """
+    Extract the case number from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the case number.
+    :rtype: str
+    """
+    case_pattern = re.compile(
+        r'''
+        Case:           # The name of the field we are looking for.
+        .*              # Any character.
+        (\d{2}-\d{6,7}) # The case the number we are looking for.
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, case_pattern)
+
+
+def parse_crashes_field(page):
+    """
+    Extract the crash number from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the crash number.
+    :rtype: str
+    """
+    crashes_pattern = re.compile(r'Traffic Fatality #(\d{1,3})')
+    return match_pattern(page, crashes_pattern)
+
+
+def match_pattern(text, pattern, group_number=0):
+    """
+    Match a pattern.
+
+    :param str text: the text to match the pattern against
+    :param compiled regex pattern: the pattern to look for
+    :param int group_number: the capturing group number
+    :return: a string representing the captured group.
+    :rtype: str
+    """
+    match = re.search(pattern, text)
+    return match.groups()[group_number] if match else ''
+
+
+def extract_twitter_tittle_meta(page):
+    """
+    Extract the twitter title from the metadata fields.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the twitter tittle.
+    :rtype: str
+    """
+    pattern = re.compile(
+        r'''
+        <meta
+        \s+
+        name=\"twitter:title\"
+        \s+
+        content=\"(.*)\"
+        \s+
+        />
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, pattern)
+
+
+def extract_twitter_description_meta(page):
+    """
+    Extract the twitter description from the metadata fields.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the twitter description.
+    :rtype: str
+    """
+    pattern = re.compile(
+        r'''
+        <meta
+        \s+
+        name=\"twitter:description\"
+        \s+
+        content=\"(.*)\"
+        \s+
+        />
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, pattern)
+
+
 def parse_twitter_fields(page):
     """
     Parse the Twitter fields on a detail page.
@@ -538,15 +657,8 @@ def parse_twitter_fields(page):
     :return: a dictionary representing a fatality.
     :rtype: dict
     """
-    TWITTER_TITLE_XPATH = '/html/head/meta[@name="twitter:title"]'
-    TWITTER_DESCRIPTION_XPATH = '/html/head/meta[@name="twitter:description"]'
-
-    # Collect the elements.
-    html_ = html.fromstring(page)
-    elements = html_.xpath(TWITTER_TITLE_XPATH)
-    twitter_title = elements[0].get('content') if elements else ''
-    elements = html_.xpath(TWITTER_DESCRIPTION_XPATH)
-    twitter_description = elements[0].get('content') if elements else ''
+    twitter_title = extract_twitter_tittle_meta(page)
+    twitter_description = extract_twitter_description_meta(page)
 
     # Parse the elements.
     title_d = parse_twitter_title(twitter_title)
@@ -572,6 +684,7 @@ def parse_page(page):
     return d
 
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
@@ -582,11 +695,14 @@ async def fetch_and_parse(session, url):
     :rtype: dict
     """
     # Retrieve the page.
-    # page = await fetch_text(session, url)
     page = await fetch_detail_page(session, url)
+    if not page:
+        raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
     d = parse_page(page)
+    if not d:
+        raise ValueError(f'No data could be extracted from the page {url}.')
 
     # Add the link.
     d[Fields.LINK] = url

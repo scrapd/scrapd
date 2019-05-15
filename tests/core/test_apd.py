@@ -2,9 +2,13 @@
 from unittest import mock
 
 import aiohttp
+from aioresponses import aioresponses
 import asynctest
+from faker import Faker
 from loguru import logger
 import pytest
+from tenacity import RetryError
+from tenacity import stop_after_attempt
 
 from scrapd.core import apd
 from scrapd.core.constant import Fields
@@ -15,6 +19,9 @@ from tests.test_common import scenario_inputs
 
 # Disable logging for the tests.
 logger.remove()
+
+# Set faker object.
+fake = Faker()
 
 
 def load_test_page(page):
@@ -212,10 +219,9 @@ parse_details_page_notes_scenarios = [
 ]
 
 
-@pytest.mark.parametrize(
-    'input_,expected',
-    scenario_inputs(parse_details_page_notes_scenarios),
-    ids=scenario_ids(parse_details_page_notes_scenarios))
+@pytest.mark.parametrize('input_,expected',
+                         scenario_inputs(parse_details_page_notes_scenarios),
+                         ids=scenario_ids(parse_details_page_notes_scenarios))
 def test_parse_details_page_notes_01(input_, expected):
     """Ensure details page notes parsed correctly."""
     actual = apd.parse_details_page_notes(input_)
@@ -438,6 +444,17 @@ def test_has_next_01():
     assert apd.has_next(None) is False
 
 
+@pytest.mark.parametrize(
+    'input_,expected',
+    (('<div class="item-list"><ul class="pager"><li class="pager-previous first">&nbsp;</li>'
+      '<li class="pager-current">1 of 27</li>'
+      '<li class="pager-next last"><a title="Go to next page" href="/department/news/296?page=1">next ›</a></li>'
+      '</ul></div>', True), ))
+def test_has_next_02(input_, expected):
+    """Ensure we detect whether there are more news pages."""
+    assert apd.has_next(input_) == expected
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_content_scenarios.items()])
 def test_parse_page_content_00(filename, expected):
     """Ensure information are properly extracted from the content detail page.
@@ -455,7 +472,20 @@ def test_parse_page_content_01(mocker):
     page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
     page = page_fd.read_text()
     mocker.patch('scrapd.core.apd.parse_deceased_field', side_effect=ValueError)
-    apd.parse_page_content(page)
+    result = apd.parse_page_content(page)
+    assert len(result) == 6
+
+
+def test_parse_page_content_02(mocker):
+    """Ensure a log entry is created if there is no deceased field."""
+    result = apd.parse_page_content('Case: 01-2345678')
+    assert result
+
+
+def test_parse_page_content_03():
+    """Ensure a missing case number raises an exception."""
+    with pytest.raises(ValueError):
+        apd.parse_page_content('The is no case number here.')
 
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_twitter_fields_scenarios.items()])
@@ -479,17 +509,9 @@ def test_parse_page_00(filename, expected):
     assert actual == expected
 
 
-@asynctest.patch(
-    "scrapd.core.apd.fetch_news_page",
-    side_effect=[load_test_page(page) for page in [
-        '296',
-        '296?page=1',
-        '296?page=27',
-    ]])
-@asynctest.patch(
-    "scrapd.core.apd.fetch_detail_page",
-    return_value=load_test_page('traffic-fatality-2-3'),
-)
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('traffic-fatality-2-3'))
 @pytest.mark.asyncio
 async def test_date_filtering_00(fake_details, fake_news):
     """Ensure the date filtering do not fetch unnecessary data."""
@@ -499,22 +521,28 @@ async def test_date_filtering_00(fake_details, fake_news):
     assert isinstance(data, list)
 
 
-@asynctest.patch(
-    "scrapd.core.apd.fetch_news_page",
-    side_effect=[load_test_page(page) for page in [
-        '296',
-        '296?page=1',
-        '296?page=27',
-    ]])
-@asynctest.patch(
-    "scrapd.core.apd.fetch_detail_page",
-    return_value=load_test_page('traffic-fatality-2-3'),
-)
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('traffic-fatality-2-3'))
 @pytest.mark.asyncio
 async def test_date_filtering_01(fake_details, fake_news):
     """Ensure the date filtering do not fetch unnecessary data."""
     data, _ = await apd.async_retrieve(pages=-5, from_="2019-01-02", to="2019-01-03")
     assert isinstance(data, list)
+
+
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+@asynctest.patch(
+    "scrapd.core.apd.fetch_detail_page",
+    side_effect=[load_test_page(page) for page in ['traffic-fatality-2-3'] + ['traffic-fatality-71-2'] * 14])
+@pytest.mark.asyncio
+async def test_date_filtering_02(fake_details, fake_news):
+    """Ensure the date filtering do not fetch unnecessary data."""
+    data, page_count = await apd.async_retrieve(from_="2019-01-16", to="2019-01-16")
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert page_count == 2
 
 
 @pytest.mark.asyncio
@@ -531,9 +559,112 @@ async def test_fetch_text_00():
     assert apd.fetch_text.retry.statistics['attempt_number'] > 1
 
 
+@pytest.mark.asyncio
+async def test_fetch_text_01():
+    """Ensure fetch_text retrieves some text."""
+    url = fake.uri()
+    with aioresponses() as m:
+        m.get(url, payload=dict(foo='bar'))
+        async with aiohttp.ClientSession() as session:
+            text = await apd.fetch_text(session, url)
+            assert '{"foo": "bar"}' == text
+
+
 @asynctest.patch("scrapd.core.apd.fetch_news_page", side_effect=ValueError)
 @pytest.mark.asyncio
 async def test_async_retrieve_00(fake_news):
     """Ensure `async_retrieve` raises `ValueError` when `fetch_news_page` fails to retrieve data."""
     with pytest.raises(ValueError):
-        _, _ = await apd.async_retrieve()
+        await apd.async_retrieve()
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('<p><strong>Case:         </strong>19-0881844</p>', '19-0881844'),
+    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
+    ('<strong>Case:</strong></span><span style="color: rgb(32, 32, 32); '
+     'font-family: &quot;Verdana&quot;,sans-serif; font-size: 10.5pt; '
+     'mso-fareast-font-family: &quot;Times New Roman&quot;; '
+     'mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA; '
+     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
+    ('<p><strong>Case:</strong>            18-1591949 </p>', '18-1591949'),
+    ('<p><strong>Case:</strong>            18-590287<br />', '18-590287'),
+))
+def test_parse_case_field_00(input_, expected):
+    """Ensure a case field gets parsed correctly."""
+    actual = apd.parse_case_field(input_)
+
+
+@pytest.mark.parametrize(
+    'input_, expected',
+    (('<span property="dc:title" content="Traffic Fatality #12" class="rdf-meta element-hidden"></span>', '12'), ))
+def test_parse_crashes_field_00(input_, expected):
+    """Ensure the crashes field gets parsed correctly."""
+    actual = apd.parse_crashes_field(input_)
+    assert actual == expected
+
+
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='')
+@pytest.mark.asyncio
+async def test_fetch_and_parse_00(empty_page):
+    """Ensure an empty page raises an exception."""
+    with pytest.raises(RetryError):
+        apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
+        await apd.fetch_and_parse(None, 'url')
+
+
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='Not empty page')
+@pytest.mark.asyncio
+async def test_fetch_and_parse_01(page, mocker):
+    """Ensure an empty page raises an exception."""
+    mocker.patch("scrapd.core.apd.parse_page", return_value={})
+    with pytest.raises(RetryError):
+        apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
+        await apd.fetch_and_parse(None, 'url')
+
+
+@asynctest.patch("scrapd.core.apd.fetch_text", return_value='')
+@pytest.mark.asyncio
+async def test_fetch_news_page_00(fetch_text):
+    """Ensure the fetch function is called with the right parameters."""
+    page = 2
+    params = {'page': page - 1}
+    async with aiohttp.ClientSession() as session:
+        try:
+            await apd.fetch_news_page(session, page)
+        except Exception:
+            pass
+    fetch_text.assert_called_once_with(session, apd.APD_URL, params)
+
+
+@asynctest.patch("scrapd.core.apd.fetch_text", return_value='')
+@pytest.mark.asyncio
+async def test_fetch_detail_page_00(fetch_text):
+    """Ensure the fetch function is called with the right parameters."""
+    url = fake.uri()
+    async with aiohttp.ClientSession() as session:
+        try:
+            await apd.fetch_detail_page(session, url)
+        except Exception:
+            pass
+    fetch_text.assert_called_once_with(session, url)
+
+
+@pytest.mark.parametrize('input_,expected',
+                         (('<meta name="twitter:title" content="Traffic Fatality #2" />', 'Traffic Fatality #2'), ))
+def test_extract_twitter_tittle_meta_00(input_, expected):
+    """Ensure we can extract the twitter tittle from the meta tag."""
+    actual = apd.extract_twitter_tittle_meta(input_)
+    assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('<meta name="twitter:description" content="Case:           18-3551763 Date:            December 21, 2018 '
+     'Time:            8:20 p.m. Location:     9500 N Mopac SB" />',
+     'Case:           18-3551763 Date:            December 21, 2018 Time:            8:20 p.m. '
+     'Location:     9500 N Mopac SB'),
+    ('<meta name="twitter:description" content="Case:           19-0161105" />', 'Case:           19-0161105'),
+))
+def test_extract_twitter_description_meta_00(input_, expected):
+    """Ensure we can extract the twitter tittle from the meta tag."""
+    actual = apd.extract_twitter_description_meta(input_)
+    assert actual == expected

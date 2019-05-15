@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add retries around functions fecthing data from remote sources. [#116]
+
+### Changed
+
+- Refactor the functions parsing the fields to simplify their maintenance.
+- Remove LXML as a dependency. [#]
+
+## [[1.5.1]] - 2019-04-25
+
 ### Fixed
 
 - Fix gender value mix character cases.
@@ -96,6 +107,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [1.4.1]: https://github.com/scrapd/scrapd/releases/1.4.1
 [1.4.2]: https://github.com/scrapd/scrapd/releases/1.4.2
 [1.5.0]: https://github.com/scrapd/scrapd/releases/1.5.0
+[1.5.1]: https://github.com/scrapd/scrapd/releases/1.5.1
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/scrapd/scrapd/issues/13
@@ -118,3 +130,5 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#84]: https://github.com/scrapd/scrapd/pull/84
 [#85]: https://github.com/scrapd/scrapd/pull/85
 [#90]: https://github.com/scrapd/scrapd/pull/90
+[#116]: https://github.com/scrapd/scrapd/pull/116
+[#]: https://github.com/scrapd/scrapd/pull/
