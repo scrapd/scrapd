@@ -464,7 +464,6 @@ def parse_page_content(detail_page, notes_parsed=False):
         (Fields.DATE, re.compile(r'>Date:.*\s{2,}(?:</strong>)?([^<]*)</')),
         (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
-        (Fields.TIME, re.compile(r'>Time:.*>\s{2,}(?:</strong>)?([^<]+)')),
     ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
     for search in searches:
@@ -479,6 +478,9 @@ def parse_page_content(detail_page, notes_parsed=False):
 
     # Parse the `Crashes` field.
     d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
+
+    # Parse the `Time` field.
+    d[Fields.TIME] = parse_time_field(normalized_detail_page)
 
     # Parse the `Deceased` field.
     if d.get(Fields.DECEASED):
@@ -539,16 +541,18 @@ def parse_time_field(page):
     Extract the time from the content of the fatality page.
 
     :param str page: the content of the fatality page
-    :return: a string representing the case number.
+    :return: a string representing the time.
     :rtype: str
     """
     time_pattern = re.compile(
         r'''
-        Time:           # The name of the desired field.
-        .*?             # Any character (lazy).
-        (\d{1,2}:\d{2}  # Time format (##:## or #:##).
-        \s*             # Any whitespace.
-        [AaPp]\.[Mm]\.) # a.m./p.m. (upper or lower).
+        Time:                             # The name of the desired field.
+        \D*?                              # Any non-digit character (lazy).
+        ((?:0?[1-9]|1[0-2]):[0-5]\d       # 12h format.
+        \s*                               # Any whitespace (zero-unlimited).
+        [AaPp]\.?[Mm]\.?                  # AM/PM variations.
+        |                                 # OR
+        (?:[01]?[0-9]|2[0-3]):[0-5][0-9]) # 24h format.
         ''',
         re.VERBOSE,
     )
