@@ -1,4 +1,5 @@
 """Test the APD module."""
+from datetime import datetime
 from unittest import mock
 
 import aiohttp
@@ -46,8 +47,8 @@ parse_twitter_fields_scenarios = {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: '02/09/1980',
-        Fields.DATE: '12/30/2018',
+        Fields.DOB: datetime(1980, 2, 9),
+        Fields.DATE: datetime(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
@@ -94,8 +95,8 @@ parse_page_content_scenarios = {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: '02/09/1980',
-        Fields.DATE: '12/30/2018',
+        Fields.DOB: datetime(1980, 2, 9),
+        Fields.DATE: datetime(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
@@ -159,10 +160,10 @@ def test_parse_twitter_title_00(input_, expected):
         mock_data.twitter_description_00,
         {
             'Case': '18-3640187',
-            'Date': '12/30/2018',
+            'Date': datetime(2018, 12, 30),
             'Time': '2:24 a.m.',
             'Location': '1400 E. Highway 71 eastbound',
-            'DOB': '02/09/1980',
+            'DOB': datetime(1980, 2, 9),
             'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
@@ -197,8 +198,8 @@ def test_parse_twitter_description_02():
     expected = {
         'Age': 57,
         'Case': '18-160882',
-        'DOB': '01/22/1961',
-        'Date': '01/16/2018',
+        'DOB': datetime(1961, 1, 22),
+        'Date': datetime(2018, 1, 16),
         'Location': '1500 W. Slaughter Lane',
         'Time': '5:14 p.m.',
     }
@@ -242,67 +243,6 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     assert actual == expected
 
 
-<<<<<<< HEAD
-@pytest.mark.parametrize('deceased,expected', (
-    ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
-        Fields.LAST_NAME: "Tamez",
-        Fields.FIRST_NAME: "Rosbel"
-    }),
-    ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
-        Fields.LAST_NAME: "Gonzales",
-        Fields.FIRST_NAME: "Eva",
-        Fields.GENDER: 'f'
-    }),
-    (
-        'DOB: 01-01-99',
-        {
-            Fields.DOB: '01-01-99',
-            Fields.LAST_NAME: '',
-            Fields.FIRST_NAME: '',
-        },
-    ),
-))
-def test_parse_deceased_field(deceased, expected):
-    d = apd.parse_deceased_field(deceased)
-    for key in expected:
-        assert d[key] == expected[key]
-
-
-@pytest.mark.parametrize('name,expected', (
-    (['Jonathan,', 'Garcia-Pineda,'], {
-        'first': 'Jonathan',
-        'last': 'Garcia-Pineda'
-    }),
-    (['Rosbel', '“Rudy”', 'Tamez'], {
-        'first': 'Rosbel',
-        'last': 'Tamez'
-    }),
-    (['Christopher', 'M', 'Peterson'], {
-        'first': 'Christopher',
-        'last': 'Peterson'
-    }),
-    (['David', 'Adam', 'Castro,'], {
-        'first': 'David',
-        'last': 'Castro'
-    }),
-    (['Delta', 'Olin,'], {
-        'first': 'Delta',
-        'last': 'Olin'
-    }),
-    (None, {
-        'first': None,
-        'last': None
-    }),
-))
-def test_parse_name(name, expected):
-    """Ensure parser finds the first and last name given the full name."""
-    parsed = apd.parse_name(name)
-    assert parsed.get("first") == expected["first"]
-    assert parsed.get("last") == expected["last"]
-
-
-||||||| merged common ancestors
-=======
 @pytest.mark.parametrize('deceased,expected', (
     ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
         Fields.FIRST_NAME: "Rosbel",
@@ -406,7 +346,6 @@ def test_parse_name(name, expected):
     assert parsed.get("last") == expected["last"]
 
 
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""
     news_page = """
