@@ -174,19 +174,6 @@ def parse_twitter_description(twitter_description):
     if tmp_dob and isinstance(tmp_dob, list):
         d[Fields.DOB] = tmp_dob[0]
 
-    # Parse the Deceased field.
-    if d.get(Fields.DECEASED):
-        try:
-            d.update(parse_deceased_field(' '.join(d.get(Fields.DECEASED))))
-        except ValueError as e:
-            logger.trace(e)
-    else:
-        logger.trace('No decease information to parse in Twitter description.')
-
-    # Compute the victim's age.
-    if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = date_utils.compute_age(' '.join(d.get(Fields.DATE)), d.get(Fields.DOB))
-
     return sanitize_fatality_entity(d)
 
 
@@ -251,6 +238,7 @@ def parse_details_page_notes(details_page_notes):
 def sanitize_fatality_entity(d):
     """
     Clean up a fatality entity.
+    Performs parsing common to Twitter descriptions and page content.
 
     Ensures that the values are all strings and removes the 'Deceased' field which does not contain
     relevant information anymore.
@@ -259,25 +247,40 @@ def sanitize_fatality_entity(d):
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
+
     # All values must be strings.
     for k, v in d.items():
         if isinstance(v, list):
             d[k] = ' '.join(v)
 
-    if d.get('Date'):
-        d['Date'] = date_utils.clean_date_string(d['Date'])
-
-    if d.get('DOB'):
-        d['DOB'] = date_utils.clean_date_string(d['DOB'], True)
+    if d.get(Fields.DECEASED):
+        try:
+            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
+        except ValueError as e:
+            logger.trace(e)
+    else:
+        logger.trace('No deceased information to parse in fatality page.')
 
     # The 'Deceased' field is unnecessary.
     if d.get('Deceased'):
         del d['Deceased']
 
+    # Parse the `Date` field.
+    if d.get(Fields.DATE):
+        d[Fields.DATE] = date_utils.parse_date(d[Fields.DATE])
+
+    # Parse the `DOB` field.
+    if d.get(Fields.DOB):
+        dob_guess = date_utils.parse_date(d[Fields.DOB])
+        d[Fields.DOB] = date_utils.check_dob(dob_guess)
+
+    # Compute the victim's age.
+    if d.get(Fields.DATE) and d.get(Fields.DOB):
+        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
+
     return d
 
 
-<<<<<<< HEAD
 def parse_name(name):
     """
     Parse the victim's name.
@@ -286,46 +289,6 @@ def parse_name(name):
     :return: a dictionary representing just the victim's first and last name
     :rtype: dict
     """
-    d = {}
-    try:
-        d["last"] = name[-1].replace(',', '')
-        d["first"] = name[0].replace(',', '')
-    except (IndexError, TypeError):
-        pass
-    return d
-
-
-def parse_deceased_field(deceased_field):
-||||||| merged common ancestors
-def parse_deceased_field(deceased_field):
-=======
-def parse_name(name):
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
-    """
-    Parse the victim's name.
-
-<<<<<<< HEAD
-    At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
-    Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
-
-    :param str deceased_field: the deceased field from the fatality report
-    :return: a dictionary representing a deceased field.
-||||||| merged common ancestors
-    At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
-    Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
-
-    :param list deceased_field: a list where each item is a word from the deceased field
-    :return: a dictionary representing a deceased field.
-=======
-    :param list name: a list reprenting the deceased person's full name split on space characters
-    :return: a dictionary representing just the victim's first and last name
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
-    :rtype: dict
-    """
-<<<<<<< HEAD
-    deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
-||||||| merged common ancestors
-=======
     d = {}
     try:
         d["last"] = name[-1].replace(',', '')
@@ -343,7 +306,6 @@ def dob_search(split_deceased_field):
     :return: the DOB index within the split deceased field.
     :rtype: int
     """
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
     dob_index = -1
     dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
     while dob_index < 0 and dob_tokens:
@@ -480,29 +442,16 @@ def parse_fleg(fleg):
             d[Fields.GENDER] = 'male'
 
         d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-<<<<<<< HEAD
-||||||| merged common ancestors
-        d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
-        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
-=======
         if d.get(Fields.ETHNICITY) == 'W':
             d[Fields.ETHNICITY] = 'White'
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
     except IndexError:
         pass
 
-<<<<<<< HEAD
-    name = parse_name(fleg)
-    d[Fields.LAST_NAME] = name.get("last", '')
-    d[Fields.FIRST_NAME] = name.get("first", '')
-||||||| merged common ancestors
-=======
     name = parse_name(fleg)
     if name.get("last"):
         d[Fields.LAST_NAME] = name.get("last", '')
     if name.get("first"):
         d[Fields.FIRST_NAME] = name.get("first", '')
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
     return d
 
 
@@ -535,25 +484,12 @@ def parse_page_content(detail_page, notes_parsed=False):
     # Parse the `Crashes` field.
     d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
 
-    # Parse the `Deceased` field.
-    if d.get(Fields.DECEASED):
-        try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
-        except ValueError as e:
-            logger.trace(e)
-    else:
-        logger.trace('No deceased information to parse in fatality page.')
-
     # Fill in Notes from Details page if not in twitter description.
     search_notes = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
     match = re.search(search_notes, normalized_detail_page)
     if match and not notes_parsed:
         text_chunk = match.string[match.start(0):match.end(0)]
         d[Fields.NOTES] = parse_details_page_notes(text_chunk)
-
-    # Compute the victim's age.
-    if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
 
     return sanitize_fatality_entity(d)
 
@@ -743,7 +679,8 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [
-                    entry for entry in page_res if date_utils.is_in_range(entry[Fields.DATE], from_, to)
+                    entry for entry in page_res
+                    if date_utils.from_date(from_) <= entry[Fields.DATE] <= date_utils.to_date(to)
                 ]
 
                 # If 2 pages in a row:
@@ -751,8 +688,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if from_ and all([date_utils.is_posterior(entry[Fields.DATE], from_)
-                                  for entry in page_res]) and not has_entries:
+                if from_ and all([entry[Fields.DATE] < date_utils.from_date(from_) for entry in page_res]) and not has_entries:
                     no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
                     logger.debug(f'{len(entries_in_time_range)} fatality page(s) within the specified time range.')

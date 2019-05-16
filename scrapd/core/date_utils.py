@@ -4,19 +4,6 @@ import datetime
 import dateparser
 
 
-def is_posterior(d1, d2):
-    """
-    Return True is d1 is posterior to d2 (i.e. it happened after).
-
-    :param str d1: date 1
-    :param str d2: date 2
-    :return: True is d1 is posterior to d2
-    :rtype: bool
-    """
-
-    return parse_date(d1) < parse_date(d2)
-
-
 def check_dob(dob):
     """
     In case that a date only contains 2 digits, determine century.
@@ -103,34 +90,16 @@ def parse_date(date, default=None, settings=None):
         raise Exception
 
 
-def is_in_range(date, from_=None, to=None):
-    """
-    Check whether a date is comprised between 2 others.
-
-    :param str date: date to vheck
-    :param str from_: start date, defaults to None
-    :param str to: end date, defaults to None
-    :return: `True` if the date is between `from_` and `to`
-    :rtype: bool
-    """
-    current_date = parse_date(date)
-    from_date_ = from_date(from_)
-    to_date_ = to_date(to)
-
-    return from_date_ <= current_date <= to_date_
-
-
 def compute_age(date, dob):
     """
     Compute a victim's age.
 
-    :param str date: crash date
-    :param str dob: date of birth
+    :param datetime.datetime date: crash date
+    :param datetime.datetime dob: date of birth
     :return: the victim's age.
     :rtype: int
     """
     DAYS_IN_YEAR = 365
-    dob_ = parse_date(dob)
 
     # Compute the age.
-    return (parse_date(date) - check_dob(dob_)).days // DAYS_IN_YEAR
+    return (date - dob).days // DAYS_IN_YEAR
