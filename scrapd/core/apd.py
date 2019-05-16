@@ -349,14 +349,36 @@ def parse_deceased_field(deceased_field):
     except Exception:
         pass
 
+    # Try to parse the deceased fields assuming it contains an age.
+    try:
+        return parse_age_deceased_field(deceased_field)
+    except Exception:
+        pass
+
     raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
 
+def parse_age_deceased_field(deceased_field):
+    """
+    Parse deceased field assuming it contains an age.
+
+    :param str deceased_field: the deceased field
+    :return: a dictionary representing the deceased field.
+    :rtype: dict
+    """
+    age_pattern = re.compile(r'([0-9]+) years')
+    age = re.search(age_pattern, deceased_field).group(1)
+    if not age:
+        raise ValueError(f'Cannot find age in the deceased field: {deceased_field}')
+    split_deceased_field = age_pattern.split(deceased_field)
+    d = parse_fleg(split_deceased_field[0].split())
+    d[Fields.AGE] = int(age)
+    return d
 
 def parse_comma_delimited_deceased_field(deceased_field):
     """
     Parse deceased fields seperated with commas.
 
-    :param list split_deceased_field: a list representing the deceased field
+    :param str deceased_field: a list representing the deceased field
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
