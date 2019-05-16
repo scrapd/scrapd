@@ -11,7 +11,7 @@ from scrapd.core import date_utils
 ])
 def test_is_in_range_00(current, from_, to, expected):
     """Ensure a date is in range."""
-    assert date_utils.is_in_range(current, from_, to) == expected
+    assert (date_utils.from_date(from_) <= date_utils.parse_date(current) <= date_utils.to_date(to)) == expected
 
 
 @pytest.mark.parametrize('date, default, settings, expected', [
