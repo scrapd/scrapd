@@ -530,6 +530,7 @@ async def test_async_retrieve_00(fake_news):
 def test_parse_case_field_00(input_, expected):
     """Ensure a case field gets parsed correctly."""
     actual = apd.parse_case_field(input_)
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
@@ -605,4 +606,25 @@ def test_extract_twitter_tittle_meta_00(input_, expected):
 def test_extract_twitter_description_meta_00(input_, expected):
     """Ensure we can extract the twitter tittle from the meta tag."""
     actual = apd.extract_twitter_description_meta(input_)
+    assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('Time: </span>   Approximately 01:14a.m.', '01:14a.m.'),
+    ('<tag>Time:     08:35 pm<br />', '08:35 pm'),
+    ('Time:  8:47  P.M.', '8:47  P.M.'),
+    ('Time:12:47 p.M.', '12:47 p.M.'),
+    ('Time: 5:16', '5:16'),
+    ('Time: 05:16 ', '05:16'),
+    ('Time: 18:26', '18:26'),
+    ('Time: 22:56', '22:56'),
+    ('Time: 54:34', ''),
+    ('Time: 28:24', ''),
+    ('Time: 4:66 pm', ''),
+    ('Time: 18:46 pm', '18:46'),
+    ('Time: 00:24 a.m.', '00:24'),
+))
+def test_parse_time_field_00(input_, expected):
+    """Ensure a time field gets parsed correctly."""
+    actual = apd.parse_time_field(input_)
     assert actual == expected
