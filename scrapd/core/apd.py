@@ -357,6 +357,7 @@ def parse_deceased_field(deceased_field):
 
     raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
 
+
 def parse_age_deceased_field(deceased_field):
     """
     Parse deceased field assuming it contains an age.
@@ -373,6 +374,7 @@ def parse_age_deceased_field(deceased_field):
     d = parse_fleg(split_deceased_field[0].split())
     d[Fields.AGE] = int(age)
     return d
+
 
 def parse_comma_delimited_deceased_field(deceased_field):
     """
