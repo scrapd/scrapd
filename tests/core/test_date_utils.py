@@ -9,9 +9,9 @@ from scrapd.core import date_utils
     ('Jan 10', 'Jan 1', 'Jan 31', True),
     ('Jan 1', None, None, True),
 ])
-def test_is_in_range_00(current, from_, to, expected):
+def test_is_between_00(current, from_, to, expected):
     """Ensure a date is in range."""
-    assert date_utils.is_in_range(current, from_, to) == expected
+    assert date_utils.is_between(current, from_, to) == expected
 
 
 @pytest.mark.parametrize('date, default, settings, expected', [
@@ -46,3 +46,13 @@ def test_clean_date_string_00(date, dob, expected):
 def test_check_dob_00(date, expected):
     """Ensure a DOB is valid."""
     assert date_utils.check_dob(date) == expected
+
+
+@pytest.mark.parametrize('d1, d2, expected', [
+    ('Jan 01 2019', 'Jan 02 2019', True),
+    ('Jan 02 2019', 'Jan 01 2019', False),
+    ('Jan 01 2019', 'Jan 01 2019', False),
+])
+def test_is_before(d1, d2, expected):
+    """Ensure a d1 is before d2."""
+    assert date_utils.is_before(d1, d2) == expected
