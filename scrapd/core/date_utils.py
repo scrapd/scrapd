@@ -4,13 +4,13 @@ import datetime
 import dateparser
 
 
-def is_posterior(d1, d2):
+def is_before(d1, d2):
     """
-    Return True is d1 is posterior to d2 (i.e. it happened after).
+    Return True if d1 is strictly before d2.
 
     :param str d1: date 1
     :param str d2: date 2
-    :return: True is d1 is posterior to d2
+    :return: True is d1 is before d2.
     :rtype: bool
     """
 
@@ -103,7 +103,7 @@ def parse_date(date, default=None, settings=None):
         raise Exception
 
 
-def is_in_range(date, from_=None, to=None):
+def is_between(date, from_=None, to=None):
     """
     Check whether a date is comprised between 2 others.
 

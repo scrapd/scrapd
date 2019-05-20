@@ -713,7 +713,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [
-                    entry for entry in page_res if date_utils.is_in_range(entry[Fields.DATE], from_, to)
+                    entry for entry in page_res if date_utils.is_between(entry[Fields.DATE], from_, to)
                 ]
 
                 # If 2 pages in a row:
@@ -721,7 +721,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if from_ and all([date_utils.is_posterior(entry[Fields.DATE], from_)
+                if from_ and all([date_utils.is_before(entry[Fields.DATE], from_)
                                   for entry in page_res]) and not has_entries:
                     no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
