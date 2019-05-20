@@ -243,68 +243,67 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     assert actual == expected
 
 
-@pytest.mark.parametrize('deceased,expected', (
-    ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
-        Fields.FIRST_NAME: "Rosbel",
-        Fields.LAST_NAME: "Tamez",
+@pytest.mark.parametrize('deceased,expected', (("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
+    Fields.FIRST_NAME: "Rosbel",
+    Fields.LAST_NAME: "Tamez",
+    Fields.ETHNICITY: "Hispanic",
+    Fields.GENDER: "male",
+    Fields.DOB: '10/10/1954',
+}), ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
+    Fields.FIRST_NAME: "Eva",
+    Fields.LAST_NAME: "Gonzales",
+    Fields.ETHNICITY: "White",
+    Fields.GENDER: 'female',
+    Fields.DOB: '01/22/1961',
+}), (
+    'DOB: 01-01-99',
+    {
+        Fields.DOB: '01/01/1999',
+    },
+), (
+    'Wing Cheung Chou | Asian male | 08/01/1949',
+    {
+        Fields.FIRST_NAME: "Wing",
+        Fields.LAST_NAME: "Chou",
+        Fields.ETHNICITY: "Asian",
+        Fields.GENDER: "male",
+        Fields.DOB: '08/01/1949',
+    },
+), (
+    'Christopher M Peterson W/M 10-8-1981',
+    {
+        Fields.FIRST_NAME: "Christopher",
+        Fields.LAST_NAME: "Peterson",
+        Fields.ETHNICITY: "White",
+        Fields.GENDER: "male",
+        Fields.DOB: '10/08/1981',
+    },
+), (
+    'Luis Angel Tinoco, Hispanic male (11-12-07',
+    {
+        Fields.FIRST_NAME: "Luis",
+        Fields.LAST_NAME: "Tinoco",
         Fields.ETHNICITY: "Hispanic",
         Fields.GENDER: "male",
-        Fields.DOB: '10/10/1954',
-    }),
-    ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
-        Fields.FIRST_NAME: "Eva",
-        Fields.LAST_NAME: "Gonzales",
+        Fields.DOB: '11/12/2007'
+    },
+), (
+    'Ronnie Lee Hall, White male, 8-28-51',
+    {
+        Fields.FIRST_NAME: "Ronnie",
+        Fields.LAST_NAME: "Hall",
         Fields.ETHNICITY: "White",
-        Fields.GENDER: 'female',
-        Fields.DOB: '01/22/1961',
-    }),
-    (
-        'DOB: 01-01-99',
-        {
-            Fields.DOB: '01/01/1999',
-        },
-    ),
-    (
-        'Wing Cheung Chou | Asian male | 08/01/1949',
-        {
-            Fields.FIRST_NAME: "Wing",
-            Fields.LAST_NAME: "Chou",
-            Fields.ETHNICITY: "Asian",
-            Fields.GENDER: "male",
-            Fields.DOB: '08/01/1949',
-        },
-    ),
-    (
-        'Christopher M Peterson W/M 10-8-1981',
-        {
-            Fields.FIRST_NAME: "Christopher",
-            Fields.LAST_NAME: "Peterson",
-            Fields.ETHNICITY: "White",
-            Fields.GENDER: "male",
-            Fields.DOB: '10/08/1981',
-        },
-    ),
-    (
-        'Luis Angel Tinoco, Hispanic male (11-12-07',
-        {
-            Fields.FIRST_NAME: "Luis",
-            Fields.LAST_NAME: "Tinoco",
-            Fields.ETHNICITY: "Hispanic",
-            Fields.GENDER: "male",
-            Fields.DOB: '11/12/2007'
-        },
-    ),
-    (
-        'Ronnie Lee Hall, White male, 8-28-51',
-        {
-            Fields.FIRST_NAME: "Ronnie",
-            Fields.LAST_NAME: "Hall",
-            Fields.ETHNICITY: "White",
-            Fields.GENDER: "male",
-            Fields.DOB: '08/28/1951'
-        },
-    ),
-))
+        Fields.GENDER: "male",
+        Fields.DOB: '08/28/1951'
+    },
+), (
+    'Hispanic male, 19 years of age',
+    {
+        Fields.ETHNICITY: "Hispanic",
+        Fields.GENDER: "male",
+        Fields.AGE: 19,
+    },
+)))
 def test_parse_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""
     d = {}
@@ -344,7 +343,6 @@ def test_parse_name(name, expected):
     parsed = apd.parse_name(name)
     assert parsed.get("first") == expected["first"]
     assert parsed.get("last") == expected["last"]
-
 
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""

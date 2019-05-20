@@ -277,6 +277,7 @@ def common_fatality_parsing(d):
 
     return sanitize_fatality_entity(d)
 
+
 def sanitize_fatality_entity(d):
     """
     Clean up a fatality entity.
@@ -290,6 +291,7 @@ def sanitize_fatality_entity(d):
         del d['Deceased']
 
     return d
+
 
 def parse_name(name):
     """
@@ -377,9 +379,8 @@ def parse_age_deceased_field(deceased_field):
     :rtype: dict
     """
     age_pattern = re.compile(r'([0-9]+) years')
+    # Raises AttributeError upon failure
     age = re.search(age_pattern, deceased_field).group(1)
-    if not age:
-        raise ValueError(f'Cannot find age in the deceased field: {deceased_field}')
     split_deceased_field = age_pattern.split(deceased_field)
     d = parse_fleg(split_deceased_field[0].split())
     d[Fields.AGE] = int(age)
