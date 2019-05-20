@@ -1,5 +1,5 @@
 """Test the APD module."""
-from datetime import datetime
+from datetime import date
 from unittest import mock
 
 import aiohttp
@@ -47,8 +47,8 @@ parse_twitter_fields_scenarios = {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: datetime(1980, 2, 9),
-        Fields.DATE: datetime(2018, 12, 30),
+        Fields.DOB: date(1980, 2, 9),
+        Fields.DATE: date(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
@@ -64,14 +64,14 @@ parse_twitter_fields_scenarios = {
     'traffic-fatality-72-1': {
         Fields.CASE: '18-3551763',
         Fields.CRASHES: '72',
-        Fields.DATE: datetime(2018, 12, 21),
+        Fields.DATE: date(2018, 12, 21),
         Fields.LOCATION: '9500 N Mopac SB',
         Fields.TIME: '8:20 p.m.',
     },
     'traffic-fatality-71-2': {
         Fields.CASE: '18-3381590',
         Fields.CRASHES: '71',
-        Fields.DATE: datetime(2018, 12, 4),
+        Fields.DATE: date(2018, 12, 4),
         Fields.LOCATION: '183 service road westbound and Payton Gin Rd.',
         Fields.TIME: '8:39 p.m.',
     },
@@ -82,8 +82,8 @@ parse_page_content_scenarios = {
         **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
         Fields.AGE: 58,
         Fields.CRASHES: '2',
-        Fields.DOB: datetime(1960, 2, 15),
-        Fields.DATE: datetime(2019, 1, 16),
+        Fields.DOB: date(1960, 2, 15),
+        Fields.DATE: date(2019, 1, 16),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Ann',
         Fields.GENDER: 'female',
@@ -95,8 +95,8 @@ parse_page_content_scenarios = {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: datetime(1980, 2, 9),
-        Fields.DATE: datetime(2018, 12, 30),
+        Fields.DOB: date(1980, 2, 9),
+        Fields.DATE: date(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
@@ -107,7 +107,7 @@ parse_page_content_scenarios = {
     'traffic-fatality-72-1': {
         **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
         Fields.AGE: 22,
-        Fields.DOB: datetime(1996, 3, 29),
+        Fields.DOB: date(1996, 3, 29),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Elijah',
         Fields.GENDER: 'male',
@@ -115,7 +115,7 @@ parse_page_content_scenarios = {
     },
     'traffic-fatality-71-2': {
         **parse_twitter_fields_scenarios['traffic-fatality-71-2'],
-        Fields.DOB: datetime(1964, 6, 1),
+        Fields.DOB: date(1964, 6, 1),
         Fields.FIRST_NAME: 'Barkat',
         Fields.LAST_NAME: 'Umatia',
         Fields.ETHNICITY: 'Other',
@@ -160,10 +160,10 @@ def test_parse_twitter_title_00(input_, expected):
         mock_data.twitter_description_00,
         {
             'Case': '18-3640187',
-            'Date': datetime(2018, 12, 30),
+            'Date': date(2018, 12, 30),
             'Time': '2:24 a.m.',
             'Location': '1400 E. Highway 71 eastbound',
-            'DOB': datetime(1980, 2, 9),
+            'DOB': date(1980, 2, 9),
             'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
@@ -198,8 +198,8 @@ def test_parse_twitter_description_02():
     expected = {
         'Age': 57,
         'Case': '18-160882',
-        'DOB': datetime(1961, 1, 22),
-        'Date': datetime(2018, 1, 16),
+        'DOB': date(1961, 1, 22),
+        'Date': date(2018, 1, 16),
         'Location': '1500 W. Slaughter Lane',
         'Time': '5:14 p.m.',
     }
