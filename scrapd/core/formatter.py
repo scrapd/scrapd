@@ -97,6 +97,7 @@ class PythonFormatter(Formatter):
         pp = pprint.PrettyPrinter(indent=2, stream=self.output)
         pp.pprint(results)
 
+
 class JSONFormatter(Formatter):
     """
     Define the JSON formatter.
