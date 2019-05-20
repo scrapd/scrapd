@@ -80,9 +80,9 @@ def parse_date(date, default=None, settings=None):
     """
 
     try:
-        d = dateparser.parse(date, settings=settings).date()
+        d = dateparser.parse(date, settings=settings)
         if d:
-            return d
+            return d.date()
         raise ValueError(f'Cannot parse date: {date}')
     except Exception:
         if default:
