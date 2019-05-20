@@ -63,6 +63,17 @@ class Formatter():
         formatter = self._get_formatter()
         formatter.printer(results, **kwargs)
 
+    def date_serialize(self, obj):
+        """
+        Converts date objects to string for serialization.
+
+        :rtype: str
+        """
+
+        if isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.isoformat()
+        raise TypeError("Type %s not serializable" % type(obj))
+
     # pylint: disable=unused-argument
     def printer(self, results, **kwargs):
         """
@@ -86,7 +97,6 @@ class PythonFormatter(Formatter):
         pp = pprint.PrettyPrinter(indent=2, stream=self.output)
         pp.pprint(results)
 
-
 class JSONFormatter(Formatter):
     """
     Define the JSON formatter.
@@ -96,8 +106,18 @@ class JSONFormatter(Formatter):
 
     __format_name__ = 'json'
 
+    def to_json_string(self, results):
+        """
+        :param results dict: results of scraping APD news site
+
+        :rtype: str
+        """
+
+        return json.dumps(results, sort_keys=True, indent=2, default=self.date_serialize)
+
     def printer(self, results, **kwargs):  # noqa: D102
-        print(json.dumps(results, sort_keys=True, indent=2), file=self.output)
+        json_string = self.to_json_string(results, **kwargs)
+        print(json_string, file=self.output)
 
 
 class CSVFormatter(Formatter):

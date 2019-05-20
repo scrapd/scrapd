@@ -5,6 +5,7 @@ import pytest
 from scrapd.core.formatter import Formatter, CountFormatter
 from scrapd.core.formatter import PythonFormatter, CSVFormatter, JSONFormatter
 
+
 class TestFormatter:
     """Test the default formatter."""
 
@@ -42,6 +43,7 @@ class TestFormatter:
         f = JSONFormatter(output=stdout)
         with pytest.raises(TypeError):
             f.printer(RESULTS_BAD_TYPE)
+
 
 RESULTS = [
     {

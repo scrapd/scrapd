@@ -175,7 +175,7 @@ def parse_twitter_description(twitter_description):
     if tmp_dob and isinstance(tmp_dob, list):
         d[Fields.DOB] = tmp_dob[0]
 
-    return sanitize_fatality_entity(d)
+    return common_fatality_parsing(d)
 
 
 def parse_details_page_notes(details_page_notes):
@@ -236,15 +236,14 @@ def parse_details_page_notes(details_page_notes):
     return final
 
 
-def sanitize_fatality_entity(d):
+def common_fatality_parsing(d):
     """
-    Clean up a fatality entity.
     Performs parsing common to Twitter descriptions and page content.
 
     Ensures that the values are all strings and removes the 'Deceased' field which does not contain
     relevant information anymore.
 
-    :param dict d: the fatality to sanitize
+    :param dict d: the fatality to finish parsing
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
@@ -254,6 +253,7 @@ def sanitize_fatality_entity(d):
         if isinstance(v, list):
             d[k] = ' '.join(v)
 
+    # Extracting other fields from 'Deceased' field.
     if d.get(Fields.DECEASED):
         try:
             d.update(parse_deceased_field(d.get(Fields.DECEASED)))
@@ -261,10 +261,6 @@ def sanitize_fatality_entity(d):
             logger.trace(e)
     else:
         logger.trace('No deceased information to parse in fatality page.')
-
-    # The 'Deceased' field is unnecessary.
-    if d.get('Deceased'):
-        del d['Deceased']
 
     # Parse the `Date` field.
     if d.get(Fields.DATE):
@@ -279,8 +275,21 @@ def sanitize_fatality_entity(d):
     if d.get(Fields.DATE) and d.get(Fields.DOB):
         d[Fields.AGE] = compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
 
-    return d
+    return sanitize_fatality_entity(d)
 
+def sanitize_fatality_entity(d):
+    """
+    Clean up a fatality entity.
+    Removes the 'Deceased' field which does not contain	relevant information anymore.
+
+    :return: A dictionary containing the details information about the fatality with sanitized entries.
+    :rtype: dict
+    """
+
+    if d.get('Deceased'):
+        del d['Deceased']
+
+    return d
 
 def parse_name(name):
     """
@@ -516,7 +525,7 @@ def parse_page_content(detail_page, notes_parsed=False):
         text_chunk = match.string[match.start(0):match.end(0)]
         d[Fields.NOTES] = parse_details_page_notes(text_chunk)
 
-    return sanitize_fatality_entity(d)
+    return common_fatality_parsing(d)
 
 
 def parse_case_field(page):
