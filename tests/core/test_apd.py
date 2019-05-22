@@ -606,3 +606,32 @@ def test_extract_twitter_description_meta_00(input_, expected):
     """Ensure we can extract the twitter tittle from the meta tag."""
     actual = apd.extract_twitter_description_meta(input_)
     assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ({
+        "Time": " ",
+    }, {},),
+    (
+        {
+            "Time": 345
+        },
+        {},
+    ),
+    (
+        {
+            "Time": ['123', '345']
+        },
+        {},
+    ),
+    (
+        {
+            "Time": None
+        },
+        {},
+    ),
+))
+def test_sanitize_fatality_entity(input_, expected):
+    """Ensure."""
+    actual = apd.sanitize_fatality_entity(input_, expected)
+    assert actual == expected
