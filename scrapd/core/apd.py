@@ -11,8 +11,7 @@ from tenacity import stop_after_attempt
 from tenacity import wait_exponential
 
 from scrapd.core.constant import Fields
-from scrapd.core.date_utils import check_dob, clean_date_string, compute_age
-from scrapd.core.date_utils import parse_date, from_date, to_date
+from scrapd.core import date_utils
 
 APD_URL = 'http://austintexas.gov/department/news/296'
 PAGE_DETAILS_URL = 'http://austintexas.gov/'
@@ -264,16 +263,16 @@ def common_fatality_parsing(d):
 
     # Parse the `Date` field.
     if d.get(Fields.DATE):
-        d[Fields.DATE] = parse_date(d[Fields.DATE])
+        d[Fields.DATE] = date_utils.parse_date(d[Fields.DATE])
 
     # Parse the `DOB` field.
     if d.get(Fields.DOB):
-        dob_guess = parse_date(d[Fields.DOB])
-        d[Fields.DOB] = check_dob(dob_guess)
+        dob_guess = date_utils.parse_date(d[Fields.DOB])
+        d[Fields.DOB] = date_utils.check_dob(dob_guess)
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
+        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
 
     return sanitize_fatality_entity(d)
 
@@ -455,7 +454,7 @@ def parse_deceased_field_common(split_deceased_field, fleg):
 
     # Extract and clean up DOB.
     raw_dob = split_deceased_field[-1].strip()
-    d[Fields.DOB] = clean_date_string(raw_dob, True)
+    d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
 
     return d
 
@@ -528,7 +527,6 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.NOTES] = parse_details_page_notes(text_chunk)
 
     return common_fatality_parsing(d)
-
 
 def parse_case_field(page):
     """
@@ -690,7 +688,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
     has_entries = False
     no_date_within_range_count = 0
 
-    logger.debug(f'Retrieving fatalities from {from_date(from_)} to {to_date(to)}.')
+    logger.debug(f'Retrieving fatalities from {date_utils.from_date(from_)} to {date_utils.to_date(to)}.')
 
     async with aiohttp.ClientSession() as session:
         while True:
@@ -715,7 +713,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [
-                    entry for entry in page_res if from_date(from_) <= entry[Fields.DATE] <= to_date(to)
+                    entry for entry in page_res if date_utils.from_date(from_) <= entry[Fields.DATE] <= date_utils.to_date(to)
                 ]
 
                 # If 2 pages in a row:
@@ -723,7 +721,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if from_ and all([entry[Fields.DATE] < from_date(from_) for entry in page_res]) and not has_entries:
+                if from_ and all([entry[Fields.DATE] < date_utils.from_date(from_) for entry in page_res]) and not has_entries:
                     no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
                     logger.debug(f'{len(entries_in_time_range)} fatality page(s) within the specified time range.')
