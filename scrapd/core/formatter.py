@@ -71,7 +71,7 @@ class Formatter():
         """
 
         if isinstance(obj, (datetime.datetime, datetime.date)):
-            return obj.isoformat()
+            return obj.strftime("%m/%d/%Y")
         raise TypeError("Type %s not serializable" % type(obj))
 
     # pylint: disable=unused-argument

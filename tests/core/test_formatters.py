@@ -37,13 +37,28 @@ class TestFormatter:
         out, _ = capsys.readouterr()
         assert "Black" in out
 
-    def test_formatter_json_bad_type(self):
+    def test_formatter_json(self, capsys):
+        """Ensure some correct text is in the output."""
+        from sys import stdout
+        f = JSONFormatter(output=stdout)
+        f.printer(RESULTS)
+        out, _ = capsys.readouterr()
+        assert "Black" in out
+
+    def test_formatter_json_date_style(self, capsys):
+        """Check that dates are stored in month-first format."""
+        from sys import stdout
+        f = JSONFormatter(output=stdout)
+        f.printer(RESULTS)
+        out, _ = capsys.readouterr()
+        assert '"DOB": "12/05/2005"' in out
+
+    def test_formatter_typeerror(self):
         """Ensure some correct text is in the output."""
         from sys import stdout
         f = JSONFormatter(output=stdout)
         with pytest.raises(TypeError):
             f.printer(RESULTS_BAD_TYPE)
-
 
 RESULTS = [
     {
