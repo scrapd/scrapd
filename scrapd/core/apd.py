@@ -238,7 +238,7 @@ def parse_details_page_notes(details_page_notes):
 
 def common_fatality_parsing(d):
     """
-    Performs parsing common to Twitter descriptions and page content.
+    Perform parsing common to Twitter descriptions and page content.
 
     Ensures that the values are all strings and removes the 'Deceased' field which does not contain
     relevant information anymore.

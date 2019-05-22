@@ -65,7 +65,7 @@ class Formatter():
 
     def date_serialize(self, obj):
         """
-        Converts date objects to string for serialization.
+        Convert date objects to string for serialization.
 
         :rtype: str
         """
@@ -109,6 +109,8 @@ class JSONFormatter(Formatter):
 
     def to_json_string(self, results):
         """
+        Convert dict of parsed fields to JSON string.
+
         :param results dict: results of scraping APD news site
 
         :rtype: str
