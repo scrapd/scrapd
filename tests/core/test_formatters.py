@@ -29,22 +29,6 @@ class TestFormatter:
         out, _ = capsys.readouterr()
         assert "2005-12-05" in out
 
-    def test_formatter_json(self, capsys):
-        """Ensure some correct text is in the output."""
-        from sys import stdout
-        f = JSONFormatter(output=stdout)
-        f.printer(RESULTS)
-        out, _ = capsys.readouterr()
-        assert "Black" in out
-
-    def test_formatter_json(self, capsys):
-        """Ensure some correct text is in the output."""
-        from sys import stdout
-        f = JSONFormatter(output=stdout)
-        f.printer(RESULTS)
-        out, _ = capsys.readouterr()
-        assert "Black" in out
-
     def test_formatter_json_date_style(self, capsys):
         """Check that dates are stored in month-first format."""
         from sys import stdout
