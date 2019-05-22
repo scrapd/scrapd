@@ -60,6 +60,7 @@ class TestFormatter:
         with pytest.raises(TypeError):
             f.printer(RESULTS_BAD_TYPE)
 
+
 RESULTS = [
     {
         'Age': 13,
