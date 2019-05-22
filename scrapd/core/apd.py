@@ -281,6 +281,7 @@ def common_fatality_parsing(d):
 def sanitize_fatality_entity(d):
     """
     Clean up a fatality entity.
+
     Removes the 'Deceased' field which does not contain	relevant information anymore.
 
     :return: A dictionary containing the details information about the fatality with sanitized entries.

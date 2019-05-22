@@ -344,6 +344,7 @@ def test_parse_name(name, expected):
     assert parsed.get("first") == expected["first"]
     assert parsed.get("last") == expected["last"]
 
+
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""
     news_page = """
