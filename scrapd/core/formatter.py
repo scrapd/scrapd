@@ -74,6 +74,7 @@ class Formatter():
             return obj.strftime("%m/%d/%Y")
         raise TypeError("Type %s not serializable" % type(obj))
 
+
     # pylint: disable=unused-argument
     def printer(self, results, **kwargs):
         """
@@ -83,6 +84,16 @@ class Formatter():
         """
         print(results, file=self.output)
 
+    def to_json_string(self, results):
+        """
+        Convert dict of parsed fields to JSON string.
+
+        :param results dict: results of scraping APD news site
+
+        :rtype: str
+        """
+
+        return json.dumps(results, sort_keys=True, indent=2, default=self.date_serialize)
 
 class PythonFormatter(Formatter):
     """
@@ -107,19 +118,8 @@ class JSONFormatter(Formatter):
 
     __format_name__ = 'json'
 
-    def to_json_string(self, results):
-        """
-        Convert dict of parsed fields to JSON string.
-
-        :param results dict: results of scraping APD news site
-
-        :rtype: str
-        """
-
-        return json.dumps(results, sort_keys=True, indent=2, default=self.date_serialize)
-
     def printer(self, results, **kwargs):  # noqa: D102
-        json_string = self.to_json_string(results, **kwargs)
+        json_string = self.to_json_string(results)
         print(json_string, file=self.output)
 
 
@@ -133,6 +133,8 @@ class CSVFormatter(Formatter):
     __format_name__ = 'csv'
 
     def printer(self, results, **kwargs):  # noqa: D102
+        results = self.to_json_string(results)
+        results = json.loads(results)
         writer = csv.DictWriter(self.output, fieldnames=CSVFIELDS, extrasaction='ignore')
         writer.writeheader()
         writer.writerows(results)

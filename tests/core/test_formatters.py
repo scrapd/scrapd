@@ -27,7 +27,7 @@ class TestFormatter:
         f = CSVFormatter(output=stdout)
         f.printer(RESULTS)
         out, _ = capsys.readouterr()
-        assert "2005-12-05" in out
+        assert "12/05/2005" in out
 
     def test_formatter_json_date_style(self, capsys):
         """Check that dates are stored in month-first format."""
