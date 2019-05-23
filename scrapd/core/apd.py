@@ -172,22 +172,9 @@ def parse_twitter_description(twitter_description):
     # Handle special case where Date of birth is a token `DOB:`.
     tmp_dob = d.get(Fields.DOB)
     if tmp_dob and isinstance(tmp_dob, list):
-        d[Fields.DOB] = tmp_dob[0]
+        d[Fields.DOB] = date_utils.parse_date(tmp_dob[0])
 
-    # Parse the Deceased field.
-    if d.get(Fields.DECEASED):
-        try:
-            d.update(parse_deceased_field(' '.join(d.get(Fields.DECEASED))))
-        except ValueError as e:
-            logger.trace(e)
-    else:
-        logger.trace('No decease information to parse in Twitter description.')
-
-    # Compute the victim's age.
-    if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = date_utils.compute_age(' '.join(d.get(Fields.DATE)), d.get(Fields.DOB))
-
-    return sanitize_fatality_entity(d)
+    return common_fatality_parsing(d)
 
 
 def parse_details_page_notes(details_page_notes):
@@ -248,29 +235,53 @@ def parse_details_page_notes(details_page_notes):
     return final
 
 
-def sanitize_fatality_entity(d):
+def common_fatality_parsing(d):
     """
-    Clean up a fatality entity.
+    Perform parsing common to Twitter descriptions and page content.
 
     Ensures that the values are all strings and removes the 'Deceased' field which does not contain
     relevant information anymore.
 
-    :param dict d: the fatality to sanitize
+    :param dict d: the fatality to finish parsing
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
+
     # All values must be strings.
     for k, v in d.items():
         if isinstance(v, list):
             d[k] = ' '.join(v)
 
-    if d.get('Date'):
-        d['Date'] = date_utils.clean_date_string(d['Date'])
+    # Extracting other fields from 'Deceased' field.
+    if d.get(Fields.DECEASED):
+        try:
+            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
+        except ValueError as e:
+            logger.trace(e)
+    else:
+        logger.trace('No deceased information to parse in fatality page.')
 
-    if d.get('DOB'):
-        d['DOB'] = date_utils.clean_date_string(d['DOB'], True)
+    # Parse the `Date` field.
+    if d.get(Fields.DATE):
+        d[Fields.DATE] = date_utils.parse_date(d[Fields.DATE])
 
-    # The 'Deceased' field is unnecessary.
+    # Compute the victim's age.
+    if d.get(Fields.DATE) and d.get(Fields.DOB):
+        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
+
+    return sanitize_fatality_entity(d)
+
+
+def sanitize_fatality_entity(d):
+    """
+    Clean up a fatality entity.
+
+    Removes the 'Deceased' field which does not contain	relevant information anymore.
+
+    :return: A dictionary containing the details information about the fatality with sanitized entries.
+    :rtype: dict
+    """
+
     if d.get('Deceased'):
         del d['Deceased']
 
@@ -345,14 +356,37 @@ def parse_deceased_field(deceased_field):
     except Exception:
         pass
 
+    # Try to parse the deceased fields assuming it contains an age.
+    try:
+        return parse_age_deceased_field(deceased_field)
+    except Exception:
+        pass
+
     raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
+
+
+def parse_age_deceased_field(deceased_field):
+    """
+    Parse deceased field assuming it contains an age.
+
+    :param str deceased_field: the deceased field
+    :return: a dictionary representing the deceased field.
+    :rtype: dict
+    """
+    age_pattern = re.compile(r'([0-9]+) years')
+    # Raises AttributeError upon failure
+    age = re.search(age_pattern, deceased_field).group(1)
+    split_deceased_field = age_pattern.split(deceased_field)
+    d = parse_fleg(split_deceased_field[0].split())
+    d[Fields.AGE] = int(age)
+    return d
 
 
 def parse_comma_delimited_deceased_field(deceased_field):
     """
     Parse deceased fields seperated with commas.
 
-    :param list split_deceased_field: a list representing the deceased field
+    :param str deceased_field: a list representing the deceased field
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
@@ -415,7 +449,8 @@ def parse_deceased_field_common(split_deceased_field, fleg):
 
     # Extract and clean up DOB.
     raw_dob = split_deceased_field[-1].strip()
-    d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
+    dob_guess = date_utils.parse_date(raw_dob)
+    d[Fields.DOB] = date_utils.check_dob(dob_guess)
 
     return d
 
@@ -498,11 +533,7 @@ def parse_page_content(detail_page, notes_parsed=False):
         text_chunk = match.string[match.start(0):match.end(0)]
         d[Fields.NOTES] = parse_details_page_notes(text_chunk)
 
-    # Compute the victim's age.
-    if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
-
-    return sanitize_fatality_entity(d)
+    return common_fatality_parsing(d)
 
 
 def parse_case_field(page):
@@ -713,7 +744,8 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [
-                    entry for entry in page_res if date_utils.is_between(entry[Fields.DATE], from_, to)
+                    entry for entry in page_res
+                    if date_utils.from_date(from_) <= entry[Fields.DATE] <= date_utils.to_date(to)
                 ]
 
                 # If 2 pages in a row:
@@ -721,7 +753,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if from_ and all([date_utils.is_before(entry[Fields.DATE], from_)
+                if from_ and all([entry[Fields.DATE] < date_utils.from_date(from_)
                                   for entry in page_res]) and not has_entries:
                     no_date_within_range_count += 1
                 if no_date_within_range_count > 1:

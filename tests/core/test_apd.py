@@ -1,4 +1,5 @@
 """Test the APD module."""
+from datetime import date
 from unittest import mock
 
 import aiohttp
@@ -46,8 +47,8 @@ parse_twitter_fields_scenarios = {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: '02/09/1980',
-        Fields.DATE: '12/30/2018',
+        Fields.DOB: date(1980, 2, 9),
+        Fields.DATE: date(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
@@ -63,14 +64,14 @@ parse_twitter_fields_scenarios = {
     'traffic-fatality-72-1': {
         Fields.CASE: '18-3551763',
         Fields.CRASHES: '72',
-        Fields.DATE: '12/21/2018',
+        Fields.DATE: date(2018, 12, 21),
         Fields.LOCATION: '9500 N Mopac SB',
         Fields.TIME: '8:20 p.m.',
     },
     'traffic-fatality-71-2': {
         Fields.CASE: '18-3381590',
         Fields.CRASHES: '71',
-        Fields.DATE: '12/04/2018',
+        Fields.DATE: date(2018, 12, 4),
         Fields.LOCATION: '183 service road westbound and Payton Gin Rd.',
         Fields.TIME: '8:39 p.m.',
     },
@@ -81,8 +82,8 @@ parse_page_content_scenarios = {
         **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
         Fields.AGE: 58,
         Fields.CRASHES: '2',
-        Fields.DOB: '02/15/1960',
-        Fields.DATE: '01/16/2019',
+        Fields.DOB: date(1960, 2, 15),
+        Fields.DATE: date(2019, 1, 16),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Ann',
         Fields.GENDER: 'female',
@@ -94,8 +95,8 @@ parse_page_content_scenarios = {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: '02/09/1980',
-        Fields.DATE: '12/30/2018',
+        Fields.DOB: date(1980, 2, 9),
+        Fields.DATE: date(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
@@ -106,7 +107,7 @@ parse_page_content_scenarios = {
     'traffic-fatality-72-1': {
         **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
         Fields.AGE: 22,
-        Fields.DOB: '03/29/1996',
+        Fields.DOB: date(1996, 3, 29),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Elijah',
         Fields.GENDER: 'male',
@@ -114,7 +115,7 @@ parse_page_content_scenarios = {
     },
     'traffic-fatality-71-2': {
         **parse_twitter_fields_scenarios['traffic-fatality-71-2'],
-        Fields.DOB: '06/01/1964',
+        Fields.DOB: date(1964, 6, 1),
         Fields.FIRST_NAME: 'Barkat',
         Fields.LAST_NAME: 'Umatia',
         Fields.ETHNICITY: 'Other',
@@ -159,10 +160,10 @@ def test_parse_twitter_title_00(input_, expected):
         mock_data.twitter_description_00,
         {
             'Case': '18-3640187',
-            'Date': '12/30/2018',
+            'Date': date(2018, 12, 30),
             'Time': '2:24 a.m.',
             'Location': '1400 E. Highway 71 eastbound',
-            'DOB': '02/09/1980',
+            'DOB': date(1980, 2, 9),
             'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
@@ -197,8 +198,8 @@ def test_parse_twitter_description_02():
     expected = {
         'Age': 57,
         'Case': '18-160882',
-        'DOB': '01/22/1961',
-        'Date': '01/16/2018',
+        'DOB': date(1961, 1, 22),
+        'Date': date(2018, 1, 16),
         'Location': '1500 W. Slaughter Lane',
         'Time': '5:14 p.m.',
     }
@@ -248,19 +249,19 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         Fields.LAST_NAME: "Tamez",
         Fields.ETHNICITY: "Hispanic",
         Fields.GENDER: "male",
-        Fields.DOB: '10/10/1954',
+        Fields.DOB: date(1954, 10, 10),
     }),
     ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
         Fields.FIRST_NAME: "Eva",
         Fields.LAST_NAME: "Gonzales",
         Fields.ETHNICITY: "White",
         Fields.GENDER: 'female',
-        Fields.DOB: '01/22/1961',
+        Fields.DOB: date(1961, 1, 22),
     }),
     (
         'DOB: 01-01-99',
         {
-            Fields.DOB: '01/01/1999',
+            Fields.DOB: date(1999, 1, 1),
         },
     ),
     (
@@ -270,7 +271,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Chou",
             Fields.ETHNICITY: "Asian",
             Fields.GENDER: "male",
-            Fields.DOB: '08/01/1949',
+            Fields.DOB: date(1949, 8, 1),
         },
     ),
     (
@@ -280,7 +281,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Peterson",
             Fields.ETHNICITY: "White",
             Fields.GENDER: "male",
-            Fields.DOB: '10/08/1981',
+            Fields.DOB: date(1981, 10, 8),
         },
     ),
     (
@@ -290,7 +291,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Tinoco",
             Fields.ETHNICITY: "Hispanic",
             Fields.GENDER: "male",
-            Fields.DOB: '11/12/2007'
+            Fields.DOB: date(2007, 11, 12)
         },
     ),
     (
@@ -300,7 +301,15 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Hall",
             Fields.ETHNICITY: "White",
             Fields.GENDER: "male",
-            Fields.DOB: '08/28/1951'
+            Fields.DOB: date(1951, 8, 28)
+        },
+    ),
+    (
+        'Hispanic male, 19 years of age',
+        {
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.AGE: 19,
         },
     ),
 ))

@@ -15,8 +15,8 @@ def test_is_between_00(current, from_, to, expected):
 
 
 @pytest.mark.parametrize('date, default, settings, expected', [
-    ('Jan 1 2019', None, None, datetime.datetime(2019, 1, 1, 0, 0)),
-    ('Not a date', datetime.datetime.min, None, datetime.datetime(1, 1, 1, 0, 0)),
+    ('Jan 1 2019', None, None, datetime.date(2019, 1, 1)),
+    ('Not a date', datetime.date.min, None, datetime.date(1, 1, 1)),
 ])
 def test_parse_date_00(date, default, settings, expected):
     """Ensure a parsed date returns a value."""
@@ -40,8 +40,8 @@ def test_clean_date_string_00(date, dob, expected):
 
 
 @pytest.mark.parametrize('date, expected', [
-    (datetime.datetime(2019, 1, 10, 0, 0), datetime.datetime(2019, 1, 10, 0, 0)),
-    (datetime.datetime(2054, 10, 10, 0, 0), datetime.datetime(1954, 10, 10, 0, 0)),
+    (datetime.date(2019, 1, 10), datetime.date(2019, 1, 10)),
+    (datetime.date(2054, 10, 10), datetime.date(1954, 10, 10)),
 ])
 def test_check_dob_00(date, expected):
     """Ensure a DOB is valid."""

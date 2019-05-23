@@ -21,14 +21,14 @@ def check_dob(dob):
     """
     In case that a date only contains 2 digits, determine century.
 
-    :param datetime.datetime dob: DOB
+    :param datetime.date dob: DOB
     :return: DOB with 19xx or 20xx as appropriate
-    :rtype: datetime.datetime
+    :rtype: datetime.date
     """
 
-    now = datetime.datetime.now()
+    now = datetime.date.today()
     if dob.year > now.year:
-        dob = datetime.datetime(dob.year - 100, dob.month, dob.day)
+        dob = datetime.date(dob.year - 100, dob.month, dob.day)
     return dob
 
 
@@ -44,37 +44,37 @@ def clean_date_string(date, is_dob=False):
     dt = parse_date(date)
     if is_dob:
         dt = check_dob(dt)
-    return datetime.datetime.strftime(dt, "%m/%d/%Y")
+    return datetime.date.strftime(dt, "%m/%d/%Y")
 
 
 def from_date(date):
     """
     Parse the date from a human readable format, with options for the from date.
 
-    * If the date cannot be parsed, `datetime.datetime.min` is returned.
+    * If the date cannot be parsed, `datetime.date.min` is returned.
     * If the day of the month is not specified, the first day is used.
 
     :param str date: date
     :return: a date object representing the date.
-    :rtype: datetime.datetime
+    :rtype: datetime.date
     """
 
-    return parse_date(date, datetime.datetime.min, settings={'PREFER_DAY_OF_MONTH': 'first'})
+    return parse_date(date, datetime.date.min, settings={'PREFER_DAY_OF_MONTH': 'first'})
 
 
 def to_date(date):
     """
     Parse the date from a human readable format, with options for the to date.
 
-    * If the date cannot be parsed, `datetime.datetime.max` is returned.
+    * If the date cannot be parsed, `datetime.date.max` is returned.
     * If the day of the month is not specified, the last day is used.
 
     :param str date: date
     :return: a date object representing the date.
-    :rtype: datetime.datetime
+    :rtype: datetime.date
     """
 
-    return parse_date(date, datetime.datetime.max, settings={'PREFER_DAY_OF_MONTH': 'last'})
+    return parse_date(date, datetime.date.max, settings={'PREFER_DAY_OF_MONTH': 'last'})
 
 
 def parse_date(date, default=None, settings=None):
@@ -85,17 +85,17 @@ def parse_date(date, default=None, settings=None):
     returned.
 
     :param str date: date
-    :param datetime default: default value in case the date cannot be parsed.
+    :param datetime.date default: default value in case the date cannot be parsed.
     :param dict settings: a dictionary containing the parsing options. All the available options are defined here:
         https://dateparser.readthedocs.io/en/latest/dateparser.html#dateparser.conf.Settings.
     :return: a date object representing the date.
-    :rtype: datetime.datetime
+    :rtype: datetime.date
     """
 
     try:
         d = dateparser.parse(date, settings=settings)
         if d:
-            return d
+            return d.date()
         raise ValueError(f'Cannot parse date: {date}')
     except Exception:
         if default:
@@ -107,7 +107,7 @@ def is_between(date, from_=None, to=None):
     """
     Check whether a date is comprised between 2 others.
 
-    :param str date: date to vheck
+    :param str date: date to check
     :param str from_: start date, defaults to None
     :param str to: end date, defaults to None
     :return: `True` if the date is between `from_` and `to`
@@ -124,13 +124,12 @@ def compute_age(date, dob):
     """
     Compute a victim's age.
 
-    :param str date: crash date
-    :param str dob: date of birth
+    :param datetime.date date: crash date
+    :param datetime.date dob: date of birth
     :return: the victim's age.
     :rtype: int
     """
     DAYS_IN_YEAR = 365
-    dob_ = parse_date(dob)
 
     # Compute the age.
-    return (parse_date(date) - check_dob(dob_)).days // DAYS_IN_YEAR
+    return (date - dob).days // DAYS_IN_YEAR
