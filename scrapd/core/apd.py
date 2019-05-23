@@ -588,9 +588,9 @@ def parse_date_field(page):
         ''',
         re.VERBOSE,
     )
-    date = match_pattern(page, date_pattern)
+    date = match_pattern(page, date_pattern).replace('.', ' ')
     date = search_dates(date)
-    return date[0][1].strftime("%B %d, %Y") if date else ''
+    return date[0][1].strftime("%m/%d/%Y") if date else ''
 
 
 def parse_time_field(page):
