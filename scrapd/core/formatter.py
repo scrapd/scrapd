@@ -74,7 +74,6 @@ class Formatter():
             return obj.strftime("%m/%d/%Y")
         raise TypeError("Type %s not serializable" % type(obj))
 
-
     # pylint: disable=unused-argument
     def printer(self, results, **kwargs):
         """
@@ -94,6 +93,7 @@ class Formatter():
         """
 
         return json.dumps(results, sort_keys=True, indent=2, default=self.date_serialize)
+
 
 class PythonFormatter(Formatter):
     """
