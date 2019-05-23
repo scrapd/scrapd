@@ -79,7 +79,7 @@ jobs:
       - attach_workspace:
           at: *working_directory
       - run:
-          name: run unit tests
+          name: run integration tests
           command: |
             make test-integrations
 

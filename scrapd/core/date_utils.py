@@ -4,6 +4,19 @@ import datetime
 import dateparser
 
 
+def is_before(d1, d2):
+    """
+    Return True if d1 is strictly before d2.
+
+    :param str d1: date 1
+    :param str d2: date 2
+    :return: True is d1 is before d2.
+    :rtype: bool
+    """
+
+    return parse_date(d1) < parse_date(d2)
+
+
 def check_dob(dob):
     """
     In case that a date only contains 2 digits, determine century.
@@ -88,6 +101,23 @@ def parse_date(date, default=None, settings=None):
         if default:
             return default
         raise Exception
+
+
+def is_between(date, from_=None, to=None):
+    """
+    Check whether a date is comprised between 2 others.
+
+    :param str date: date to check
+    :param str from_: start date, defaults to None
+    :param str to: end date, defaults to None
+    :return: `True` if the date is between `from_` and `to`
+    :rtype: bool
+    """
+    current_date = parse_date(date)
+    from_date_ = from_date(from_)
+    to_date_ = to_date(to)
+
+    return from_date_ <= current_date <= to_date_
 
 
 def compute_age(date, dob):

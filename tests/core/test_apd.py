@@ -395,7 +395,7 @@ def test_has_next_01():
     'input_,expected',
     (('<div class="item-list"><ul class="pager"><li class="pager-previous first">&nbsp;</li>'
       '<li class="pager-current">1 of 27</li>'
-      '<li class="pager-next last"><a title="Go to next page" href="/department/news/296?page=1">next ›</a></li>'
+      '<li class="pager-next last"><a title="Go to next page" href="/department/news/296-page=1">next ›</a></li>'
       '</ul></div>', True), ))
 def test_has_next_02(input_, expected):
     """Ensure we detect whether there are more news pages."""
@@ -457,7 +457,7 @@ def test_parse_page_00(filename, expected):
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
-                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+                 side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
 @asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('traffic-fatality-2-3'))
 @pytest.mark.asyncio
 async def test_date_filtering_00(fake_details, fake_news):
@@ -469,7 +469,7 @@ async def test_date_filtering_00(fake_details, fake_news):
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
-                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+                 side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
 @asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('traffic-fatality-2-3'))
 @pytest.mark.asyncio
 async def test_date_filtering_01(fake_details, fake_news):
@@ -479,7 +479,7 @@ async def test_date_filtering_01(fake_details, fake_news):
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
-                 side_effect=[load_test_page(page) for page in ['296', '296?page=1', '296?page=27']])
+                 side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
 @asynctest.patch(
     "scrapd.core.apd.fetch_detail_page",
     side_effect=[load_test_page(page) for page in ['traffic-fatality-2-3'] + ['traffic-fatality-71-2'] * 14])
@@ -539,6 +539,7 @@ async def test_async_retrieve_00(fake_news):
 def test_parse_case_field_00(input_, expected):
     """Ensure a case field gets parsed correctly."""
     actual = apd.parse_case_field(input_)
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
@@ -614,4 +615,25 @@ def test_extract_twitter_tittle_meta_00(input_, expected):
 def test_extract_twitter_description_meta_00(input_, expected):
     """Ensure we can extract the twitter tittle from the meta tag."""
     actual = apd.extract_twitter_description_meta(input_)
+    assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('Time: </span>   Approximately 01:14a.m.', '01:14a.m.'),
+    ('<tag>Time:     08:35 pm<br />', '08:35 pm'),
+    ('Time:  8:47  P.M.', '8:47  P.M.'),
+    ('Time:12:47 p.M.', '12:47 p.M.'),
+    ('Time: 5:16', '5:16'),
+    ('Time: 05:16 ', '05:16'),
+    ('Time: 18:26', '18:26'),
+    ('Time: 22:56', '22:56'),
+    ('Time: 54:34', ''),
+    ('Time: 28:24', ''),
+    ('Time: 4:66 pm', ''),
+    ('Time: 18:46 pm', '18:46'),
+    ('Time: 00:24 a.m.', '00:24'),
+))
+def test_parse_time_field_00(input_, expected):
+    """Ensure a time field gets parsed correctly."""
+    actual = apd.parse_time_field(input_)
     assert actual == expected
