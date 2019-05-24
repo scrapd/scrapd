@@ -170,6 +170,16 @@ def parse_twitter_description(twitter_description):
             continue
         d.setdefault(current_field, []).append(word)
 
+    # Parse the `Date` field.
+    fatality_date = d.get(Fields.DATE)
+    if fatality_date:
+        # Ensure it is a string.
+        if isinstance(fatality_date, list):
+            fatality_date = ' '.join(fatality_date)
+
+        # Turn it into a date object.
+        d[Fields.DATE] = date_utils.parse_date(fatality_date)
+
     # Handle special case where Date of birth is a token `DOB:`.
     tmp_dob = d.get(Fields.DOB)
     if tmp_dob and isinstance(tmp_dob, list):
@@ -247,24 +257,18 @@ def common_fatality_parsing(d):
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
-
-    # All values must be strings.
-    for k, v in d.items():
-        if isinstance(v, list):
-            d[k] = ' '.join(v)
-
     # Extracting other fields from 'Deceased' field.
-    if d.get(Fields.DECEASED):
+    deceased_field = d.get(Fields.DECEASED)
+    if deceased_field:
+        if isinstance(deceased_field, list):
+            deceased_field = ' '.join(deceased_field)
+
         try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
+            d.update(parse_deceased_field(deceased_field))
         except ValueError as e:
             logger.trace(e)
     else:
         logger.trace('No deceased information to parse in fatality page.')
-
-    # Parse the `Date` field.
-    if d.get(Fields.DATE):
-        d[Fields.DATE] = date_utils.parse_date(d[Fields.DATE])
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
@@ -282,9 +286,14 @@ def sanitize_fatality_entity(d):
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
-
+    # We do not need the deceased field.
     if d.get('Deceased'):
         del d['Deceased']
+
+    # Lists must be converted to strings.
+    for k, v in d.items():
+        if isinstance(v, list):
+            d[k] = ' '.join(v)
 
     return d
 
@@ -375,7 +384,8 @@ def parse_age_deceased_field(deceased_field):
     :rtype: dict
     """
     age_pattern = re.compile(r'([0-9]+) years')
-    # Raises AttributeError upon failure
+
+    # Raises AttributeError upon failure.
     age = re.search(age_pattern, deceased_field).group(1)
     split_deceased_field = age_pattern.split(deceased_field)
     d = parse_fleg(split_deceased_field[0].split())
@@ -515,19 +525,12 @@ def parse_page_content(detail_page, notes_parsed=False):
     d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
 
     # Parse the `Date` field.
-    d[Fields.DATE] = parse_date_field(normalized_detail_page)
+    date_field_str = parse_date_field(normalized_detail_page)
+    if date_field_str:
+        d[Fields.DATE] = date_utils.parse_date(date_field_str)
 
     # Parse the `Time` field.
     d[Fields.TIME] = parse_time_field(normalized_detail_page)
-
-    # Parse the `Deceased` field.
-    if d.get(Fields.DECEASED):
-        try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
-        except ValueError as e:
-            logger.trace(e)
-    else:
-        logger.trace('No deceased information to parse in fatality page.')
 
     # Fill in Notes from Details page if not in twitter description.
     search_notes = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
@@ -744,8 +747,10 @@ async def async_retrieve(pages=-1, from_=None, to=None):
     page = 1
     has_entries = False
     no_date_within_range_count = 0
+    from_date = date_utils.from_date(from_)
+    to_date = date_utils.to_date(to)
 
-    logger.debug(f'Retrieving fatalities from {date_utils.from_date(from_)} to {date_utils.to_date(to)}.')
+    logger.debug(f'Retrieving fatalities from {from_date} to {to_date}.')
 
     async with aiohttp.ClientSession() as session:
         while True:
@@ -770,8 +775,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [
-                    entry for entry in page_res
-                    if date_utils.from_date(from_) <= entry[Fields.DATE] <= date_utils.to_date(to)
+                    entry for entry in page_res if date_utils.is_between(entry[Fields.DATE], from_date, to_date)
                 ]
 
                 # If 2 pages in a row:
@@ -779,8 +783,8 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if from_ and all([entry[Fields.DATE] < date_utils.from_date(from_)
-                                  for entry in page_res]) and not has_entries:
+                past_entries = all([date_utils.is_before(entry[Fields.DATE], from_date) for entry in page_res])
+                if from_ and past_entries and not has_entries:
                     no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
                     logger.debug(f'{len(entries_in_time_range)} fatality page(s) within the specified time range.')
