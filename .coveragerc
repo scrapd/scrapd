@@ -4,7 +4,6 @@ omit =
   scrapd/cli/*
   scrapd/config.py
   scrapd/core/constant.py
-  scrapd/core/formatter.py
   scrapd/core/version.py
   scrapd/main.py
   scrapd/tests/*
