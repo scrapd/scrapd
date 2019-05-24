@@ -5,6 +5,7 @@ import unicodedata
 from urllib.parse import urljoin
 
 import aiohttp
+from dateparser.search import search_dates
 from loguru import logger
 from tenacity import retry
 from tenacity import stop_after_attempt
@@ -496,7 +497,6 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     searches = [
-        (Fields.DATE, re.compile(r'>Date:.*\s{2,}(?:</strong>)?([^<]*)</')),
         (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
     ]
@@ -513,6 +513,9 @@ def parse_page_content(detail_page, notes_parsed=False):
 
     # Parse the `Crashes` field.
     d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
+
+    # Parse the `Date` field.
+    d[Fields.DATE] = parse_date_field(normalized_detail_page)
 
     # Parse the `Time` field.
     d[Fields.TIME] = parse_time_field(normalized_detail_page)
@@ -565,6 +568,29 @@ def parse_crashes_field(page):
     """
     crashes_pattern = re.compile(r'Traffic Fatality #(\d{1,3})')
     return match_pattern(page, crashes_pattern)
+
+
+def parse_date_field(page):
+    """
+    Extract the date from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the date.
+    :rtype: str
+    """
+    date_pattern = re.compile(
+        r'''
+        >Date:          # The name of the desired field.
+        .*\s{2,}        # Any character and whitespace.
+        (?:</strong>)?  # Non-capture (literal match).
+        ([^<]*)         # Capture any character except '<'.
+        <               # Non-capture (literal match)
+        ''',
+        re.VERBOSE,
+    )
+    date = match_pattern(page, date_pattern).replace('.', ' ')
+    date = search_dates(date)
+    return date[0][1].strftime("%m/%d/%Y") if date else ''
 
 
 def parse_time_field(page):

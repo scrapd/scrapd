@@ -637,3 +637,21 @@ def test_parse_time_field_00(input_, expected):
     """Ensure a time field gets parsed correctly."""
     actual = apd.parse_time_field(input_)
     assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('<strong>Date:   </strong>April 18, 2019</p>', '04/18/2019'),
+    ('>Date:   </strong> Night of May 22 2019</p>', '05/22/2019'),
+    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', '10/03/2018'),
+    ('>Date:  night Apr 1-2012</p>', '04/01/2012'),
+    ('>Date:  feb. 2 2018</p>', '02/02/2018'),
+    ('>Date:  10-1-17</p>', '10/01/2017'),
+    ('>Date:  Morning of 2,2,19 </p>', '02/02/2019'),
+    ('>Date:  3/3/19</p>', '03/03/2019'),
+    ('', ''),
+    ('>Date: Afternoon</p>', ''),
+))
+def test_parse_date_field_00(input_, expected):
+    """Ensure a date field gets parsed correctly."""
+    actual = apd.parse_date_field(input_)
+    assert actual == expected
