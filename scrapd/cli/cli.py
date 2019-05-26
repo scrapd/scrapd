@@ -1,13 +1,11 @@
 """Define the top-level cli command."""
 import asyncio
 import logging
-import os
 import sys
 
 import click
 from loguru import logger
 
-from scrapd import config
 from scrapd.cli.base import AbstractCommand
 from scrapd.core import apd
 from scrapd.core.formatter import Formatter
@@ -45,11 +43,6 @@ def cli(ctx, format_, from_, gcontributors, gcredentials, pages, to, verbose):  
     ctx.obj = {**ctx.params}
     ctx.auto_envvar_prefix = 'VZ'
 
-    # Load defaults from configuration file if any.
-    cfg_path = os.path.join(click.get_app_dir(APP_NAME), APP_NAME + '.conf')
-    cfg = cfg_path if os.path.exists(cfg_path) else None
-    ctx.default_map = config.load(cfg, with_defaults=True, validate=True)
-
     # Configure logger.
     INITIAL_LOG_LEVEL = logging.WARNING
     LOG_FORMAT_COMPACT = "<level>{message}</level>"
@@ -81,9 +74,6 @@ class Retrieve(AbstractCommand):
 
     def _execute(self):
         """Define the internal execution of the command."""
-        # Check the params.
-        self.check_params()
-
         # Collect the results.
         results, _ = asyncio.run(apd.async_retrieve(
             self.args['pages'],
@@ -97,15 +87,3 @@ class Retrieve(AbstractCommand):
         format_ = self.args['format_'].lower()
         formatter = Formatter(format_)
         formatter.print(results)
-
-    def check_params(self):
-        """
-        Raise an exception if a custom parameters is invalid or missing.
-
-        This is to avoid collecting all the data then failing due to a missing parameter.
-        """
-        if self.args['format_'].lower() == 'gsheets':
-            if not self.args.get('gcredentials'):
-                raise click.ClickException('Google credentials are required.')
-            if not self.args.get('gcontributors'):
-                raise click.ClickException('At least 1 contributor is required.')

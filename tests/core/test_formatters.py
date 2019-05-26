@@ -1,9 +1,16 @@
 """Test the formatter module."""
 from datetime import date
+import sys
+
 import pytest
 
-from scrapd.core.formatter import Formatter, CountFormatter
-from scrapd.core.formatter import PythonFormatter, CSVFormatter, JSONFormatter
+from scrapd.core.formatter import (
+    CountFormatter,
+    CSVFormatter,
+    Formatter,
+    JSONFormatter,
+    PythonFormatter,
+)
 
 
 class TestFormatter:
@@ -15,34 +22,47 @@ class TestFormatter:
         assert f._get_formatter()
 
     def test_formatter_count(self, capsys):
-        from sys import stdout
-        f = CountFormatter(output=stdout)
+        """Ensure Count formatter returns a number."""
+        f = CountFormatter(output=sys.stdout)
         f.printer(RESULTS)
         out, _ = capsys.readouterr()
-        assert out.strip() == "1"
+        output = out.strip()
+        assert output == "1"
+        assert int(output)
 
     def test_formatter_csv(self, capsys):
         """Ensure some correct text is in the output."""
-        from sys import stdout
-        f = CSVFormatter(output=stdout)
+        f = CSVFormatter(output=sys.stdout)
         f.printer(RESULTS)
         out, _ = capsys.readouterr()
         assert "12/05/2005" in out
 
     def test_formatter_json_date_style(self, capsys):
         """Check that dates are stored in month-first format."""
-        from sys import stdout
-        f = JSONFormatter(output=stdout)
+        f = JSONFormatter(output=sys.stdout)
         f.printer(RESULTS)
         out, _ = capsys.readouterr()
         assert '"DOB": "12/05/2005"' in out
 
     def test_formatter_typeerror(self):
         """Ensure some correct text is in the output."""
-        from sys import stdout
-        f = JSONFormatter(output=stdout)
+        f = JSONFormatter(output=sys.stdout)
         with pytest.raises(TypeError):
             f.printer(RESULTS_BAD_TYPE)
+
+    def test_formatter_python(self, capsys):
+        """Ensure the python formatter displays objects correctly."""
+        f = PythonFormatter(output=sys.stdout)
+        f.printer({'key': 'value'})
+        out, _ = capsys.readouterr()
+        assert out.strip() == "{'key': 'value'}"
+
+    def test_formatter_default(self, capsys):
+        """Ensure the default formatter outputs to stdout."""
+        f = Formatter(format_='default', output=sys.stdout)
+        f.printer(RESULTS)
+        out, _ = capsys.readouterr()
+        assert "'Case': '19-0400694'" in out
 
 
 RESULTS = [

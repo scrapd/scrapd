@@ -13,8 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Refactor the functions parsing the fields to simplify their maintenance.
-- Remove LXML as a dependency. [#]
+- Refactor the functions parsing the fields to simplify their maintenance and improve the quality of the parsing.
+- Remove LXML as a dependency. [#117]
+- Dates are stored internaly as date objects instead of strings. The formatting is delegated to the `Formatters`
+  themselves. [#125]
+- Remove GSheet support. [#]
+
+### Fixed
+
+- Fix parsing of fatalities without date of birth. [#125]
 
 ## [[1.5.1]] - 2019-04-25
 
@@ -131,4 +138,5 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#85]: https://github.com/scrapd/scrapd/pull/85
 [#90]: https://github.com/scrapd/scrapd/pull/90
 [#116]: https://github.com/scrapd/scrapd/pull/116
-[#]: https://github.com/scrapd/scrapd/pull/
+[#117]: https://github.com/scrapd/scrapd/pull/117
+[#125]: https://github.com/scrapd/scrapd/pull/125
