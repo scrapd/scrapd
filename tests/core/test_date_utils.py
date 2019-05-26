@@ -6,8 +6,9 @@ from scrapd.core import date_utils
 
 
 @pytest.mark.parametrize('current,from_,to,expected', [
-    ('Jan 10', 'Jan 1', 'Jan 31', True),
-    ('Jan 1', None, None, True),
+    (datetime.date(2019, 1, 10), datetime.date(2019, 1, 1), datetime.date(2019, 1, 31), True),
+    (datetime.date(2019, 1, 1), datetime.date.min, datetime.date.max, True),
+    (datetime.date(2019, 1, 1), None, None, True),
 ])
 def test_is_between_00(current, from_, to, expected):
     """Ensure a date is in range."""
@@ -27,16 +28,6 @@ def test_parse_date_01():
     """Ensure an invalid date with no default raises an exception."""
     with pytest.raises(Exception):
         date_utils.parse_date('Not a date')
-
-
-@pytest.mark.parametrize('date, dob, expected', [
-    ('Jan 10 2019', False, '01/10/2019'),
-    ('2019-01-10', False, '01/10/2019'),
-    ('10-10-54', True, '10/10/1954'),
-])
-def test_clean_date_string_00(date, dob, expected):
-    """Ensure date string is properly formatted."""
-    assert date_utils.clean_date_string(date, dob) == expected
 
 
 @pytest.mark.parametrize('date, expected', [

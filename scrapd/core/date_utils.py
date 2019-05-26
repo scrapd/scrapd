@@ -8,13 +8,12 @@ def is_before(d1, d2):
     """
     Return True if d1 is strictly before d2.
 
-    :param str d1: date 1
-    :param str d2: date 2
+    :param datetime.date d1: date 1
+    :param datetime.date d2: date 2
     :return: True is d1 is before d2.
     :rtype: bool
     """
-
-    return parse_date(d1) < parse_date(d2)
+    return d1 < d2
 
 
 def check_dob(dob):
@@ -30,21 +29,6 @@ def check_dob(dob):
     if dob.year > now.year:
         dob = datetime.date(dob.year - 100, dob.month, dob.day)
     return dob
-
-
-def clean_date_string(date, is_dob=False):
-    """
-    Parse the date from an unspecified format to the specified format.
-
-    :param str date: date
-    :param boolean is_dob: True if date is DOB, otherwise False
-    :return: a date string in the uniform %m/%d/%Y format.
-    :rtype: str
-    """
-    dt = parse_date(date)
-    if is_dob:
-        dt = check_dob(dt)
-    return datetime.date.strftime(dt, "%m/%d/%Y")
 
 
 def from_date(date):
@@ -107,17 +91,17 @@ def is_between(date, from_=None, to=None):
     """
     Check whether a date is comprised between 2 others.
 
-    :param str date: date to check
-    :param str from_: start date, defaults to None
-    :param str to: end date, defaults to None
+    :param datetime.date date: date to check
+    :param datetime.date from_: start date, defaults to None
+    :param datetime.date to: end date, defaults to None
     :return: `True` if the date is between `from_` and `to`
     :rtype: bool
     """
-    current_date = parse_date(date)
-    from_date_ = from_date(from_)
-    to_date_ = to_date(to)
-
-    return from_date_ <= current_date <= to_date_
+    if not from_:
+        from_ = datetime.date.min
+    if not to:
+        to = datetime.date.max
+    return from_ <= date <= to
 
 
 def compute_age(date, dob):
