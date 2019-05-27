@@ -1,16 +1,7 @@
 """Define the scrapd constants."""
-from abc import ABC
 
 
-class Constant(ABC):
-    """Define the constant class."""
-
-    def __setattr__(self, *_):
-        """Ensure the attributes are read only.."""
-        raise AttributeError('This attribute is read only.')
-
-
-class Fields(Constant):
+class Fields():
     """Define the resource constants."""
 
     AGE = 'Age'

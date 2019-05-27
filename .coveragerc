@@ -2,8 +2,6 @@
 omit =
   *__init__.py
   scrapd/cli/*
-  scrapd/config.py
-  scrapd/core/constant.py
   scrapd/core/version.py
   scrapd/main.py
   scrapd/tests/*
