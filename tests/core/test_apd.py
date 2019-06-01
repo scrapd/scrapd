@@ -608,10 +608,13 @@ def test_extract_twitter_description_meta_00(input_, expected):
     assert actual == expected
 
 
-@pytest.mark.parametrize('input_,expected', (
-    ({
-        "Time": " ",
-    }, {},),
+@pytest.mark.parametrize('input_', (
+    (
+        {
+            "Time": " ",
+        },
+        {},
+    ),
     (
         {
             "Time": 345
@@ -630,8 +633,8 @@ def test_extract_twitter_description_meta_00(input_, expected):
         },
         {},
     ),
-))
+) )
 def test_sanitize_fatality_entity(input_, expected):
     """Ensure."""
-    actual = apd.sanitize_fatality_entity(input_, expected)
+    actual = apd.sanitize_fatality_entity(input_)
     assert actual == expected

@@ -260,12 +260,12 @@ def sanitize_fatality_entity(d):
     :rtype: dict
     """
     # All values must be strings.
-    print('chandu')
     for k, v in d.items():
-        print('chandu')
         print(type(v))
-        # if not v.strip():
-        #     continue
+        if isinstance(v, str):
+            if not v.strip():
+                continue
+        
         if isinstance(v, list):
             d[k] = ' '.join(v)
 
