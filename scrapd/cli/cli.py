@@ -32,13 +32,11 @@ __version__ = detect_from_metadata(APP_NAME)
     show_default=True,
 )
 @click.option('--from', 'from_', help='start date')
-@click.option('--gcontributors', help='comma separated list of contributors')
-@click.option('--gcredentials', type=click.Path(), help='path of the google credentials file')
 @click.option('--pages', default=-1, help='number pages to process')
 @click.option('--to', help='end date')
 @click.option('-v', '--verbose', count=True, help='adjust the log level')
 @click.pass_context
-def cli(ctx, format_, from_, gcontributors, gcredentials, pages, to, verbose):  # noqa: D403
+def cli(ctx, format_, from_, pages, to, verbose):  # noqa: D403
     """Retrieve APD's traffic fatality reports."""
     ctx.obj = {**ctx.params}
     ctx.auto_envvar_prefix = 'VZ'

@@ -344,7 +344,11 @@ def test_parse_deceased_field_00(deceased, expected):
     }),
     (None, {
         'first': None,
-        'last': None
+        'last': None,
+    }),
+    (['Carlos', 'Cardenas', 'Jr.'], {
+        'first': 'Carlos',
+        'last': 'Cardenas',
     }),
 ))
 def test_parse_name(name, expected):
