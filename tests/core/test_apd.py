@@ -634,7 +634,7 @@ def test_extract_twitter_description_meta_00(input_, expected):
         {},
     ),
 ) )
-def test_sanitize_fatality_entity(input_, expected):
+def test_sanitize_fatality_entity(input_):
     """Ensure."""
     actual = apd.sanitize_fatality_entity(input_)
-    assert actual == expected
+    assert actual == ''
