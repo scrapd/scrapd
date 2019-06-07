@@ -306,9 +306,13 @@ def parse_name(name):
     :return: a dictionary representing just the victim's first and last name
     :rtype: dict
     """
+    GENERATIONAL_TITLES = ['jr', 'jr.', 'sr', 'sr.']
     d = {}
     try:
-        d["last"] = name[-1].replace(',', '')
+        for i in range(1, len(name)):
+            d["last"] = name[-i].replace(',', '')
+            if d["last"].lower() not in GENERATIONAL_TITLES:
+                break
         d["first"] = name[0].replace(',', '')
     except (IndexError, TypeError):
         pass
@@ -742,7 +746,15 @@ async def fetch_and_parse(session, url):
 
 
 async def async_retrieve(pages=-1, from_=None, to=None):
-    """Retrieve fatality data."""
+    """
+    Retrieve fatality data.
+
+    :param str pages: number of pages to retrieve or -1 for all
+    :param str from_: the start date
+    :param str to: the end date
+    :return: the list of fatalities and the number of pages that were read.
+    :rtype: tuple
+    """
     res = {}
     page = 1
     has_entries = False
