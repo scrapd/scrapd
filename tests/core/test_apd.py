@@ -313,10 +313,10 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         },
     ),
 ))
-def test_parse_deceased_field_00(deceased, expected):
+def test_process_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""
     d = {}
-    d = apd.parse_deceased_field(deceased)
+    d = apd.process_deceased_field(deceased)
     for key in expected:
         assert d[key] == expected[key]
 
@@ -419,10 +419,10 @@ def test_parse_page_content_00(filename, expected):
 
 
 def test_parse_page_content_01(mocker):
-    """Ensure a `parse_deceased_field` exception is caught and does not propagate."""
+    """Ensure a `process_deceased_field` exception is caught and does not propagate."""
     page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
     page = page_fd.read_text()
-    mocker.patch('scrapd.core.apd.parse_deceased_field', side_effect=ValueError)
+    mocker.patch('scrapd.core.apd.process_deceased_field', side_effect=ValueError)
     result = apd.parse_page_content(page)
     assert len(result) == 6
 
@@ -658,4 +658,19 @@ def test_parse_time_field_00(input_, expected):
 def test_parse_date_field_00(input_, expected):
     """Ensure a date field gets parsed correctly."""
     actual = apd.parse_date_field(input_)
+    assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    ('>Deceased: </strong> Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994</p>', \
+    'Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994'),
+    ('>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70<', \
+    'Cecil Wade Walker, White male, D.O.B. 3-7-70'),
+    ('>Deceased: </span></strong> Halbert Glen Hendricks - Black male - 9-24-78<', \
+    'Halbert Glen Hendricks - Black male - 9-24-78'),
+    ('', ''),
+))
+def test_parse_deceased_field_00(input_, expected):
+    """Ensure the deceased field gets parsed correctly."""
+    actual = apd.parse_deceased_field(input_)
     assert actual == expected
