@@ -674,3 +674,19 @@ def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     actual = apd.parse_deceased_field(input_)
     assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    (
+        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
+        'West William Cannon Drive and Ridge Oak Road',
+    ),
+    (
+        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
+        '183 service road westbound and Payton Gin Rd.',
+    ),
+))
+def test_parse_location_field_00(input_, expected):
+    """Ensure."""
+    actual = apd.parse_location_field(input_)
+    assert actual == expected
