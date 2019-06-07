@@ -160,8 +160,8 @@ Speed and accuracy
 ScrAPD executes all the requests in an asynchronous manner. As a result it goes very fast.
 
 It parses the information using both the text of the report itself and the Twitter tweet stored in the page metadata.
-Combining these two methods provides a high degree of confidence in the parsing and allows us to reach **90% of success
-rate**.
+Combining these two methods provides a high degree of confidence in the parsing and allows us to reach more than
+**95% of success rate**.
 
 Some statistics:
 
@@ -180,6 +180,10 @@ The Austin `Pedestrian Advisory Council <http://austintexas.gov/cityclerk/boards
 used ScrAPD to compile a detailed presentation of the status of the traffic deaths in Austin, TX:
 
 * `2018 PAC retrospective presentation <http://www.austintexas.gov/edims/document.cfm?id=314367>`_
+
+* `Walk Austin <http://www.walkaustintx.org/>`_
+
+See more at `<http://docs.scrapd.org/who-is-using-us/>`_
 
 Related resources
 -----------------
