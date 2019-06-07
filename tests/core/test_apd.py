@@ -312,10 +312,27 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.AGE: 19,
         },
     ),
+    (
+        'Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) ',
+        {
+            Fields.FIRST_NAME: "Ernesto",
+            Fields.LAST_NAME: "Garcia",
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.DOB: date(1977, 11, 15)
+        },
+    ),
+    (
+        'B/F, DOB: 01-01-99',
+        {
+            Fields.ETHNICITY: "Black",
+            Fields.GENDER: "female",
+            Fields.DOB: date(1999, 1, 1)
+        },
+    ),
 ))
 def test_process_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""
-    d = {}
     d = apd.process_deceased_field(deceased)
     for key in expected:
         assert d[key] == expected[key]
