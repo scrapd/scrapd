@@ -290,10 +290,24 @@ def sanitize_fatality_entity(d):
     if d.get('Deceased'):
         del d['Deceased']
 
-    # Lists must be converted to strings.
+    # Ensure the values have the right format.
+    empty_values = []
     for k, v in d.items():
+        # Lists must be converted to strings.
         if isinstance(v, list):
             d[k] = ' '.join(v)
+
+        # Strip the strings.
+        if isinstance(v, str):
+            d[k] = v.strip()
+
+        # Store keys of empty values.
+        if not d[k]:
+            empty_values.append(k)
+
+    # Remove empty values.
+    for key in empty_values:
+        del d[key]
 
     return d
 
