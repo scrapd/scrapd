@@ -264,7 +264,7 @@ def common_fatality_parsing(d):
             deceased_field = ' '.join(deceased_field)
 
         try:
-            d.update(parse_deceased_field(deceased_field))
+            d.update(process_deceased_field(deceased_field))
         except ValueError as e:
             logger.trace(e)
     else:
@@ -341,7 +341,7 @@ def dob_search(split_deceased_field):
     return dob_index
 
 
-def parse_deceased_field(deceased_field):
+def process_deceased_field(deceased_field):
     """
     Parse the deceased field.
 
@@ -511,7 +511,6 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     searches = [
-        (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
     ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
@@ -532,6 +531,11 @@ def parse_page_content(detail_page, notes_parsed=False):
     date_field_str = parse_date_field(normalized_detail_page)
     if date_field_str:
         d[Fields.DATE] = date_utils.parse_date(date_field_str)
+
+    # Parse the `Deceased` field.
+    deceased_field_str = parse_deceased_field(normalized_detail_page)
+    if deceased_field_str:
+        d[Fields.DECEASED] = deceased_field_str
 
     # Parse the `Time` field.
     d[Fields.TIME] = parse_time_field(normalized_detail_page)
@@ -598,6 +602,31 @@ def parse_date_field(page):
     date = match_pattern(page, date_pattern).replace('.', ' ')
     date = search_dates(date)
     return date[0][1].strftime("%m/%d/%Y") if date else ''
+
+
+def parse_deceased_field(page):
+    """
+    Extract content from deceased field on the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the deceased field content.
+    :rtype: str
+    """
+    deceased_pattern = re.compile(
+        r'''
+        >Deceased:      # The name of the desired field.
+        \s*             # Any whitespace character.
+        (?:</span>)?    # Non-capture (literal match).
+        (?:</strong>)?  # Non-capture (literal match).
+        \s*             # Any whitespace character.
+        >?              # Literal match.
+        ([^<]*\d)       # Capture any character/digit except '<'.
+        \s*.*           # Any character/whitespace.
+        \)?<            # Literal match ')' and '<'
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, deceased_pattern)
 
 
 def parse_time_field(page):
