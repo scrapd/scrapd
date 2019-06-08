@@ -12,7 +12,6 @@ import pprint
 import sys
 
 from scrapd.core.constant import Fields
-from scrapd.core.gsheets import GSheets
 
 CSVFIELDS = [
     Fields.CRASHES,
@@ -54,14 +53,27 @@ class Formatter():
         formatter = self.formatters.get(self.format, self)
         return formatter()
 
-    def print(self, results, **kwargs):
+    def print(self, results, **kwargs):  # pragma: no cover
         """
         Print the results with the appropriate formatter.
 
         :param list(dict) results: the results to display.
         """
+        # Coverage is disabled for this function as the fact that we set output to sys.stdout early messes up
+        # with capsys in pytest, and prevent it to capture the out correctly.
+        # https://github.com/pytest-dev/pytest/issues/1132
         formatter = self._get_formatter()
         formatter.printer(results, **kwargs)
+
+    def date_serialize(self, obj):
+        """
+        Convert date objects to string for serialization.
+
+        :rtype: str
+        """
+        if isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.strftime("%m/%d/%Y")
+        raise TypeError("Type %s not serializable" % type(obj))
 
     # pylint: disable=unused-argument
     def printer(self, results, **kwargs):
@@ -71,6 +83,16 @@ class Formatter():
         :param list(dict) results: the results to display.
         """
         print(results, file=self.output)
+
+    def to_json_string(self, results):
+        """
+        Convert dict of parsed fields to JSON string.
+
+        :param results dict: results of scraping APD news site
+
+        :rtype: str
+        """
+        return json.dumps(results, sort_keys=True, indent=2, default=self.date_serialize)
 
 
 class PythonFormatter(Formatter):
@@ -97,7 +119,8 @@ class JSONFormatter(Formatter):
     __format_name__ = 'json'
 
     def printer(self, results, **kwargs):  # noqa: D102
-        print(json.dumps(results, sort_keys=True, indent=2), file=self.output)
+        json_string = self.to_json_string(results)
+        print(json_string, file=self.output)
 
 
 class CSVFormatter(Formatter):
@@ -110,31 +133,11 @@ class CSVFormatter(Formatter):
     __format_name__ = 'csv'
 
     def printer(self, results, **kwargs):  # noqa: D102
+        results = self.to_json_string(results)
+        results = json.loads(results)
         writer = csv.DictWriter(self.output, fieldnames=CSVFIELDS, extrasaction='ignore')
         writer.writeheader()
         writer.writerows(results)
-
-
-class GSheetFormatter(Formatter):
-    """
-    Define the GSheet formatter.
-
-    Stores the results into a Google Sheets document.
-    """
-
-    __format_name__ = 'gsheets'
-
-    def printer(self, results, **kwargs):  # noqa: D102
-        credentials = kwargs.get('gcredentials')
-        if not credentials:
-            raise AttributeError('Google credentials are required.')
-        contributors = kwargs.get('gcontributors', '').split(',')
-        if not contributors:
-            raise AttributeError('At least 1 contributor is required.')
-        gs = GSheets(credentials, contributors)
-        gs.authenticate()
-        gs.create(datetime.datetime.now().strftime('%Y-%m-%d'))
-        gs.add_csv_data(CSVFIELDS, results)
 
 
 class CountFormatter(Formatter):

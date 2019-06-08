@@ -5,6 +5,7 @@ import unicodedata
 from urllib.parse import urljoin
 
 import aiohttp
+from dateparser.search import search_dates
 from loguru import logger
 from tenacity import retry
 from tenacity import stop_after_attempt
@@ -169,25 +170,22 @@ def parse_twitter_description(twitter_description):
             continue
         d.setdefault(current_field, []).append(word)
 
+    # Parse the `Date` field.
+    fatality_date = d.get(Fields.DATE)
+    if fatality_date:
+        # Ensure it is a string.
+        if isinstance(fatality_date, list):
+            fatality_date = ' '.join(fatality_date)
+
+        # Turn it into a date object.
+        d[Fields.DATE] = date_utils.parse_date(fatality_date)
+
     # Handle special case where Date of birth is a token `DOB:`.
     tmp_dob = d.get(Fields.DOB)
     if tmp_dob and isinstance(tmp_dob, list):
-        d[Fields.DOB] = tmp_dob[0]
+        d[Fields.DOB] = date_utils.parse_date(tmp_dob[0])
 
-    # Parse the Deceased field.
-    if d.get(Fields.DECEASED):
-        try:
-            d.update(parse_deceased_field(' '.join(d.get(Fields.DECEASED))))
-        except ValueError as e:
-            logger.trace(e)
-    else:
-        logger.trace('No decease information to parse in Twitter description.')
-
-    # Compute the victim's age.
-    if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = date_utils.compute_age(' '.join(d.get(Fields.DATE)), d.get(Fields.DOB))
-
-    return sanitize_fatality_entity(d)
+    return common_fatality_parsing(d)
 
 
 def parse_details_page_notes(details_page_notes):
@@ -248,31 +246,54 @@ def parse_details_page_notes(details_page_notes):
     return final
 
 
-def sanitize_fatality_entity(d):
+def common_fatality_parsing(d):
     """
-    Clean up a fatality entity.
+    Perform parsing common to Twitter descriptions and page content.
 
     Ensures that the values are all strings and removes the 'Deceased' field which does not contain
     relevant information anymore.
 
-    :param dict d: the fatality to sanitize
+    :param dict d: the fatality to finish parsing
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
-    # All values must be strings.
+    # Extracting other fields from 'Deceased' field.
+    deceased_field = d.get(Fields.DECEASED)
+    if deceased_field:
+        if isinstance(deceased_field, list):
+            deceased_field = ' '.join(deceased_field)
+
+        try:
+            d.update(process_deceased_field(deceased_field))
+        except ValueError as e:
+            logger.trace(e)
+    else:
+        logger.trace('No deceased information to parse in fatality page.')
+
+    # Compute the victim's age.
+    if d.get(Fields.DATE) and d.get(Fields.DOB):
+        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
+
+    return sanitize_fatality_entity(d)
+
+
+def sanitize_fatality_entity(d):
+    """
+    Clean up a fatality entity.
+
+    Removes the 'Deceased' field which does not contain	relevant information anymore.
+
+    :return: A dictionary containing the details information about the fatality with sanitized entries.
+    :rtype: dict
+    """
+    # We do not need the deceased field.
+    if d.get('Deceased'):
+        del d['Deceased']
+
+    # Lists must be converted to strings.
     for k, v in d.items():
         if isinstance(v, list):
             d[k] = ' '.join(v)
-
-    if d.get('Date'):
-        d['Date'] = date_utils.clean_date_string(d['Date'])
-
-    if d.get('DOB'):
-        d['DOB'] = date_utils.clean_date_string(d['DOB'], True)
-
-    # The 'Deceased' field is unnecessary.
-    if d.get('Deceased'):
-        del d['Deceased']
 
     return d
 
@@ -286,9 +307,13 @@ def parse_name(name):
     :return: a dictionary representing just the victim's first and last name
     :rtype: dict
     """
+    GENERATIONAL_TITLES = ['jr', 'jr.', 'sr', 'sr.']
     d = {}
     try:
-        d["last"] = name[-1].replace(',', '')
+        for i in range(1, len(name)):
+            d["last"] = name[-i].replace(',', '')
+            if d["last"].lower() not in GENERATIONAL_TITLES:
+                break
         d["first"] = name[0].replace(',', '')
     except (IndexError, TypeError):
         pass
@@ -358,7 +383,7 @@ def dob_search(split_deceased_field):
     return dob_index
 
 
-def parse_deceased_field(deceased_field):
+def process_deceased_field(deceased_field):
     """
     Parse the deceased field.
 
@@ -387,14 +412,38 @@ def parse_deceased_field(deceased_field):
     except Exception:
         pass
 
+    # Try to parse the deceased fields assuming it contains an age.
+    try:
+        return parse_age_deceased_field(deceased_field)
+    except Exception:
+        pass
+
     raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
+
+
+def parse_age_deceased_field(deceased_field):
+    """
+    Parse deceased field assuming it contains an age.
+
+    :param str deceased_field: the deceased field
+    :return: a dictionary representing the deceased field.
+    :rtype: dict
+    """
+    age_pattern = re.compile(r'([0-9]+) years')
+
+    # Raises AttributeError upon failure.
+    age = re.search(age_pattern, deceased_field).group(1)
+    split_deceased_field = age_pattern.split(deceased_field)
+    d = parse_fleg(split_deceased_field[0].split())
+    d[Fields.AGE] = int(age)
+    return d
 
 
 def parse_comma_delimited_deceased_field(deceased_field):
     """
     Parse deceased fields seperated with commas.
 
-    :param list split_deceased_field: a list representing the deceased field
+    :param str deceased_field: a list representing the deceased field
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
@@ -457,7 +506,8 @@ def parse_deceased_field_common(split_deceased_field, fleg):
 
     # Extract and clean up DOB.
     raw_dob = split_deceased_field[-1].strip()
-    d[Fields.DOB] = date_utils.clean_date_string(raw_dob, True)
+    dob_guess = date_utils.parse_date(raw_dob)
+    d[Fields.DOB] = date_utils.check_dob(dob_guess)
 
     return d
 
@@ -516,10 +566,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     searches = [
-        (Fields.DATE, re.compile(r'>Date:.*\s{2,}(?:</strong>)?([^<]*)</')),
-        (Fields.DECEASED, re.compile(r'>Deceased:\s*(?:</span>)?(?:</strong>)?\s*>?([^<]*\d)\s*.*\)?<')),
         (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
-        (Fields.TIME, re.compile(r'>Time:.*>\s{2,}(?:</strong>)?([^<]+)')),
     ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
     for search in searches:
@@ -535,14 +582,18 @@ def parse_page_content(detail_page, notes_parsed=False):
     # Parse the `Crashes` field.
     d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
 
+    # Parse the `Date` field.
+    date_field_str = parse_date_field(normalized_detail_page)
+    if date_field_str:
+        d[Fields.DATE] = date_utils.parse_date(date_field_str)
+
     # Parse the `Deceased` field.
-    if d.get(Fields.DECEASED):
-        try:
-            d.update(parse_deceased_field(d.get(Fields.DECEASED)))
-        except ValueError as e:
-            logger.trace(e)
-    else:
-        logger.trace('No deceased information to parse in fatality page.')
+    deceased_field_str = parse_deceased_field(normalized_detail_page)
+    if deceased_field_str:
+        d[Fields.DECEASED] = deceased_field_str
+
+    # Parse the `Time` field.
+    d[Fields.TIME] = parse_time_field(normalized_detail_page)
 
     # Fill in Notes from Details page if not in twitter description.
     search_notes = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
@@ -551,11 +602,7 @@ def parse_page_content(detail_page, notes_parsed=False):
         text_chunk = match.string[match.start(0):match.end(0)]
         d[Fields.NOTES] = parse_details_page_notes(text_chunk)
 
-    # Compute the victim's age.
-    if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
-
-    return sanitize_fatality_entity(d)
+    return common_fatality_parsing(d)
 
 
 def parse_case_field(page):
@@ -587,6 +634,77 @@ def parse_crashes_field(page):
     """
     crashes_pattern = re.compile(r'Traffic Fatality #(\d{1,3})')
     return match_pattern(page, crashes_pattern)
+
+
+def parse_date_field(page):
+    """
+    Extract the date from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the date.
+    :rtype: str
+    """
+    date_pattern = re.compile(
+        r'''
+        >Date:          # The name of the desired field.
+        .*\s{2,}        # Any character and whitespace.
+        (?:</strong>)?  # Non-capture (literal match).
+        ([^<]*)         # Capture any character except '<'.
+        <               # Non-capture (literal match)
+        ''',
+        re.VERBOSE,
+    )
+    date = match_pattern(page, date_pattern).replace('.', ' ')
+    date = search_dates(date)
+    return date[0][1].strftime("%m/%d/%Y") if date else ''
+
+
+def parse_deceased_field(page):
+    """
+    Extract content from deceased field on the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the deceased field content.
+    :rtype: str
+    """
+    deceased_pattern = re.compile(
+        r'''
+        >Deceased:      # The name of the desired field.
+        \s*             # Any whitespace character.
+        (?:</span>)?    # Non-capture (literal match).
+        (?:</strong>)?  # Non-capture (literal match).
+        \s*             # Any whitespace character.
+        >?              # Literal match.
+        ([^<]*\d)       # Capture any character/digit except '<'.
+        \s*.*           # Any character/whitespace.
+        \)?<            # Literal match ')' and '<'
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, deceased_pattern)
+
+
+def parse_time_field(page):
+    """
+    Extract the time from the content of the fatality page.
+
+    :param str page: the content of the fatality page
+    :return: a string representing the time.
+    :rtype: str
+    """
+    time_pattern = re.compile(
+        r'''
+        Time:                             # The name of the desired field.
+        \D*?                              # Any non-digit character (lazy).
+        ((?:0?[1-9]|1[0-2]):[0-5]\d       # 12h format.
+        \s*                               # Any whitespace (zero-unlimited).
+        [AaPp]\.?[Mm]\.?                  # AM/PM variations.
+        |                                 # OR
+        (?:[01]?[0-9]|2[0-3]):[0-5][0-9]) # 24h format.
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, time_pattern)
 
 
 def match_pattern(text, pattern, group_number=0):
@@ -712,13 +830,23 @@ async def fetch_and_parse(session, url):
 
 
 async def async_retrieve(pages=-1, from_=None, to=None):
-    """Retrieve fatality data."""
+    """
+    Retrieve fatality data.
+
+    :param str pages: number of pages to retrieve or -1 for all
+    :param str from_: the start date
+    :param str to: the end date
+    :return: the list of fatalities and the number of pages that were read.
+    :rtype: tuple
+    """
     res = {}
     page = 1
     has_entries = False
     no_date_within_range_count = 0
+    from_date = date_utils.from_date(from_)
+    to_date = date_utils.to_date(to)
 
-    logger.debug(f'Retrieving fatalities from {date_utils.from_date(from_)} to {date_utils.to_date(to)}.')
+    logger.debug(f'Retrieving fatalities from {from_date} to {to_date}.')
 
     async with aiohttp.ClientSession() as session:
         while True:
@@ -743,7 +871,7 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [
-                    entry for entry in page_res if date_utils.is_in_range(entry[Fields.DATE], from_, to)
+                    entry for entry in page_res if date_utils.is_between(entry[Fields.DATE], from_date, to_date)
                 ]
 
                 # If 2 pages in a row:
@@ -751,8 +879,8 @@ async def async_retrieve(pages=-1, from_=None, to=None):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                if from_ and all([date_utils.is_posterior(entry[Fields.DATE], from_)
-                                  for entry in page_res]) and not has_entries:
+                past_entries = all([date_utils.is_before(entry[Fields.DATE], from_date) for entry in page_res])
+                if from_ and past_entries and not has_entries:
                     no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
                     logger.debug(f'{len(entries_in_time_range)} fatality page(s) within the specified time range.')
