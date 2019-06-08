@@ -533,7 +533,9 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.DATE] = date_utils.parse_date(date_field_str)
 
     # Parse the `Deceased` field.
-    d[Fields.DECEASED] = parse_deceased_field(normalized_detail_page)
+    deceased_field_str = parse_deceased_field(normalized_detail_page)
+    if deceased_field_str:
+        d[Fields.DECEASED] = deceased_field_str
 
     # Parse the `Time` field.
     d[Fields.TIME] = parse_time_field(normalized_detail_page)
