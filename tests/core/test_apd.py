@@ -673,6 +673,41 @@ def test_parse_date_field_00(input_, expected):
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     actual = apd.parse_deceased_field(input_)
+
+
+@pytest.mark.parametrize('input_,expected', (
+    (
+        {
+            'Time': 345
+        },
+        {
+            'Time': 345
+        },
+    ),
+    (
+        {
+            'Time': ['123', '345']
+        },
+        {
+            'Time': '123 345'
+        },
+    ),
+    (
+        {
+            'Time': ' '
+        },
+        {},
+    ),
+    (
+        {
+            'Time': None
+        },
+        {},
+    ),
+))
+def test_sanitize_fatality_entity(input_, expected):
+    """Ensure field values are sanitized."""
+    actual = apd.sanitize_fatality_entity(input_)
     assert actual == expected
 
 
