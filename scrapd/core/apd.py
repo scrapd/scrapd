@@ -496,14 +496,18 @@ def parse_fleg(fleg):
     d = {}
     try:
         d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
-        if d.get(Fields.GENDER) == 'f':
+        if d.get(Fields.GENDER, '').lower() == 'f':
             d[Fields.GENDER] = 'female'
-        elif d.get(Fields.GENDER) == 'm':
+        elif d.get(Fields.GENDER, '').lower() == 'm':
             d[Fields.GENDER] = 'male'
 
         d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-        if d.get(Fields.ETHNICITY) == 'W':
+        if d.get(Fields.ETHNICITY, '').lower() == 'w':
             d[Fields.ETHNICITY] = 'White'
+        elif d.get(Fields.ETHNICITY, '').lower() == 'h':
+            d[Fields.ETHNICITY] = 'Hispanic'
+        elif d.get(Fields.ETHNICITY, '').lower() == 'b':
+            d[Fields.ETHNICITY] = 'Black'
     except IndexError:
         pass
 
