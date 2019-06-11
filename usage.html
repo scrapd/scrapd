@@ -1,12 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Detailed usage &#8212; scrapd 1.5.1 documentation</title>
+    <meta charset="utf-8" />
+    <title>Detailed usage &#8212; scrapd 2.0.0 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -57,18 +55,6 @@
 </dd></dl>
 
 <dl class="option">
-<dt id="cmdoption-scrapd-gcontributors">
-<code class="descname">--gcontributors</code><code class="descclassname"> &lt;gcontributors&gt;</code><a class="headerlink" href="#cmdoption-scrapd-gcontributors" title="Permalink to this definition">¶</a></dt>
-<dd><p>comma separated list of contributors</p>
-</dd></dl>
-
-<dl class="option">
-<dt id="cmdoption-scrapd-gcredentials">
-<code class="descname">--gcredentials</code><code class="descclassname"> &lt;gcredentials&gt;</code><a class="headerlink" href="#cmdoption-scrapd-gcredentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>path of the google credentials file</p>
-</dd></dl>
-
-<dl class="option">
 <dt id="cmdoption-scrapd-pages">
 <code class="descname">--pages</code><code class="descclassname"> &lt;pages&gt;</code><a class="headerlink" href="#cmdoption-scrapd-pages" title="Permalink to this definition">¶</a></dt>
 <dd><p>number pages to process</p>
@@ -97,19 +83,19 @@
 results by specifying simple options.</p>
 <p>Available formats are:</p>
 <ul class="simple">
-<li><cite>Count</cite>: is a special format which simply counts the number of fatalities within the time range.</li>
-<li><cite>CSV</cite>: is a delimited text file that uses a comma to separate values.</li>
-<li><cite>JSON</cite>: is an open-standard file format that uses human-readable text to transmit data
-objects consisting of attribute–value pairs and array data types.</li>
-<li><cite>GSheets</cite>: allows you to populate a Google Spreasheet with the retrieved data.</li>
-<li><cite>Python</cite>: displays the data in a way that is directly usable in Python.</li>
+<li><p><cite>Count</cite>: is a special format which simply counts the number of fatalities within the time range.</p></li>
+<li><p><cite>CSV</cite>: is a delimited text file that uses a comma to separate values.</p></li>
+<li><p><cite>JSON</cite>: is an open-standard file format that uses human-readable text to transmit data
+objects consisting of attribute–value pairs and array data types.</p></li>
+<li><p><cite>GSheets</cite>: allows you to populate a Google Spreasheet with the retrieved data.</p></li>
+<li><p><cite>Python</cite>: displays the data in a way that is directly usable in Python.</p></li>
 </ul>
 <p>If <cite>gsheets</cite> is selected, you must also specify the path of the credentials file using the <cite>–gcredentials</cite> flag,
 and the list of contributors to your document with <cite>–gcontributors</cite>. Contributors are defined as a comma separated
 list of <cite>&lt;account&gt;:&lt;type&gt;:&lt;role&gt;</cite>, for instance <cite>‘alice&#64;gmail.com:user:owner,bob&#64;gmail.com:user:writer’</cite>.</p>
 <ul class="simple">
-<li>Valid account types are: <cite>user</cite>, <cite>group</cite>, <cite>domain</cite>, <cite>anyone</cite>.</li>
-<li>Valid roles: <cite>owner</cite>, <cite>writer</cite>, <cite>reader</cite>.</li>
+<li><p>Valid account types are: <cite>user</cite>, <cite>group</cite>, <cite>domain</cite>, <cite>anyone</cite>.</p></li>
+<li><p>Valid roles: <cite>owner</cite>, <cite>writer</cite>, <cite>reader</cite>.</p></li>
 </ul>
 <p><cite>page</cite> is a way to limit the number of results by specifying of many APD news pages to parse. For instance, using
 <cite>–pages 5</cite> means parsing the results until the URL <a class="reference external" href="https://austintexas.gov/department/news/296?page=4">https://austintexas.gov/department/news/296?page=4</a> is reached.
@@ -117,12 +103,11 @@ The results of the specified page are included. In that case, the valid results 
 <p>The <cite>from</cite> and <cite>to</cite> options allow you to specify dates to filter the results. The values you define for these
 bounderies will be included in the results. Now there are a few rules:</p>
 <ul>
-<li><p class="first"><cite>from</cite></p>
+<li><p><cite>from</cite></p>
 <blockquote>
 <div><ul>
-<li><p class="first">omitting <cite>from</cite> means using <cite>Jan 1 1</cite> as the start date.</p>
-</li>
-<li><div class="first line-block">
+<li><p>omitting <cite>from</cite> means using <cite>Jan 1 1</cite> as the start date.</p></li>
+<li><div class="line-block">
 <div class="line">in the <cite>from</cite> date, the <strong>first</strong> day of the month is used by default. <cite>Jan 2019</cite> will be interpreted as</div>
 <div class="line"><cite>Jan 1 2019</cite>.</div>
 </div>
@@ -130,12 +115,11 @@ bounderies will be included in the results. Now there are a few rules:</p>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><cite>to</cite></p>
+<li><p><cite>to</cite></p>
 <blockquote>
 <div><ul>
-<li><p class="first">omiting <cite>to</cite> means using <cite>Dec 31 9999</cite> as the end date.</p>
-</li>
-<li><div class="first line-block">
+<li><p>omiting <cite>to</cite> means using <cite>Dec 31 9999</cite> as the end date.</p></li>
+<li><div class="line-block">
 <div class="line">in the <cite>to</cite> date, the <strong>last</strong> day of the month is used by default. <cite>Jan 2019</cite> will be interpreted as</div>
 <div class="line"><cite>Jan 31 2019</cite>.</div>
 </div>
@@ -143,10 +127,10 @@ bounderies will be included in the results. Now there are a few rules:</p>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first"><cite>both</cite></p>
+<li><p><cite>both</cite></p>
 <blockquote>
 <div><ul>
-<li><div class="first line-block">
+<li><div class="line-block">
 <div class="line">only using the year will be replaced by the current day and month of the year you specified.</div>
 <div class="line"><cite>2017</cite> will be interpreted as <cite>Jan 20 2017</cite>.</div>
 </div>
@@ -158,10 +142,10 @@ bounderies will be included in the results. Now there are a few rules:</p>
 <p>The log level can be adjusted by adding/removing <cite>-v</cite> flags:</p>
 <blockquote>
 <div><ul class="simple">
-<li>None: Initial log level is WARNING.</li>
-<li>-v: INFO</li>
-<li>-vv: DEBUG</li>
-<li>-vvv: TRACE</li>
+<li><p>None: Initial log level is WARNING.</p></li>
+<li><p>-v: INFO</p></li>
+<li><p>-vv: DEBUG</p></li>
+<li><p>-vvv: TRACE</p></li>
 </ul>
 </div></blockquote>
 <p>For 2 <cite>-v</cite> and more, the log format also changes from compact to verbose.</p>
@@ -242,8 +226,6 @@ It is a good practice to mount it as read-only.</p>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -256,7 +238,7 @@ It is a good practice to mount it as read-only.</p>
       &copy;2019, Rémy Greinhofer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
       
       |
       <a href="_sources/usage.rst.txt"
