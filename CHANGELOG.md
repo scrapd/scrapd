@@ -7,21 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[2.0.0]] - 2019-06-11
+
 ### Added
 
-- Add retries around functions fecthing data from remote sources. [#116]
+- Add retries around functions fecthing data from remote sources to increase reliability. [#116]
 
 ### Changed
 
-- Refactor the functions parsing the fields to simplify their maintenance and improve the quality of the parsing.
-- Remove LXML as a dependency. [#117]
+- Refactor the functions parsing the fields to simplify their maintenance and improve the overall quality of the parsing.
+- Remove LXML as a dependency. [#117] [#132] [#136] [#138]
 - Dates are stored internaly as date objects instead of strings. The formatting is delegated to the `Formatters`
   themselves. [#125]
-- Remove GSheet support. [#]
+- Remove GSheet support. [#133]
 
 ### Fixed
 
 - Fix parsing of fatalities without date of birth. [#125]
+- Fix parsing names with generation suffixes. [#137]
+- Skip fields with empty values. [#139]
+- Fix parsing short ethnicities in deceased fields. [#140]
 
 ## [[1.5.1]] - 2019-04-25
 
@@ -115,6 +120,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [1.4.2]: https://github.com/scrapd/scrapd/releases/1.4.2
 [1.5.0]: https://github.com/scrapd/scrapd/releases/1.5.0
 [1.5.1]: https://github.com/scrapd/scrapd/releases/1.5.1
+[2.0.0]: https://github.com/scrapd/scrapd/releases/2.0.0
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/scrapd/scrapd/issues/13
@@ -140,3 +146,10 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#116]: https://github.com/scrapd/scrapd/pull/116
 [#117]: https://github.com/scrapd/scrapd/pull/117
 [#125]: https://github.com/scrapd/scrapd/pull/125
+[#132]: https://github.com/scrapd/scrapd/pull/132
+[#133]: https://github.com/scrapd/scrapd/pull/133
+[#136]: https://github.com/scrapd/scrapd/pull/136
+[#137]: https://github.com/scrapd/scrapd/pull/137
+[#138]: https://github.com/scrapd/scrapd/pull/138
+[#139]: https://github.com/scrapd/scrapd/pull/139
+[#140]: https://github.com/scrapd/scrapd/pull/140
