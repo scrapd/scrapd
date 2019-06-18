@@ -10,7 +10,7 @@ TAG ?= $(shell git describe)
 
 # Misc.
 TOPDIR = $(shell git rev-parse --show-toplevel)
-YAPF_EXCLUDE=*.eggs/*,*.tox/*,*venv/*
+YAPF_EXCLUDE=*.eggs/*,*.tox/*,*venv/*,*.nox/*
 TWINE_REPO =
 
 # Docker.
@@ -46,7 +46,8 @@ build-docker: Dockerfile ## Build a docker development image
 	@docker build -t $(DOCKER_IMG) .
 
 .PHONY: ci
-ci: docs lint test
+ci:
+	$(RUN_CMD) tox -e docs,flake8,pydocstyle,pylint,yapf,py37
 
 .PHONY: docs
 docs: venv ## Ensure the documentation builds
