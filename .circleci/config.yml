@@ -7,7 +7,7 @@ defaults: &defaults
   working_directory: *working_directory
 
 repo_cache_key: &repo_cache_key
-  deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+  deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}.0
 
 version: 2
 jobs:
