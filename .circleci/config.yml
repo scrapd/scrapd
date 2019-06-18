@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: *repo_cache_key
+          key: *repo_cache_key
       - run:
           name: prepare environment
           command: |
