@@ -7,7 +7,7 @@ defaults: &defaults
   working_directory: *working_directory
 
 repo_cache_key: &repo_cache_key
-  deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+  deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}.0
 
 version: 2
 jobs:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: *repo_cache_key
+          key: *repo_cache_key
       - run:
           name: prepare environment
           command: |
