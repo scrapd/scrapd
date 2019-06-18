@@ -3,7 +3,7 @@ working_directory: &working_directory
 
 defaults: &defaults
   docker:
-    - image: circleci/python:3.7.2-stretch-node
+    - image: circleci/python:3.7.3-stretch-node
   working_directory: *working_directory
 
 repo_cache_key: &repo_cache_key
@@ -19,14 +19,22 @@ jobs:
           keys: *repo_cache_key
       - run:
           name: prepare environment
-          command: make venv
+          command: |
+            python -m venv venv
+            source venv/bin/activate
+            pip install --upgrade pip
+            pip install nox coveralls
+            nox --install-only -s lint-format lint docs test-units test-integrations
       - save_cache:
           paths:
-            - ./venv
+            - .nox
+            - venv
           key: *repo_cache_key
       - persist_to_workspace:
           root: *working_directory
-          paths: venv/*
+          paths:
+            - .nox/*
+            - venv/*
 
   format:
     <<: *defaults
@@ -36,7 +44,9 @@ jobs:
           at: *working_directory
       - run:
           name: check formatter
-          command: make lint-format
+          command: |
+            source venv/bin/activate
+            nox -s lint-format
 
   lint:
     <<: *defaults
@@ -46,7 +56,9 @@ jobs:
           at: *working_directory
       - run:
           name: run linters
-          command: make lint
+          command: |
+            source venv/bin/activate
+            nox -s lint
 
   docs:
     <<: *defaults
@@ -56,7 +68,9 @@ jobs:
           at: *working_directory
       - run:
           name: run doc tests
-          command: make docs
+          command: |
+            source venv/bin/activate
+            nox -s docs
 
   test-units:
     <<: *defaults
@@ -67,9 +81,9 @@ jobs:
       - run:
           name: run unit tests
           command: |
-            make test-units
-            venv/bin/pip install coveralls
-            venv/bin/coveralls
+            source venv/bin/activate
+            nox -s test-units
+            coveralls
       - store_test_results:
           path: test-results
   test-integrations:
@@ -81,7 +95,8 @@ jobs:
       - run:
           name: run integration tests
           command: |
-            make test-integrations
+            source venv/bin/activate
+            nox -s test-integrations
 
   publish:
     <<: *defaults

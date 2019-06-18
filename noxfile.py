@@ -27,6 +27,7 @@ def ci(session):
     session.install('-rrequirements-dev.txt')
     session.install('.')
     run_sphinx(session)
+    run_yapf(session, True)
     run_all_linters(session)
     run_pytest_units(session)
     run_pytest_integrations(session)
@@ -146,7 +147,6 @@ def run_all_linters(session):
     run_flake8(session)
     run_pydocstyle(session)
     run_pylint(session)
-    run_yapf(session, True)
 
 
 def run_flake8(session):
