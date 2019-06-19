@@ -321,7 +321,8 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.GENDER: "male",
             Fields.DOB: date(1966, 8, 30)
         },
-)))
+    ),
+))
 def test_process_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""
     d = {}
