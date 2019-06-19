@@ -3,16 +3,20 @@
 Developer setup
 ---------------
 
+You will need Python 3 and `nox`::
+
+  pip3 install --user nox
+
 Setup a local dev environment::
 
-  make venv
+  nox --envdir .
   source venv/bin/activate
 
 Run the CI tasks locally ::
 
-  make ci
+  nox -s ci
 
-Use `make help` to see all the available make targets.
+Use `nox --list` to see all the available targets.
 
 Testing
 -------

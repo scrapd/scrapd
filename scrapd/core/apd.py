@@ -290,15 +290,28 @@ def sanitize_fatality_entity(d):
     if d.get('Deceased'):
         del d['Deceased']
 
-    # Lists must be converted to strings.
+    # Ensure the values have the right format.
+    empty_values = []
     for k, v in d.items():
+        # Lists must be converted to strings.
         if isinstance(v, list):
             d[k] = ' '.join(v)
+
+        # Strip the strings.
+        if isinstance(v, str):
+            d[k] = v.strip()
+
+        # Store keys of empty values.
+        if not d[k]:
+            empty_values.append(k)
+
+    # Remove empty values.
+    for key in empty_values:
+        del d[key]
 
     return d
 
 
-<<<<<<< HEAD
 def parse_name(name):
     """
     Parse the victim's name.
@@ -321,54 +334,17 @@ def parse_name(name):
 
 
 def parse_deceased_field(deceased_field):
-||||||| merged common ancestors
-def parse_deceased_field(deceased_field):
-=======
-def parse_name(name):
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
     """
     Parse the victim's name.
 
-<<<<<<< HEAD
     At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
     Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
 
     :param str deceased_field: the deceased field from the fatality report
     :return: a dictionary representing a deceased field.
-||||||| merged common ancestors
-    At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
-    Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
-
-    :param list deceased_field: a list where each item is a word from the deceased field
-    :return: a dictionary representing a deceased field.
-=======
-    :param list name: a list reprenting the deceased person's full name split on space characters
-    :return: a dictionary representing just the victim's first and last name
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
     :rtype: dict
     """
-<<<<<<< HEAD
     deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
-||||||| merged common ancestors
-=======
-    d = {}
-    try:
-        d["last"] = name[-1].replace(',', '')
-        d["first"] = name[0].replace(',', '')
-    except (IndexError, TypeError):
-        pass
-    return d
-
-
-def dob_search(split_deceased_field):
-    """
-    Search for the DOB in a deceased field.
-
-    :param list split_deceased_field: a list representing the deceased field
-    :return: the DOB index within the split deceased field.
-    :rtype: int
-    """
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
     dob_index = -1
     dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
     while dob_index < 0 and dob_tokens:
@@ -524,35 +500,26 @@ def parse_fleg(fleg):
     d = {}
     try:
         d[Fields.GENDER] = fleg.pop().replace(',', '').lower()
-        if d.get(Fields.GENDER) == 'f':
+        if d.get(Fields.GENDER, '').lower() == 'f':
             d[Fields.GENDER] = 'female'
-        elif d.get(Fields.GENDER) == 'm':
+        elif d.get(Fields.GENDER, '').lower() == 'm':
             d[Fields.GENDER] = 'male'
 
         d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-<<<<<<< HEAD
-||||||| merged common ancestors
         d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
         d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
-=======
-        if d.get(Fields.ETHNICITY) == 'W':
+        if d.get(Fields.ETHNICITY, '').lower() == 'w':
             d[Fields.ETHNICITY] = 'White'
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
+        elif d.get(Fields.ETHNICITY, '').lower() == 'h':
+            d[Fields.ETHNICITY] = 'Hispanic'
+        elif d.get(Fields.ETHNICITY, '').lower() == 'b':
+            d[Fields.ETHNICITY] = 'Black'
     except IndexError:
         pass
 
-<<<<<<< HEAD
     name = parse_name(fleg)
     d[Fields.LAST_NAME] = name.get("last", '')
     d[Fields.FIRST_NAME] = name.get("first", '')
-||||||| merged common ancestors
-=======
-    name = parse_name(fleg)
-    if name.get("last"):
-        d[Fields.LAST_NAME] = name.get("last", '')
-    if name.get("first"):
-        d[Fields.FIRST_NAME] = name.get("first", '')
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
     return d
 
 
@@ -565,14 +532,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     :rtype: dict
     """
     d = {}
-    searches = [
-        (Fields.LOCATION, re.compile(r'>Location:.*>\s{2,}(?:</strong>)?([^<]+)')),
-    ]
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
-    for search in searches:
-        match = re.search(search[1], normalized_detail_page)
-        if match:
-            d[search[0]] = match.groups()[0]
 
     # Parse the `Case` field.
     d[Fields.CASE] = parse_case_field(normalized_detail_page)
@@ -580,7 +540,9 @@ def parse_page_content(detail_page, notes_parsed=False):
         raise ValueError('A case number is mandatory.')
 
     # Parse the `Crashes` field.
-    d[Fields.CRASHES] = parse_crashes_field(normalized_detail_page)
+    crash_str = parse_crashes_field(normalized_detail_page)
+    if crash_str:
+        d[Fields.CRASHES] = crash_str
 
     # Parse the `Date` field.
     date_field_str = parse_date_field(normalized_detail_page)
@@ -593,7 +555,14 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.DECEASED] = deceased_field_str
 
     # Parse the `Time` field.
-    d[Fields.TIME] = parse_time_field(normalized_detail_page)
+    time_str = parse_time_field(normalized_detail_page)
+    if time_str:
+        d[Fields.TIME] = time_str
+
+    # Parse the location field.
+    location_str = parse_location_field(normalized_detail_page)
+    if location_str:
+        d[Fields.LOCATION] = location_str
 
     # Fill in Notes from Details page if not in twitter description.
     search_notes = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
@@ -705,6 +674,27 @@ def parse_time_field(page):
         re.VERBOSE,
     )
     return match_pattern(page, time_pattern)
+
+
+def parse_location_field(page):
+    """
+    Extract the location information from the content of the fatality page.
+
+    :param page: the content of the fatality page
+    :type page: str
+    """
+    location_pattern = re.compile(
+        r'''
+        >Location:      # The name of the desired field.
+        .*              # Any character
+        >               # The '>' character
+        \s{2,}          # Any whitespace (at least 2)
+        (?:</strong>)   # Non capture closing strong tag
+        ?([^<]+)        # Capture any character except '<'.
+        ''',
+        re.VERBOSE,
+    )
+    return match_pattern(page, location_pattern)
 
 
 def match_pattern(text, pattern, group_number=0):

@@ -243,7 +243,6 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     assert actual == expected
 
 
-<<<<<<< HEAD
 @pytest.mark.parametrize('deceased,expected', (
     ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
         Fields.LAST_NAME: "Tamez",
@@ -302,124 +301,6 @@ def test_parse_name(name, expected):
     assert parsed.get("last") == expected["last"]
 
 
-||||||| merged common ancestors
-=======
-@pytest.mark.parametrize('deceased,expected', (
-    ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
-        Fields.FIRST_NAME: "Rosbel",
-        Fields.LAST_NAME: "Tamez",
-        Fields.ETHNICITY: "Hispanic",
-        Fields.GENDER: "male",
-        Fields.DOB: date(1954, 10, 10),
-    }),
-    ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
-        Fields.FIRST_NAME: "Eva",
-        Fields.LAST_NAME: "Gonzales",
-        Fields.ETHNICITY: "White",
-        Fields.GENDER: 'female',
-        Fields.DOB: date(1961, 1, 22),
-    }),
-    (
-        'DOB: 01-01-99',
-        {
-            Fields.DOB: date(1999, 1, 1),
-        },
-    ),
-    (
-        'Wing Cheung Chou | Asian male | 08/01/1949',
-        {
-            Fields.FIRST_NAME: "Wing",
-            Fields.LAST_NAME: "Chou",
-            Fields.ETHNICITY: "Asian",
-            Fields.GENDER: "male",
-            Fields.DOB: date(1949, 8, 1),
-        },
-    ),
-    (
-        'Christopher M Peterson W/M 10-8-1981',
-        {
-            Fields.FIRST_NAME: "Christopher",
-            Fields.LAST_NAME: "Peterson",
-            Fields.ETHNICITY: "White",
-            Fields.GENDER: "male",
-            Fields.DOB: date(1981, 10, 8),
-        },
-    ),
-    (
-        'Luis Angel Tinoco, Hispanic male (11-12-07',
-        {
-            Fields.FIRST_NAME: "Luis",
-            Fields.LAST_NAME: "Tinoco",
-            Fields.ETHNICITY: "Hispanic",
-            Fields.GENDER: "male",
-            Fields.DOB: date(2007, 11, 12)
-        },
-    ),
-    (
-        'Ronnie Lee Hall, White male, 8-28-51',
-        {
-            Fields.FIRST_NAME: "Ronnie",
-            Fields.LAST_NAME: "Hall",
-            Fields.ETHNICITY: "White",
-            Fields.GENDER: "male",
-            Fields.DOB: date(1951, 8, 28)
-        },
-    ),
-    (
-        'Hispanic male, 19 years of age',
-        {
-            Fields.ETHNICITY: "Hispanic",
-            Fields.GENDER: "male",
-            Fields.AGE: 19,
-        },
-    ),
-))
-def test_process_deceased_field_00(deceased, expected):
-    """Ensure a deceased field is parsed correctly."""
-    d = {}
-    d = apd.process_deceased_field(deceased)
-    for key in expected:
-        assert d[key] == expected[key]
-
-
-@pytest.mark.parametrize('name,expected', (
-    (['Jonathan,', 'Garcia-Pineda,'], {
-        'first': 'Jonathan',
-        'last': 'Garcia-Pineda'
-    }),
-    (['Rosbel', '“Rudy”', 'Tamez'], {
-        'first': 'Rosbel',
-        'last': 'Tamez'
-    }),
-    (['Christopher', 'M', 'Peterson'], {
-        'first': 'Christopher',
-        'last': 'Peterson'
-    }),
-    (['David', 'Adam', 'Castro,'], {
-        'first': 'David',
-        'last': 'Castro'
-    }),
-    (['Delta', 'Olin,'], {
-        'first': 'Delta',
-        'last': 'Olin'
-    }),
-    (None, {
-        'first': None,
-        'last': None,
-    }),
-    (['Carlos', 'Cardenas', 'Jr.'], {
-        'first': 'Carlos',
-        'last': 'Cardenas',
-    }),
-))
-def test_parse_name(name, expected):
-    """Ensure parser finds the first and last name given the full name."""
-    parsed = apd.parse_name(name)
-    assert parsed.get("first") == expected["first"]
-    assert parsed.get("last") == expected["last"]
-
-
->>>>>>> 61b11f2624c5245bb4b37b278a29cc3b56dcb855
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""
     news_page = """
@@ -735,4 +616,55 @@ def test_parse_date_field_00(input_, expected):
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     actual = apd.parse_deceased_field(input_)
+
+
+@pytest.mark.parametrize('input_,expected', (
+    (
+        {
+            'Time': 345
+        },
+        {
+            'Time': 345
+        },
+    ),
+    (
+        {
+            'Time': ['123', '345']
+        },
+        {
+            'Time': '123 345'
+        },
+    ),
+    (
+        {
+            'Time': ' '
+        },
+        {},
+    ),
+    (
+        {
+            'Time': None
+        },
+        {},
+    ),
+))
+def test_sanitize_fatality_entity(input_, expected):
+    """Ensure field values are sanitized."""
+    actual = apd.sanitize_fatality_entity(input_)
+    assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    (
+        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
+        'West William Cannon Drive and Ridge Oak Road',
+    ),
+    (
+        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
+        '183 service road westbound and Payton Gin Rd.',
+    ),
+))
+def test_parse_location_field_00(input_, expected):
+    """Ensure."""
+    actual = apd.parse_location_field(input_)
     assert actual == expected
