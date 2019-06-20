@@ -339,7 +339,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.DOB: date(1999, 1, 1)
         },
     ),
-))
+)
 def test_process_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""
     d = apd.process_deceased_field(deceased)
