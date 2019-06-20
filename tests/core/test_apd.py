@@ -322,10 +322,26 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.DOB: date(1966, 8, 30)
         },
     ),
+        'Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) ',
+        {
+            Fields.FIRST_NAME: "Ernesto",
+            Fields.LAST_NAME: "Garcia",
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.DOB: date(1977, 11, 15)
+        },
+    ),
+    (
+        'B/F, DOB: 01-01-99',
+        {
+            Fields.ETHNICITY: "Black",
+            Fields.GENDER: "female",
+            Fields.DOB: date(1999, 1, 1)
+        },
+    ),
 ))
 def test_process_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""
-    d = {}
     d = apd.process_deceased_field(deceased)
     for key in expected:
         assert d[key] == expected[key]
@@ -683,4 +699,55 @@ def test_parse_date_field_00(input_, expected):
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     actual = apd.parse_deceased_field(input_)
+
+
+@pytest.mark.parametrize('input_,expected', (
+    (
+        {
+            'Time': 345
+        },
+        {
+            'Time': 345
+        },
+    ),
+    (
+        {
+            'Time': ['123', '345']
+        },
+        {
+            'Time': '123 345'
+        },
+    ),
+    (
+        {
+            'Time': ' '
+        },
+        {},
+    ),
+    (
+        {
+            'Time': None
+        },
+        {},
+    ),
+))
+def test_sanitize_fatality_entity(input_, expected):
+    """Ensure field values are sanitized."""
+    actual = apd.sanitize_fatality_entity(input_)
+    assert actual == expected
+
+
+@pytest.mark.parametrize('input_,expected', (
+    (
+        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
+        'West William Cannon Drive and Ridge Oak Road',
+    ),
+    (
+        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
+        '183 service road westbound and Payton Gin Rd.',
+    ),
+))
+def test_parse_location_field_00(input_, expected):
+    """Ensure."""
+    actual = apd.parse_location_field(input_)
     assert actual == expected
