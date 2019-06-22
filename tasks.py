@@ -35,6 +35,15 @@ def clean_repo(c):
 
 
 @task
+def nox(c, s=''):
+    """Wrapper for the nox tasks (`inv nox list` for details)."""
+    if not s:
+        c.run('nox --list')
+    else:
+        c.run(f'nox -s {s}')
+
+
+@task
 def publish(c):
     """Publish the documentation."""
     c.run('./.circleci/publish.sh')

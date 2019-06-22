@@ -14,9 +14,14 @@ Setup a local dev environment::
 
 Run the CI tasks locally ::
 
-  nox -s ci
+  inv nox ci
 
-Use `nox --list` and `inv --list` to see all the available targets.
+Use `inv --list`  and `inv nox` to see all the available targets.
+
+The `nox` tasks can be invoked by running  either:
+
+* `inv nox -s {task}`, for instance `inv nox -s test`
+* or directly with `nox -s test`
 
 Testing
 -------
