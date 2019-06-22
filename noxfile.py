@@ -15,12 +15,6 @@ docker_repo = f'{docker_org}/{project_name}'
 docker_img = f'{docker_repo}'
 
 
-@nox.session(name='build-docker')
-def build_docker(session):
-    """Build a docker image."""
-    session.run('docker', 'build', '-t', docker_img, '.', external=True)
-
-
 @nox.session()
 def ci(session):
     """Run all the CI tasks."""
@@ -34,18 +28,18 @@ def ci(session):
 
 
 @nox.session()
-def clean(session):
-    """Remove unwanted files in project (!DESTRUCTIVE!)."""
-    session.run('git', 'clean', '-ffdx', external=True)
-    session.run('git', 'reset', '--hard', external=True)
-
-
-@nox.session()
 def dist(session):
     """Package the application."""
     session.install('-rrequirements-dev.txt')
     session.install('.')
     session.run('python', 'setup.py', 'bdist_wheel')
+
+
+@nox.session()
+def dist_upload(session):
+    """Package the application."""
+    session.install('-rrequirements-dev.txt')
+    session.run('twine', 'upload', 'dist/*')
 
 
 @nox.session()

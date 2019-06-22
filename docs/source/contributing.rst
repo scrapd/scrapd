@@ -3,20 +3,20 @@
 Developer setup
 ---------------
 
-You will need Python 3 and `nox`::
+You will need Python 3 `invoke`_ and `nox`_::
 
-  pip3 install --user nox
+  pip3 install --user nox invoke
 
 Setup a local dev environment::
 
-  nox --envdir .
+  inv
   source venv/bin/activate
 
 Run the CI tasks locally ::
 
   nox -s ci
 
-Use `nox --list` to see all the available targets.
+Use `nox --list` and `inv --list` to see all the available targets.
 
 Testing
 -------
@@ -34,3 +34,6 @@ How to test the regexes
 
 
 Paste the result there, choose python, and work on your regex.
+
+.. _`invoke`: https://docs.pyinvoke.org/
+.. _`nox`: https://nox.thea.codes/
