@@ -14,7 +14,7 @@ Setup a local dev environment::
 
 Run the CI tasks locally ::
 
-  inv nox ci
+  inv nox -s ci
 
 Use `inv --list`  and `inv nox` to see all the available targets.
 
