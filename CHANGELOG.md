@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+
+- Add CLI flags to parametrize retries at runtime. [#159]
+
+## Changed
+
+- Use [nox](https://nox.thea.codes) and [invoke](https://www.pyinvoke.org) for task management execution instead of `make`.
+
 ## [[2.0.0]] - 2019-06-11
 
 ### Added
@@ -153,3 +161,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#138]: https://github.com/scrapd/scrapd/pull/138
 [#139]: https://github.com/scrapd/scrapd/pull/139
 [#140]: https://github.com/scrapd/scrapd/pull/140
+[#159]: https://github.com/scrapd/scrapd/pull/159
