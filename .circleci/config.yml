@@ -114,10 +114,12 @@ jobs:
             git config --global user.name "CircleCI"
       - run:
           name: Build the documentation
-          command: make docs
+          command: |
+            source venv/bin/activate
+            nox -s docs
       - run:
           name: Publish the docs
-          command: make publish
+          command: inv publish
 
   upload:
     <<: *defaults
@@ -133,10 +135,14 @@ jobs:
             echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
       - run:
           name: package the application
-          command: make dist
+          command: |
+            source venv/bin/activate
+            nox -s dist
       - run:
           name: upload the package
-          command: make dist-upload
+          command: |
+            source venv/bin/activate
+            nox -s dist-upload
 
 workflows:
   version: 2
