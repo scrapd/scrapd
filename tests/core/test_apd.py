@@ -584,7 +584,7 @@ async def test_fetch_and_parse_00(empty_page):
 @asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='Not empty page')
 @pytest.mark.asyncio
 async def test_fetch_and_parse_01(page, mocker):
-    """Ensure an empty page raises an exception."""
+    """Ensure a page that cannot be parsed returns an exception."""
     mocker.patch("scrapd.core.apd.parse_page", return_value={})
     with pytest.raises(RetryError):
         apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
