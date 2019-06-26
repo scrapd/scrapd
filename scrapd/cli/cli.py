@@ -38,7 +38,7 @@ __version__ = detect_from_metadata(APP_NAME)
 @click.option('--to', help='end date')
 @click.option('-v', '--verbose', count=True, help='adjust the log level')
 @click.pass_context
-def cli(ctx, attempt, backoff, format_, from_, pages, to, verbose):  # noqa: D403
+def cli(ctx, attempts, backoff, format_, from_, pages, to, verbose):  # noqa: D403
     """Retrieve APD's traffic fatality reports."""
     ctx.obj = {**ctx.params}
     ctx.auto_envvar_prefix = 'VZ'
@@ -80,7 +80,7 @@ class Retrieve(AbstractCommand):
                 self.args['pages'],
                 self.args['from_'],
                 self.args['to'],
-                self.args['attemps'],
+                self.args['attempts'],
                 self.args['backoff'],
             ))
         result_count = len(results)
