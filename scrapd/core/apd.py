@@ -18,7 +18,7 @@ APD_URL = 'http://austintexas.gov/department/news/296'
 PAGE_DETAILS_URL = 'http://austintexas.gov/'
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=3), reraise=True)
 async def fetch_text(session, url, params=None):
     """
     Fetch the data from a URL as text.
@@ -788,7 +788,7 @@ def parse_page(page):
     return d
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
+@retry()
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
@@ -815,7 +815,7 @@ async def fetch_and_parse(session, url):
     return d
 
 
-async def async_retrieve(pages=-1, from_=None, to=None):
+async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
     """
     Retrieve fatality data.
 
@@ -851,7 +851,13 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             logger.debug(f'{len(links)} fatality page(s) to process.')
 
             # Fetch and parse each link.
-            tasks = [fetch_and_parse(session, link) for link in links]
+            tasks = [
+                fetch_and_parse.retry_with(
+                    stop=stop_after_attempt(attempts),
+                    wait=wait_exponential(multiplier=backoff),
+                    reraise=True,
+                )(session, link) for link in links
+            ]
             page_res = await asyncio.gather(*tasks)
 
             # If the page contains fatalities, ensure all of them happened within the specified time range.

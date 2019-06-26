@@ -15,6 +15,11 @@ Available formats are:
   objects consisting of attribute–value pairs and array data types.
 * `Python`: displays the data in a way that is directly usable in Python.
 
+`attempts` defines the maximum number of attempts to parse a report before failing.
+
+`backoff` defines the initial wait time, in seconds, between 2 retries. This time is then multiplied by 2 for each retry
+(3s, then 6s, then 12s, etc.).
+
 `page` is a way to limit the number of results by specifying of many APD news pages to parse. For instance, using
 `--pages 5` means parsing the results until the URL https://austintexas.gov/department/news/296?page=4 is reached.
 The results of the specified page are included. In that case, the valid results of the 5th page will be included.
