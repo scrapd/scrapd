@@ -1,5 +1,6 @@
 """Define the module containing the function used to scrap data from the APD website."""
 import asyncio
+import calendar
 import re
 import unicodedata
 from urllib.parse import urljoin
@@ -426,6 +427,9 @@ def parse_comma_delimited_deceased_field(deceased_field):
     if dob_index < 0:
         raise ValueError(f'Cannot find DOB in the deceased field: {deceased_field}')
     raw_dob = split_deceased_field[dob_index + 1]
+
+    if any(raw_dob.startswith(calendar.month_abbr[month_index]) for month_index in range(1, 13)):
+        raw_dob = " ".join(split_deceased_field[dob_index + 1:dob_index + 4])
 
     # Parse the field.
     fleg = split_deceased_field[:dob_index]

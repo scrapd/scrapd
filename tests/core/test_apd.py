@@ -313,6 +313,16 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         },
     ),
     (
+        'Patrick Leonard Ervin, Black male, D.O.B. August 30, 1966',
+        {
+            Fields.FIRST_NAME: "Patrick",
+            Fields.LAST_NAME: "Ervin",
+            Fields.ETHNICITY: "Black",
+            Fields.GENDER: "male",
+            Fields.DOB: date(1966, 8, 30)
+        },
+    ),
+    (
         'Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) ',
         {
             Fields.FIRST_NAME: "Ernesto",
