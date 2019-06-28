@@ -34,6 +34,7 @@ nosetests.xml
 parts/
 pip-delete-this-directory.txt
 pip-log.txt
+profile.svg
 sdist/
 target/
 var/

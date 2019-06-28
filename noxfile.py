@@ -19,7 +19,7 @@ docker_img = f'{docker_repo}'
 def ci(session):
     """Run all the CI tasks."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     run_sphinx(session)
     run_yapf(session, True)
     run_all_linters(session)
@@ -31,7 +31,7 @@ def ci(session):
 def dist(session):
     """Package the application."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     session.run('python', 'setup.py', 'bdist_wheel')
 
 
@@ -46,7 +46,7 @@ def dist_upload(session):
 def docs(session):
     """Ensure the documentation builds."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     run_sphinx(session)
 
 
@@ -61,7 +61,7 @@ def format(session):
 def lint(session):
     """Run all the linters."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     run_all_linters(session)
 
 
@@ -73,10 +73,23 @@ def lint_format(session):
 
 
 @nox.session()
+def profiling(session):
+    """Setup the developper environment."""
+    # Install dependencies.
+    session.install('--upgrade', 'pip', 'setuptools')
+    session.install('-r', 'requirements-profilers.txt')
+    session.install('-e', '.')
+
+    env_dir = Path(session.bin)
+    scrapd = env_dir / 'scrapd'
+    session.run("pyinstrument", "--renderer", "html", f'{scrapd.resolve()}', "-v", "--format", "count", "--pages", "5")
+
+
+@nox.session()
 def pydocstyle(session):
     """Check the docstrings."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     run_pydocstyle(session)
 
 
@@ -84,7 +97,7 @@ def pydocstyle(session):
 def pylint(session):
     """Run the pylint linter."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     run_pylint(session)
 
 
@@ -92,7 +105,7 @@ def pylint(session):
 def test(session):
     """Run all the tests."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     run_pytest(session)
 
 
@@ -100,7 +113,7 @@ def test(session):
 def test_units(session):
     """Run the unit tests."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     run_pytest_units(session)
 
 
@@ -108,7 +121,7 @@ def test_units(session):
 def test_integrations(session):
     """Run the integration tests."""
     session.install('-rrequirements-dev.txt')
-    session.install('.')
+    session.install('-e', '.')
     run_pytest_integrations(session)
 
 
