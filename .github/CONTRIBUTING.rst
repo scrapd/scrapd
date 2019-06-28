@@ -66,9 +66,69 @@ There is also a lot of YAPF plugins available for different editors. Here are a 
   * `sublime text <https://github.com/jason-kane/PyYapf>`_
   * `vim <https://github.com/google/yapf/blob/master/plugins/yapf.vim>`_
 
+Developer setup
+---------------
+
+You will need Python 3 `invoke`_ and `nox`_::
+
+  pip3 install --user nox invoke
+
+Setup a local dev environment::
+
+  inv
+  source venv/bin/activate
+
+Run the CI tasks locally ::
+
+  inv nox -s ci
+
+Use `inv --list`  and `inv nox` to see all the available targets.
+
+The `nox` tasks can be invoked by running  either:
+
+* `inv nox -s {task}`, for instance `inv nox -s test`
+* or directly with `nox -s test`
+
+Testing
+-------
+
+How to test the regexes
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+  cd tests/data
+  curl -sLO http://austintexas.gov/news/traffic-fatality-72-1
+  export FIELD="Date:"
+  grep -h -e "${FIELD}" -C 1 traffic-fatality-* | pbcopy
+  open https://regex101.com/
+
+
+Paste the result there, choose python, and work on your regex.
+
+
+Profiling
+---------
+
+The profiling for the project is mostly done using `pyinstrument`_
+
+You can use the nox task to run the profiler automatically::
+
+  nox -s profiling
+
+Additionally, you can also generate a flame graph with `py-spy`_. It requires root permissions, therefore must be run
+with sudo and will prompt you for your password::
+
+  inv flame-graph
+
+
+.. _`Draft Pull Request`: https://github.blog/2019-02-14-introducing-draft-pull-requests/
+.. _`How to Write a Git Commit Message`: http://chris.beams.io/posts/git-commit
 .. _`Issue`: https://github.com/scrapd/scrapd/issues
+.. _`Open Stack Coding Guidelines`: https://docs.openstack.org/charm-guide/latest/coding-guidelines.html
 .. _`Pull Request`: https://github.com/scrapd/scrapd/pulls
 .. _`YAPF`: https://github.com/google/yapf
-.. _`How to Write a Git Commit Message`: http://chris.beams.io/posts/git-commit
-.. _`Open Stack Coding Guidelines`: https://docs.openstack.org/charm-guide/latest/coding-guidelines.html
-.. _`Draft Pull Request`: https://github.blog/2019-02-14-introducing-draft-pull-requests/
+.. _`invoke`: https://docs.pyinvoke.org/
+.. _`nox`: https://nox.thea.codes/
+.. _`pyinstrument`: https://github.com/joerick/pyinstrument
+.. _`py-spy`: https://github.com/benfred/py-spy

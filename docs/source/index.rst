@@ -14,6 +14,6 @@ Table of contents
    README
    usage
    CHANGELOG
-   contributing
+   CONTRIBUTING
    api/modules
 

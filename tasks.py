@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from invoke import task
+from nox.virtualenv import VirtualEnv
 
 # Configuration values.
 project_name = 'scrapd'
@@ -32,6 +35,16 @@ def clean_repo(c):
     """Remove unwanted files in project (!DESTRUCTIVE!)."""
     c.run('git clean -ffdx')
     c.run('git reset --hard')
+
+
+@task
+def flame_graph(c):
+    c.run(f'nox --install-only -s profiling')
+    location = Path('.nox/profiling')
+    venv = VirtualEnv(location.resolve())
+    venv_bin = Path(venv.bin)
+    scrapd = venv_bin / 'scrapd'
+    c.run(f'sudo py-spy -d 20 --flame profile.svg -- {scrapd.resolve()} -v --pages 5')
 
 
 @task
