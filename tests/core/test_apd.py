@@ -677,8 +677,8 @@ def test_parse_time_field_00(input_, expected):
     ('>Date:  night Apr 1-2012</p>', date(2012, 4, 1)),
     ('>Date:  feb. 2 2018</p>', date(2018, 2, 2)),
     ('>Date:  10-1-17</p>', date(2017, 10, 1)),
-    ('>Date:  Morning of 2,2,19 </p>', date(2019, 2 ,2)),
-    ('>Date:  3/3/19</p>', date(2019,3, 3)),
+    ('>Date:  Morning of 2,2,19 </p>', date(2019, 2, 2)),
+    ('>Date:  3/3/19</p>', date(2019, 3, 3)),
     ('', None),
     ('>Date: Afternoon</p>', None),
 ))
