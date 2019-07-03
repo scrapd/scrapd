@@ -671,16 +671,16 @@ def test_parse_time_field_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('<strong>Date:   </strong>April 18, 2019</p>', '04/18/2019'),
-    ('>Date:   </strong> Night of May 22 2019</p>', '05/22/2019'),
-    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', '10/03/2018'),
-    ('>Date:  night Apr 1-2012</p>', '04/01/2012'),
-    ('>Date:  feb. 2 2018</p>', '02/02/2018'),
-    ('>Date:  10-1-17</p>', '10/01/2017'),
-    ('>Date:  Morning of 2,2,19 </p>', '02/02/2019'),
-    ('>Date:  3/3/19</p>', '03/03/2019'),
-    ('', ''),
-    ('>Date: Afternoon</p>', ''),
+    ('<strong>Date:   </strong>April 18, 2019</p>', date(2019, 4, 18)),
+    ('>Date:   </strong> Night of May 22 2019</p>', date(2019, 5, 22)),
+    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', date(2018, 10, 3)),
+    ('>Date:  night Apr 1-2012</p>', date(2012, 4, 1)),
+    ('>Date:  feb. 2 2018</p>', date(2018, 2, 2)),
+    ('>Date:  10-1-17</p>', date(2017, 10, 1)),
+    ('>Date:  Morning of 2,2,19 </p>', date(2019, 2, 2)),
+    ('>Date:  3/3/19</p>', date(2019, 3, 3)),
+    ('', None),
+    ('>Date: Afternoon</p>', None),
 ))
 def test_parse_date_field_00(input_, expected):
     """Ensure a date field gets parsed correctly."""
