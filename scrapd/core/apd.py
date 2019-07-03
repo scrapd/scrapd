@@ -545,9 +545,9 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.CRASHES] = crash_str
 
     # Parse the `Date` field.
-    date_field_str = parse_date_field(normalized_detail_page)
-    if date_field_str:
-        d[Fields.DATE] = date_utils.parse_date(date_field_str)
+    date_field = parse_date_field(normalized_detail_page)
+    if date_field:
+        d[Fields.DATE] = date_field
 
     # Parse the `Deceased` field.
     deceased_field_str = parse_deceased_field(normalized_detail_page)
@@ -625,7 +625,7 @@ def parse_date_field(page):
     )
     date = match_pattern(page, date_pattern).replace('.', ' ')
     date = search_dates(date)
-    return date[0][1].strftime("%m/%d/%Y") if date else ''
+    return date[0][1].date() if date else None
 
 
 def parse_deceased_field(page):
