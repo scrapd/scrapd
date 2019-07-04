@@ -256,9 +256,83 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     (
         'DOB: 01-01-99',
         {
-            Fields.DOB: '01-01-99',
-            Fields.LAST_NAME: '',
-            Fields.FIRST_NAME: '',
+            Fields.DOB: date(1999, 1, 1),
+        },
+    ),
+    (
+        'Wing Cheung Chou | Asian male | 08/01/1949',
+        {
+            Fields.FIRST_NAME: "Wing",
+            Fields.LAST_NAME: "Chou",
+            Fields.ETHNICITY: "Asian",
+            Fields.GENDER: "male",
+            Fields.DOB: date(1949, 8, 1),
+        },
+    ),
+    (
+        'Christopher M Peterson W/M 10-8-1981',
+        {
+            Fields.FIRST_NAME: "Christopher",
+            Fields.LAST_NAME: "Peterson",
+            Fields.ETHNICITY: "White",
+            Fields.GENDER: "male",
+            Fields.DOB: date(1981, 10, 8),
+        },
+    ),
+    (
+        'Luis Angel Tinoco, Hispanic male (11-12-07',
+        {
+            Fields.FIRST_NAME: "Luis",
+            Fields.LAST_NAME: "Tinoco",
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.DOB: date(2007, 11, 12)
+        },
+    ),
+    (
+        'Ronnie Lee Hall, White male, 8-28-51',
+        {
+            Fields.FIRST_NAME: "Ronnie",
+            Fields.LAST_NAME: "Hall",
+            Fields.ETHNICITY: "White",
+            Fields.GENDER: "male",
+            Fields.DOB: date(1951, 8, 28)
+        },
+    ),
+    (
+        'Hispanic male, 19 years of age',
+        {
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.AGE: 19,
+        },
+    ),
+    (
+        'Patrick Leonard Ervin, Black male, D.O.B. August 30, 1966',
+        {
+            Fields.FIRST_NAME: "Patrick",
+            Fields.LAST_NAME: "Ervin",
+            Fields.ETHNICITY: "Black",
+            Fields.GENDER: "male",
+            Fields.DOB: date(1966, 8, 30)
+        },
+    ),
+    (
+        'Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) ',
+        {
+            Fields.FIRST_NAME: "Ernesto",
+            Fields.LAST_NAME: "Garcia",
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.DOB: date(1977, 11, 15)
+        },
+    ),
+    (
+        'B/F, DOB: 01-01-99',
+        {
+            Fields.ETHNICITY: "Black",
+            Fields.GENDER: "female",
+            Fields.DOB: date(1999, 1, 1)
         },
     ),
 ))
@@ -510,7 +584,7 @@ async def test_fetch_and_parse_00(empty_page):
 @asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='Not empty page')
 @pytest.mark.asyncio
 async def test_fetch_and_parse_01(page, mocker):
-    """Ensure an empty page raises an exception."""
+    """Ensure a page that cannot be parsed returns an exception."""
     mocker.patch("scrapd.core.apd.parse_page", return_value={})
     with pytest.raises(RetryError):
         apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
@@ -587,16 +661,16 @@ def test_parse_time_field_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('<strong>Date:   </strong>April 18, 2019</p>', '04/18/2019'),
-    ('>Date:   </strong> Night of May 22 2019</p>', '05/22/2019'),
-    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', '10/03/2018'),
-    ('>Date:  night Apr 1-2012</p>', '04/01/2012'),
-    ('>Date:  feb. 2 2018</p>', '02/02/2018'),
-    ('>Date:  10-1-17</p>', '10/01/2017'),
-    ('>Date:  Morning of 2,2,19 </p>', '02/02/2019'),
-    ('>Date:  3/3/19</p>', '03/03/2019'),
-    ('', ''),
-    ('>Date: Afternoon</p>', ''),
+    ('<strong>Date:   </strong>April 18, 2019</p>', date(2019, 4, 18)),
+    ('>Date:   </strong> Night of May 22 2019</p>', date(2019, 5, 22)),
+    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', date(2018, 10, 3)),
+    ('>Date:  night Apr 1-2012</p>', date(2012, 4, 1)),
+    ('>Date:  feb. 2 2018</p>', date(2018, 2, 2)),
+    ('>Date:  10-1-17</p>', date(2017, 10, 1)),
+    ('>Date:  Morning of 2,2,19 </p>', date(2019, 2, 2)),
+    ('>Date:  3/3/19</p>', date(2019, 3, 3)),
+    ('', None),
+    ('>Date: Afternoon</p>', None),
 ))
 def test_parse_date_field_00(input_, expected):
     """Ensure a date field gets parsed correctly."""

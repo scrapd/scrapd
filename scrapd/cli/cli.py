@@ -22,6 +22,8 @@ __version__ = detect_from_metadata(APP_NAME)
 #   The arguments are used via the `self.args` dict of the `AbstractCommand` class.
 @click.version_option(version=__version__)
 @click.command()
+@click.option('-a', '--attempts', type=click.INT, default=3, help='number of attempts per report', show_default=True)
+@click.option('-b', '--backoff', type=click.INT, default=3, help='initial backoff time (second)', show_default=True)
 @click.option(
     '-f',
     '--format',
@@ -36,7 +38,7 @@ __version__ = detect_from_metadata(APP_NAME)
 @click.option('--to', help='end date')
 @click.option('-v', '--verbose', count=True, help='adjust the log level')
 @click.pass_context
-def cli(ctx, format_, from_, pages, to, verbose):  # noqa: D403
+def cli(ctx, attempts, backoff, format_, from_, pages, to, verbose):  # noqa: D403
     """Retrieve APD's traffic fatality reports."""
     ctx.obj = {**ctx.params}
     ctx.auto_envvar_prefix = 'VZ'
@@ -73,11 +75,14 @@ class Retrieve(AbstractCommand):
     def _execute(self):
         """Define the internal execution of the command."""
         # Collect the results.
-        results, _ = asyncio.run(apd.async_retrieve(
-            self.args['pages'],
-            self.args['from_'],
-            self.args['to'],
-        ))
+        results, _ = asyncio.run(
+            apd.async_retrieve(
+                self.args['pages'],
+                self.args['from_'],
+                self.args['to'],
+                self.args['attempts'],
+                self.args['backoff'],
+            ))
         result_count = len(results)
         logger.info(f'Total: {result_count}')
 

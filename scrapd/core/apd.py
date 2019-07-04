@@ -1,5 +1,6 @@
 """Define the module containing the function used to scrap data from the APD website."""
 import asyncio
+import calendar
 import re
 import unicodedata
 from urllib.parse import urljoin
@@ -18,7 +19,7 @@ APD_URL = 'http://austintexas.gov/department/news/296'
 PAGE_DETAILS_URL = 'http://austintexas.gov/'
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=3), reraise=True)
 async def fetch_text(session, url, params=None):
     """
     Fetch the data from a URL as text.
@@ -431,6 +432,9 @@ def parse_comma_delimited_deceased_field(deceased_field):
         raise ValueError(f'Cannot find DOB in the deceased field: {deceased_field}')
     raw_dob = split_deceased_field[dob_index + 1]
 
+    if any(raw_dob.startswith(calendar.month_abbr[month_index]) for month_index in range(1, 13)):
+        raw_dob = " ".join(split_deceased_field[dob_index + 1:dob_index + 4])
+
     # Parse the field.
     fleg = split_deceased_field[:dob_index]
     d = parse_deceased_field_common([raw_dob], fleg)
@@ -545,9 +549,9 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.CRASHES] = crash_str
 
     # Parse the `Date` field.
-    date_field_str = parse_date_field(normalized_detail_page)
-    if date_field_str:
-        d[Fields.DATE] = date_utils.parse_date(date_field_str)
+    date_field = parse_date_field(normalized_detail_page)
+    if date_field:
+        d[Fields.DATE] = date_field
 
     # Parse the `Deceased` field.
     deceased_field_str = parse_deceased_field(normalized_detail_page)
@@ -625,7 +629,7 @@ def parse_date_field(page):
     )
     date = match_pattern(page, date_pattern).replace('.', ' ')
     date = search_dates(date)
-    return date[0][1].strftime("%m/%d/%Y") if date else ''
+    return date[0][1].date() if date else None
 
 
 def parse_deceased_field(page):
@@ -792,7 +796,7 @@ def parse_page(page):
     return d
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=4))
+@retry()
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
@@ -819,7 +823,7 @@ async def fetch_and_parse(session, url):
     return d
 
 
-async def async_retrieve(pages=-1, from_=None, to=None):
+async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
     """
     Retrieve fatality data.
 
@@ -855,7 +859,13 @@ async def async_retrieve(pages=-1, from_=None, to=None):
             logger.debug(f'{len(links)} fatality page(s) to process.')
 
             # Fetch and parse each link.
-            tasks = [fetch_and_parse(session, link) for link in links]
+            tasks = [
+                fetch_and_parse.retry_with(
+                    stop=stop_after_attempt(attempts),
+                    wait=wait_exponential(multiplier=backoff),
+                    reraise=True,
+                )(session, link) for link in links
+            ]
             page_res = await asyncio.gather(*tasks)
 
             # If the page contains fatalities, ensure all of them happened within the specified time range.
