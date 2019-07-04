@@ -1,5 +1,5 @@
 aiohttp==3.5.4
-beautifulsoup4=4.7.1
+beautifulsoup4==4.7.1
 click==7.0
 dateparser==0.7.1
 loguru==0.2.5
