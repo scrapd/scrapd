@@ -186,7 +186,8 @@ def parse_twitter_description(twitter_description):
     if tmp_dob and isinstance(tmp_dob, list):
         d[Fields.DOB] = date_utils.parse_date(tmp_dob[0])
 
-    return common_fatality_parsing(d)
+    r, _ = common_fatality_parsing(d)
+    return r
 
 
 def parse_details_page_notes(details_page_notes):
@@ -256,8 +257,10 @@ def common_fatality_parsing(d):
 
     :param dict d: the fatality to finish parsing
     :return: A dictionary containing the details information about the fatality with sanitized entries.
-    :rtype: dict
+    :rtype: dict, list
     """
+    parsing_errors = []
+
     # Extracting other fields from 'Deceased' field.
     deceased_field = d.get(Fields.DECEASED)
     if deceased_field:
@@ -267,15 +270,18 @@ def common_fatality_parsing(d):
         try:
             d.update(process_deceased_field(deceased_field))
         except ValueError as e:
-            logger.trace(e)
+            parsing_errors.append(e)
     else:
-        logger.trace('No deceased information to parse in fatality page.')
+        parsing_errors.append('no deceased information found in fatality page')
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
         d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
 
-    return sanitize_fatality_entity(d)
+    if d.get(Fields.AGE, -1) < 0:
+        parsing_errors.append(f'age is invalid: {d.get(Fields.AGE)}')
+
+    return sanitize_fatality_entity(d), parsing_errors
 
 
 def sanitize_fatality_entity(d):
@@ -391,7 +397,7 @@ def process_deceased_field(deceased_field):
     except Exception:
         pass
 
-    raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
+    raise ValueError(f'cannot parse {Fields.DECEASED}: {deceased_field}')
 
 
 def parse_age_deceased_field(deceased_field):
@@ -532,6 +538,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     :rtype: dict
     """
     d = {}
+    parsing_errors = []
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
 
     # Parse the `Case` field.
@@ -543,26 +550,36 @@ def parse_page_content(detail_page, notes_parsed=False):
     crash_str = parse_crashes_field(normalized_detail_page)
     if crash_str:
         d[Fields.CRASHES] = crash_str
+    else:
+        parsing_errors.append("could not retrieve the crash number")
 
     # Parse the `Date` field.
     date_field = parse_date_field(normalized_detail_page)
     if date_field:
         d[Fields.DATE] = date_field
+    else:
+        parsing_errors.append("could not retrieve the crash date")
 
     # Parse the `Deceased` field.
     deceased_field_str = parse_deceased_field(normalized_detail_page)
     if deceased_field_str:
         d[Fields.DECEASED] = deceased_field_str
+    else:
+        parsing_errors.append("could not retrieve the deceased information")
 
     # Parse the `Time` field.
     time_str = parse_time_field(normalized_detail_page)
     if time_str:
         d[Fields.TIME] = time_str
+    else:
+        parsing_errors.append("could not retrieve the crash time")
 
     # Parse the location field.
     location_str = parse_location_field(normalized_detail_page)
     if location_str:
         d[Fields.LOCATION] = location_str
+    else:
+        parsing_errors.append("could not retrieve the location")
 
     # Fill in Notes from Details page if not in twitter description.
     search_notes = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
@@ -571,7 +588,8 @@ def parse_page_content(detail_page, notes_parsed=False):
         text_chunk = match.string[match.start(0):match.end(0)]
         d[Fields.NOTES] = parse_details_page_notes(text_chunk)
 
-    return common_fatality_parsing(d)
+    r, err = common_fatality_parsing(d)
+    return r, parsing_errors + err
 
 
 def parse_case_field(page):
@@ -775,15 +793,20 @@ def parse_twitter_fields(page):
     return d
 
 
-def parse_page(page):
+def parse_page(page, url):
     """
     Parse the page using all parsing methods available.
 
     :param str  page: the content of the fatality page
+    :param str url: detail page URL
+    :return: a dictionary representing a fatality.
+    :rtype: dict
     """
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
-    page_d = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
+    page_d, err = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
+    if err:
+        logger.debug(f'Fatality report {url} was not parsed correctly:\n\t * ' + '\n\t * '.join(err))
 
     # Merge the results, from right to left.
     # (i.e. the rightmost object will override the object just before it, etc.)
@@ -808,7 +831,7 @@ async def fetch_and_parse(session, url):
         raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
-    d = parse_page(page)
+    d = parse_page(page, url)
     if not d:
         raise ValueError(f'No data could be extracted from the page {url}.')
 

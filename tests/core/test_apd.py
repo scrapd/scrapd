@@ -439,7 +439,7 @@ def test_parse_page_content_00(filename, expected):
            Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page_content(page)
+    actual, err = apd.parse_page_content(page)
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
@@ -450,13 +450,13 @@ def test_parse_page_content_01(mocker):
     page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
     page = page_fd.read_text()
     mocker.patch('scrapd.core.apd.process_deceased_field', side_effect=ValueError)
-    result = apd.parse_page_content(page)
+    result, err = apd.parse_page_content(page)
     assert len(result) == 6
 
 
 def test_parse_page_content_02(mocker):
     """Ensure a log entry is created if there is no deceased field."""
-    result = apd.parse_page_content('Case: 01-2345678')
+    result, err = apd.parse_page_content('Case: 01-2345678')
     assert result
 
 
@@ -481,10 +481,22 @@ def test_parse_page_00(filename, expected):
        Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page(page)
+    actual = apd.parse_page(page, fake.uri())
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
+
+
+@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_scenarios.items()])
+def test_parse_page_01(mocker, filename, expected):
+    """Ensuring ."""
+    data = {}
+    parsing_errors = ['one error']
+    page_fd = TEST_DATA_DIR / filename
+    page = page_fd.read_text()
+    pc = mocker.patch('scrapd.core.apd.parse_page_content', return_value=(data, parsing_errors))
+    _ = apd.parse_page(page, fake.uri())
+    assert pc.called_once
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
