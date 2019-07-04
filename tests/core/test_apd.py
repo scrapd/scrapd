@@ -229,6 +229,24 @@ def test_parse_details_page_notes_01(input_, expected):
     assert actual == expected
 
 
+@pytest.mark.parametrize('page,start,end', (
+    ('traffic-fatality-2-3', 'The preliminary investigation shows that the grey',
+     'No charges are expected to be filed.'),
+    ('traffic-fatality-71-2', 'The preliminary investigation shows that a 2004 Honda sedan',
+     'at the scene at 8:50 p.m.'),
+    ('traffic-fatality-72-1', 'The preliminary investigation shows that the 2016 Indian',
+     'whether charges will be filed.'),
+    ('traffic-fatality-73-2', 'The preliminary investigation shows that a 2003 Ford F150',
+     'St. David’s South Austin Hospital.'),
+))
+def test_parse_notes_field(page, start, end):
+    page_text = load_test_page(page)
+    parsed_content = apd.parse_page_content(page_text)
+    notes = parsed_content[Fields.NOTES]
+    assert notes.startswith(start)
+    assert notes.endswith(end)
+
+
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
     """Ensure page detail links are extracted from news page."""
     actual = apd.extract_traffic_fatalities_page_details_link(news_page)
@@ -245,13 +263,18 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
 
 @pytest.mark.parametrize('deceased,expected', (
     ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
+        Fields.FIRST_NAME: "Rosbel",
         Fields.LAST_NAME: "Tamez",
-        Fields.FIRST_NAME: "Rosbel"
+        Fields.ETHNICITY: "Hispanic",
+        Fields.GENDER: "male",
+        Fields.DOB: date(1954, 10, 10),
     }),
     ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
-        Fields.LAST_NAME: "Gonzales",
         Fields.FIRST_NAME: "Eva",
-        Fields.GENDER: 'f'
+        Fields.LAST_NAME: "Gonzales",
+        Fields.ETHNICITY: "White",
+        Fields.GENDER: 'female',
+        Fields.DOB: date(1961, 1, 22),
     }),
     (
         'DOB: 01-01-99',
@@ -336,8 +359,9 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         },
     ),
 ))
-def test_parse_deceased_field(deceased, expected):
-    d = apd.parse_deceased_field(deceased)
+def test_process_deceased_field_00(deceased, expected):
+    """Ensure a deceased field is parsed correctly."""
+    d = apd.process_deceased_field(deceased)
     for key in expected:
         assert d[key] == expected[key]
 
@@ -365,7 +389,11 @@ def test_parse_deceased_field(deceased, expected):
     }),
     (None, {
         'first': None,
-        'last': None
+        'last': None,
+    }),
+    (['Carlos', 'Cardenas', 'Jr.'], {
+        'first': 'Carlos',
+        'last': 'Cardenas',
     }),
 ))
 def test_parse_name(name, expected):
@@ -548,12 +576,12 @@ async def test_async_retrieve_00(fake_news):
 
 @pytest.mark.parametrize('input_,expected', (
     ('<p><strong>Case:         </strong>19-0881844</p>', '19-0881844'),
-    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
+    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
     ('<strong>Case:</strong></span><span style="color: rgb(32, 32, 32); '
      'font-family: &quot;Verdana&quot;,sans-serif; font-size: 10.5pt; '
      'mso-fareast-font-family: &quot;Times New Roman&quot;; '
      'mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA; '
-     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
+     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
     ('<p><strong>Case:</strong>            18-1591949 </p>', '18-1591949'),
     ('<p><strong>Case:</strong>            18-590287<br />', '18-590287'),
 ))
@@ -730,11 +758,11 @@ def test_sanitize_fatality_entity(input_, expected):
 
 @pytest.mark.parametrize('input_,expected', (
     (
-        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
+        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
         'West William Cannon Drive and Ridge Oak Road',
     ),
     (
-        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
+        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
         '183 service road westbound and Payton Gin Rd.',
     ),
 ))

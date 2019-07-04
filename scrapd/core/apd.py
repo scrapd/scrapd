@@ -6,6 +6,7 @@ import unicodedata
 from urllib.parse import urljoin
 
 import aiohttp
+from bs4 import BeautifulSoup, SoupStrainer, NavigableString
 from dateparser.search import search_dates
 from loguru import logger
 from tenacity import retry
@@ -334,18 +335,14 @@ def parse_name(name):
     return d
 
 
-def parse_deceased_field(deceased_field):
+def dob_search(split_deceased_field):
     """
-    Parse the victim's name.
+    Search for the DOB in a deceased field.
 
-    At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
-    Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
-
-    :param str deceased_field: the deceased field from the fatality report
-    :return: a dictionary representing a deceased field.
-    :rtype: dict
+    :param list split_deceased_field: a list representing the deceased field
+    :return: the DOB index within the split deceased field.
+    :rtype: int
     """
-    deceased_field = re.split(r' |(?<=[A-Za-z])/', deceased_field)
     dob_index = -1
     dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
     while dob_index < 0 and dob_tokens:
@@ -510,8 +507,6 @@ def parse_fleg(fleg):
             d[Fields.GENDER] = 'male'
 
         d[Fields.ETHNICITY] = fleg.pop().replace(',', '')
-        d[Fields.LAST_NAME] = fleg.pop().replace(',', '')
-        d[Fields.FIRST_NAME] = fleg.pop().replace(',', '')
         if d.get(Fields.ETHNICITY, '').lower() == 'w':
             d[Fields.ETHNICITY] = 'White'
         elif d.get(Fields.ETHNICITY, '').lower() == 'h':
@@ -522,8 +517,10 @@ def parse_fleg(fleg):
         pass
 
     name = parse_name(fleg)
-    d[Fields.LAST_NAME] = name.get("last", '')
-    d[Fields.FIRST_NAME] = name.get("first", '')
+    if name.get("last"):
+        d[Fields.LAST_NAME] = name.get("last", '')
+    if name.get("first"):
+        d[Fields.FIRST_NAME] = name.get("first", '')
     return d
 
 
@@ -569,11 +566,26 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.LOCATION] = location_str
 
     # Fill in Notes from Details page if not in twitter description.
-    search_notes = re.compile(r'>Deceased:.*\s{2,}(.|\n)*?<\/p>(.|\n)*?<\/p>')
-    match = re.search(search_notes, normalized_detail_page)
-    if match and not notes_parsed:
-        text_chunk = match.string[match.start(0):match.end(0)]
-        d[Fields.NOTES] = parse_details_page_notes(text_chunk)
+    if not notes_parsed:
+        soup = BeautifulSoup(normalized_detail_page, 'html.parser', parse_only=SoupStrainer(property="content:encoded"))
+
+        def starts_with_deceased(tag):
+            return tag.get_text().strip().startswith("Deceased:")
+
+        deceased = soup.find(starts_with_deceased)
+        if deceased:
+            text = deceased.text
+            for sibling in deceased.next_siblings:
+                if isinstance(sibling, NavigableString):
+                    text += sibling
+                else:
+                    text += sibling.text
+            notes = text.split(deceased_field_str)[1]
+            if "APD is investigating this case" in notes:
+                without_boilerplate = notes.split("APD is investigating this case")[0]
+            else:
+                without_boilerplate = notes.split("Anyone with information regarding")[0]
+            d[Fields.NOTES] = without_boilerplate.strip("()<>").strip()
 
     return common_fatality_parsing(d)
 
