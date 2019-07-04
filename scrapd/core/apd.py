@@ -524,6 +524,31 @@ def parse_fleg(fleg):
     return d
 
 
+def notes_from_element(deceased, deceased_field_str):
+    """
+    Get Notes from deceased field's BeautifulSoup element.
+
+    :param deceased Beautifulsoup.element.Tag:
+        the first <p> tag of the Deceased field of the APD bulletin
+    :param deceased_field_str:
+        the string corresponding to the Deceased field
+    :return: notes from the Deceased field of the APD bulletin
+    :rtype: str
+    """
+    text = deceased.text
+    for sibling in deceased.next_siblings:
+        if isinstance(sibling, NavigableString):
+            text += sibling
+        else:
+            text += sibling.text
+    notes = text.split(deceased_field_str)[1]
+    if "APD is investigating this case" in notes:
+        without_boilerplate = notes.split("APD is investigating this case")[0]
+    else:
+        without_boilerplate = notes.split("Anyone with information regarding")[0]
+    return without_boilerplate.strip("()<>").strip()
+
+
 def parse_page_content(detail_page, notes_parsed=False):
     """
     Parse the detail page to extract fatality information.
@@ -574,18 +599,7 @@ def parse_page_content(detail_page, notes_parsed=False):
 
         deceased = soup.find(starts_with_deceased)
         if deceased:
-            text = deceased.text
-            for sibling in deceased.next_siblings:
-                if isinstance(sibling, NavigableString):
-                    text += sibling
-                else:
-                    text += sibling.text
-            notes = text.split(deceased_field_str)[1]
-            if "APD is investigating this case" in notes:
-                without_boilerplate = notes.split("APD is investigating this case")[0]
-            else:
-                without_boilerplate = notes.split("Anyone with information regarding")[0]
-            d[Fields.NOTES] = without_boilerplate.strip("()<>").strip()
+            d[Fields.NOTES] = notes_from_element(deceased, deceased_field_str)
 
     return common_fatality_parsing(d)
 
