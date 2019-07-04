@@ -214,10 +214,6 @@ def parse_details_page_notes(details_page_notes):
 
     snippet = details_page_notes[start_tag:end_tag]
 
-    # Update the snippet if the following tag is an image.
-    if snippet[:4] == '<img':
-        snippet = details_page_notes[details_page_notes.find(r'<br \>') + len(r'<br \>'):end_tag]
-
     # Remove the end of line characters.
     squished = snippet.replace('\n', ' ')
 
