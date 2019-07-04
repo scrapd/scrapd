@@ -759,6 +759,10 @@ def test_sanitize_fatality_entity(input_, expected):
         '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
         '183 service road westbound and Payton Gin Rd.',
     ),
+    (
+        '<p>	<strong>Location:  </strong>8900 block of N Capital of Texas Highway   </p>',
+        '8900 block of N Capital of Texas Highway   ',
+    ),
 ))
 def test_parse_location_field_00(input_, expected):
     """Ensure."""
