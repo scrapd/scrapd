@@ -42,15 +42,15 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
   <div id="skip-link">
     <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
   </div>
-    
 
 
-  
+
+
 
   <div id="brandbar">  <div class="region region-topmenu">
     <div id="block-menu-menu-brand-bar" class="block block-menu ">
 
-    
+
   <div class="content">
     <ul class="menu"><li class="first leaf"><a href="/" title="">austintexas.gov</a></li>
 <li class="leaf"><a href="/department/airport" title="">Airport</a></li>
@@ -69,12 +69,12 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <div id="page" class="container-16 clearfix">
 
   <div id="header" class="clearfix">
-  
+
 	<div id="top-search">
       <div class="region region-search">
     <div id="block-search-form" class="block block-search ">
 
-    
+
   <div class="content">
     <form action="/news/traffic-fatality-73-2" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
       <h2 class="element-invisible">Search form</h2>
@@ -91,19 +91,19 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
     <a href="/advanced-search-page" class="adv-search">Advanced Search</a>
   </div>
 
-  
+
 	<div id="logo" class="grid-5 clearfix">
-	
+
                               <div id="branding"><strong><a href="/">
                           <img src="http://austintexas.gov/sites/all/themes/austintexas_ninesixty/images/logo.png" title="" alt="" id="logo" alt="AustinTexas.Gov" />
                         </a></strong></div>
                   	</div><!-- /logo -->
-	
-	
+
+
 	<div id="action-menu" class="grid-11">  <div class="region region-toplinks">
     <div id="block-nice-menus-4" class="block block-nice-menus ">
 
-    
+
   <div class="content">
     <ul class="nice-menu nice-menu-down" id="nice-menu-4"><li class="menu-532 menu-path-pay_online first  odd "><a href="/pay_online">Pay Online</a></li>
 <li class="menu-2756 menu-path-services even "><a href="/services">Services</a></li>
@@ -118,8 +118,8 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
   </div>
 </div><!-- /#action-menu -->
 
-        
-        
+
+
 	     <div id="main-menu" class="clearfix">
 
 
@@ -130,12 +130,12 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <li class="menu-575 last"><a href="/environment" title="">Environment</a></li>
 </ul>
 	</div><!-- /#main-menu -->
-        
-    
-    
-    
-    
-    
+
+
+
+
+
+
         <div id="sub-menu"></div>
 </div> <!-- /#header -->
 
@@ -144,158 +144,158 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 	<div id="maincontent">
 
-                    
+
           <a id="main-content"></a>
-          
+
           <!-- START TABS -->
                     <div id="tabs-wrapper" class="clearfix">
-                    
+
                                         <!--  class="with-tabs">Traffic Fatality #73 -->
-                                                  
-          
+
+
           </div>          <!-- / TABS -->
-          
-          
-          		  		  
-	
 
 
 
 
 
-	
+
+
+
+
+
 		<div id="main" class="rounded-corners">
-	
-		    <h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="/departments">Department</a> » <a href="/department/police">Police</a> » Traffic Fatality #73</div>		    
+
+		    <h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="/departments">Department</a> » <a href="/department/police">Police</a> » Traffic Fatality #73</div>
 		    					     	<!-- <h1 class="title" id="page-title">Traffic Fatality #73</h1>  -->
-		    		    
-
-		          
 
 
-		    
-		    		
+
+
+
+
+
 		    <div id="main-content" class="region clearfix">
 		        <div class="region region-content">
     <div id="block-system-main" class="block block-system ">
 
-    
+
   <div class="content">
     <div class="panel-display 960-16-484-leftSb center-column">
 
 	<div class="grid-4">
-	  
+
 	  	  <div id="panel-leftsb" class="panel-panel panel-col-first">
 		<div class="panel-pane pane-block pane-block-25" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     <div class="view view-portal-page-menu view-id-portal_page_menu view-display-id-panel_pane_1 item-list menu-block p-t-10 view-dom-id-13 contextual-links-region">
 <ul>
 <li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police">Home</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/about">About</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/services">Services</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/programs">Programs</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/divisions">Divisions</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/media">Media</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/faq">FAQ</a></span></div></li></ul>
 </div>
 <div class="view view-pdr-search-block view-id-pdr_search_block view-display-id-block view-dom-id-66d13a7dc1ee83945e0a2a1767b59279">
-        
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
 </div>  </div>
 
-  
+
   </div>
 	  </div>
 
 	  <div class="clear"></div>
-	  	  
+
 	</div><!-- / 4 -->
-	
-	
-	
-	
+
+
+
+
 	<div class="grid-12">
-	
+
 	  	  <div id="department-banner" class="panel-panel panel-col-last">
 		<div class="panel-pane pane-views-panes pane-extra-page-blocks-panel-pane-6" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_6 nolink clearfix view-dom-id-1e1f7b706c64904f3d8f481576401310">
-        
-  
-  
+
+
+
       <div class="view-content">
         <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
-      
+
   <div class="views-field views-field-field-dept-banner">        <div class="field-content"><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/APD_banner_3.jpg" width="708" height="175" alt="" /></div>  </div>  </div>
     </div>
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 </div>  </div>
 
-  
+
   </div>
 	  </div>
 
 	  <div class="clear"></div>
-	  
+
 	  	  <div id="panel-maincontent" class="panel-panel panel-col alpha grid-12">
 		<div class="panel-pane pane-views-panes pane-extra-page-blocks-panel-pane-22" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_22 news-release-header view-dom-id-c0be3d15f39237665681b6a4017938e4">
-        
-  
-  
+
+
+
       <div class="view-content">
         <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
-      
+
   <div class="views-field views-field-nothing">        <span class="field-content"><img class="city-seal" src="/sites/all/themes/austinwater/images/Austinseal-4c-150px.png" />
-<h1>City of Austin</h1> 
+<h1>City of Austin</h1>
 <hr />
-<b>FOR IMMEDIATE RELEASE</b><br></span>  </div>  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><b>Release Date:</b> <span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2019-01-10T00:00:00-06:00">Jan. 10, 2019</span></div>  </div>  
+<b>FOR IMMEDIATE RELEASE</b><br></span>  </div>
+  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><b>Release Date:</b> <span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2019-01-10T00:00:00-06:00">Jan. 10, 2019</span></div>  </div>
   <div class="views-field views-field-php">        <span class="field-content"><b>Contact: </b>Contact: Public Information Office &nbsp;&nbsp;&nbsp; 512-974-5017 &nbsp;&nbsp;&nbsp;<a href= '/email/police3' >Email</a></span>  </div>  </div>
     </div>
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 </div>  </div>
 
-  
+
   </div>
 <div class="panel-separator"></div><div class="panel-pane pane-views-panes pane-extra-page-blocks-panel-pane-19" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_19 nolink clearfix view-dom-id-eb05217561b471080e028174776e57d9">
-        
-  
-  
+
+
+
       <div class="view-content">
         <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
     <div id="node-56020" class="node node-news-release clearfix" about="/news/traffic-fatality-73-2" typeof="sioc:Item foaf:Document">
 
-  
+
         <h2><a href="/news/traffic-fatality-73-2">Traffic Fatality #73</a></h2>
     <span property="dc:title" content="Traffic Fatality #73" class="rdf-meta element-hidden"></span><span property="sioc:num_replies" content="0" datatype="xsd:integer" class="rdf-meta element-hidden"></span>
-  
+
   <div class="content">
     <span class="print-link"></span><div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p><strong>Case:</strong>           18-3640187</p>
 <p>	<strong>Date:</strong>            December 30, 2018</p>
@@ -315,39 +315,39 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <li class="service-links-print last"><a href="http://austintexas.gov/print/news/traffic-fatality-73-2" title="Printable version" class="service-links-print" rel="nofollow" target="_blank"><img typeof="foaf:Image" src="http://austintexas.gov/sites/all/modules/service_links/images/print.png" alt="Print HTML" /></a></li>
 </ul></div>  </div>
 
-  
-  
+
+
 </div>
   </div>
     </div>
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 </div>  </div>
 
-  
+
   </div>
 <div class="panel-separator"></div><div class="panel-pane pane-custom pane-1" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     Communications and Public Information Office
 301 W. 2nd Street, Austin, TX 78701  </div>
 
-  
+
   </div>
 	  </div>
-	  	  
-	  
 
-	  
+
+
+
 
 	  <div class="clear"></div>
-	  
+
 	</div><!-- / 12 -->
 
 </div>
@@ -355,10 +355,10 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </div>
   </div>
 		    </div>
-		    
-		
+
+
 		    	  </div>
-	
+
 
 
 
@@ -385,7 +385,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 						<div id="footer-blocks" class="container-16 clearfix">  <div class="region region-footer">
     <div id="block-block-28" class="block block-block ">
 
-    
+
   <div class="content">
     <script>
 
@@ -394,21 +394,21 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </div>
 <div id="block-block-2" class="block block-block grid-2">
 
-    
+
   <div class="content">
     <p><img alt="Official seal of the City of Austin" src="/sites/all/themes/austintexas_ninesixty/images/austin_stamp.png" /></p>
   </div>
 </div>
 <div id="block-panels-mini-footer-panels" class="block block-panels-mini grid-14">
 
-    
+
   <div class="content">
     <div class="panel-display panel-1col clearfix" id="mini-panel-footer_panels">
   <div class="panel-panel panel-col">
     <div><div class="panel-pane pane-block pane-block-7" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     <div class="round-corners-footer rounded-corners footer-column" id="">
 <div class="content-container">
@@ -425,12 +425,12 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </div>
 <!-- /footer-column -->  </div>
 
-  
+
   </div>
 <div class="panel-separator"></div><div class="panel-pane pane-block pane-block-8" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     <div class="round-corners-footer rounded-corners footer-column" id="">
 <div class="content-container">
@@ -444,12 +444,12 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </div>
 <!-- /footer-column -->  </div>
 
-  
+
   </div>
 <div class="panel-separator"></div><div class="panel-pane pane-block pane-block-9" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     <div class="round-corners-footer rounded-corners footer-column" id="">
 <div class="content-container">
@@ -462,12 +462,12 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 </div>
 <!-- /footer-column -->  </div>
 
-  
+
   </div>
 <div class="panel-separator"></div><div class="panel-pane pane-block pane-block-10" >
-  
-      
-  
+
+
+
   <div class="pane-content">
     <div class="round-corners-footer rounded-corners footer-column" id="twitter">
 					<div class="content-container">
@@ -485,7 +485,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 </div>  </div>
 
-  
+
   </div>
 </div>
   </div>
@@ -498,7 +498,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 			<div id="footer-menu" class="container-16">  <div class="region region-footer-menu">
     <div id="block-menu-menu-footer-menu" class="block block-menu ">
 
-    
+
   <div class="content">
     <ul class="menu"><li class="first leaf"><a href="http://translate.google.com/translate?u=http%3A%2F%2Fwww.austintexas.gov&amp;hl=en&amp;langpair=auto|es&amp;tbb=1&amp;ie=utf-8" title="">Translate</a></li>
 <li class="leaf"><a href="/pay_online" title="City of Austin Utilities - Online Customer Care">Pay Online</a></li>

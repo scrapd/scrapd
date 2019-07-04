@@ -232,6 +232,10 @@ def test_parse_details_page_notes_01(input_, expected):
 @pytest.mark.parametrize('page,start,end', (
     ('traffic-fatality-2-3', 'The preliminary investigation shows that the grey',
      'No charges are expected to be filed.'),
+    ('traffic-fatality-4-6', 'The preliminary investigation shows that a black, Ford', 'scene at 01:48 a.m.'),
+    ('traffic-fatality-15-4', 'Keaton', 'seatbelts. No charges are expected to be filed.'),
+    ('traffic-fatality-16-4', 'The preliminary investigation revealed that the 2017', 'injuries on April 4, 2019.'),
+    ('traffic-fatality-17-4', 'The preliminary investigation revealed that the 2010', 'at the time of the crash.'),
     ('traffic-fatality-71-2', 'The preliminary investigation shows that a 2004 Honda sedan',
      'at the scene at 8:50 p.m.'),
     ('traffic-fatality-72-1', 'The preliminary investigation shows that the 2016 Indian',
