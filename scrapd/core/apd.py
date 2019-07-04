@@ -704,11 +704,12 @@ def parse_location_field(page):
     location_pattern = re.compile(
         r'''
         >Location:      # The name of the desired field.
-        .*              # Any character
-        >               # The '>' character
+        \s*             # Any whitespace (at least 2)
+        (?:</span>)?    # Non capture closing strong tag
+        (?:</strong>)?  # Non capture closing strong tag
         \s{2,}          # Any whitespace (at least 2)
-        (?:</strong>)   # Non capture closing strong tag
-        ?([^<]+)        # Capture any character except '<'.
+        (?:</strong>)?  # Non capture closing strong tag
+        ([^<]+)         # Capture any character except '<'.
         ''',
         re.VERBOSE,
     )
