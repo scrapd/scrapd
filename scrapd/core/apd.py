@@ -262,17 +262,11 @@ def common_fatality_parsing(d):
     parsing_errors = []
 
     # Extracting other fields from 'Deceased' field.
-    deceased_field = d.get(Fields.DECEASED)
-    if deceased_field:
-        if isinstance(deceased_field, list):
-            deceased_field = ' '.join(deceased_field)
-
+    if d.get(Fields.DECEASED):
         try:
-            d.update(process_deceased_field(deceased_field))
+            d.update(process_deceased_field(d.get(Fields.DECEASED)))
         except ValueError as e:
             parsing_errors.append(e)
-    else:
-        parsing_errors.append('no deceased information found in fatality page')
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
@@ -373,6 +367,9 @@ def process_deceased_field(deceased_field):
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
+    if isinstance(deceased_field, list):
+        deceased_field = ' '.join(deceased_field)
+
     # Try to parse the deceased fields when the fields are comma separated.
     try:
         return parse_comma_delimited_deceased_field(deceased_field)
