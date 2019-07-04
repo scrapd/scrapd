@@ -6,6 +6,7 @@ import unicodedata
 from urllib.parse import urljoin
 
 import aiohttp
+import dateparser
 from dateparser.search import search_dates
 from loguru import logger
 from tenacity import retry
@@ -180,6 +181,15 @@ def parse_twitter_description(twitter_description):
 
         # Turn it into a date object.
         d[Fields.DATE] = date_utils.parse_date(fatality_date)
+
+    # Convert the time to a time object.
+    fatality_time = d.get(Fields.TIME)
+    if fatality_time:
+        # Ensure it is a string.
+        if isinstance(fatality_time, list):
+            fatality_time = ' '.join(fatality_time)
+        dt = dateparser.parse(fatality_time)
+        d[Fields.TIME] = dt.time() if dt else None
 
     # Handle special case where Date of birth is a token `DOB:`.
     tmp_dob = d.get(Fields.DOB)
@@ -679,16 +689,21 @@ def parse_time_field(page):
     time_pattern = re.compile(
         r'''
         Time:                             # The name of the desired field.
+        (?:</strong>)?                    # Non capture closing strong tag
         \D*?                              # Any non-digit character (lazy).
-        ((?:0?[1-9]|1[0-2]):[0-5]\d       # 12h format.
+        (
+        (?:0?[1-9]|1[0-2]):?[0-5]?\d?     # 12h format.
         \s*                               # Any whitespace (zero-unlimited).
         [AaPp]\.?[Mm]\.?                  # AM/PM variations.
         |                                 # OR
-        (?:[01]?[0-9]|2[0-3]):[0-5][0-9]) # 24h format.
+        (?:[01]?[0-9]|2[0-3]):[0-5][0-9]  # 24h format.
+        )
         ''',
         re.VERBOSE,
     )
-    return match_pattern(page, time_pattern)
+    time = match_pattern(page, time_pattern)
+    dt = dateparser.parse(time)
+    return dt.time() if time else None
 
 
 def parse_location_field(page):
@@ -702,7 +717,7 @@ def parse_location_field(page):
         r'''
         >Location:      # The name of the desired field.
         \s*             # Any whitespace (at least 2)
-        (?:</span>)?    # Non capture closing strong tag
+        (?:</span>)?    # Non capture closing span tag
         (?:</strong>)?  # Non capture closing strong tag
         \s{2,}          # Any whitespace (at least 2)
         (?:</strong>)?  # Non capture closing strong tag

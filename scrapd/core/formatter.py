@@ -71,8 +71,10 @@ class Formatter():
 
         :rtype: str
         """
-        if isinstance(obj, (datetime.datetime, datetime.date)):
+        if isinstance(obj, (datetime.date)):
             return obj.strftime("%m/%d/%Y")
+        if isinstance(obj, (datetime.time)):
+            return obj.strftime("%I:%M %p")
         raise TypeError("Type %s not serializable" % type(obj))
 
     # pylint: disable=unused-argument

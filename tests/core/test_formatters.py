@@ -1,5 +1,5 @@
 """Test the formatter module."""
-from datetime import date
+import datetime
 import sys
 
 import pytest
@@ -69,7 +69,7 @@ RESULTS = [
     {
         'Age': 13,
         'Case': '19-0400694',
-        'DOB': date(2005, 12, 5),
+        'DOB': datetime.date(2005, 12, 5),
         'Date': 'February 9, 2019',
         'Ethnicity': 'Black',
         'Fatal crashes this year': '7',
@@ -78,7 +78,7 @@ RESULTS = [
         'Last Name': 'Mouton',
         'Link': 'http://austintexas.gov/news/traffic-fatality-7-4',
         'Location': '6000 block of Springdale Road',
-        'Time': '12:48 p.m.'
+        'Time': datetime.time(12, 48),
     },
 ]
 
