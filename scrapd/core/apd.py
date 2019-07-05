@@ -279,15 +279,9 @@ def sanitize_fatality_entity(d):
     """
     Clean up a fatality entity.
 
-    Removes the 'Deceased' field which does not contain	relevant information anymore.
-
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
-    # We do not need the deceased field.
-    if d.get('Deceased'):
-        del d['Deceased']
-
     # Ensure the values have the right format.
     empty_values = []
     for k, v in d.items():
@@ -801,6 +795,11 @@ def parse_page(page):
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
     page_d = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
+
+    # We needed the deceased field to be in the return value of parse_page_content for testing.
+    # But now we can delete it.
+    if page_d.get('Deceased'):
+        del page_d['Deceased']
 
     # Merge the results, from right to left.
     # (i.e. the rightmost object will override the object just before it, etc.)

@@ -180,6 +180,8 @@ def test_parse_twitter_title_00(input_, expected):
 def test_parse_twitter_description_00(input_, expected):
     """Ensure the Twitter description gets parsed correctly."""
     actual = apd.parse_twitter_description(input_)
+    if 'Deceased' in actual:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -203,6 +205,8 @@ def test_parse_twitter_description_02():
         'Location': '1500 W. Slaughter Lane',
         'Time': '5:14 p.m.',
     }
+    if 'Deceased' in actual:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -249,26 +253,6 @@ def test_parse_notes_field(page, start, end):
     notes = parsed_content[Fields.NOTES]
     assert notes.startswith(start)
     assert notes.endswith(end)
-
-@pytest.mark.parametrize('page,age', (
-    ('traffic-fatality-20-4', 19),
-    ('traffic-fatality-4-6', 58)
-))
-def test_parse_page_and_get_age(page, age):
-    """
-    Test if correct deceased field is found in a parsed page.
-
-    This test is for issue scrapd/scrapd/issues/150.
-
-    Even though there is a test for getting a decedent's age
-    from the deceased field (test_process_deceased_field_00),
-    the correct age isn't reaching the JSON. This test checks
-    for an error in finding the Deceased field as well as parsing
-    it.
-    """
-    page_text = load_test_page(page)
-    parsed_content = apd.parse_page_content(page_text)
-    assert parsed_content[Fields.AGE] == age
 
 
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
@@ -484,6 +468,8 @@ def test_parse_page_content_00(filename, expected):
     actual = apd.parse_page_content(page)
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
+    if 'Deceased' in actual and 'Deceased' not in expected:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -493,6 +479,8 @@ def test_parse_page_content_01(mocker):
     page = page_fd.read_text()
     mocker.patch('scrapd.core.apd.process_deceased_field', side_effect=ValueError)
     result = apd.parse_page_content(page)
+    if 'Deceased' in result:
+        del result['Deceased']
     assert len(result) == 6
 
 
@@ -514,6 +502,8 @@ def test_parse_twitter_fields_00(filename, expected):
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
     actual = apd.parse_twitter_fields(page)
+    if 'Deceased' in actual and 'Deceased' not in expected:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -524,6 +514,8 @@ def test_parse_page_00(filename, expected):
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
     actual = apd.parse_page(page)
+    if 'Deceased' in actual and 'Deceased' not in expected:
+        del actual['Deceased']
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
@@ -731,17 +723,16 @@ def test_parse_date_field_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('>Deceased: </strong> Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994</p>', \
-    'Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994'),
-    ('>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70<', \
-    'Cecil Wade Walker, White male, D.O.B. 3-7-70'),
-    ('>Deceased: </span></strong> Halbert Glen Hendricks - Black male - 9-24-78<', \
-    'Halbert Glen Hendricks - Black male - 9-24-78'),
-    ('', ''),
+    ('traffic-fatality-2-3', 'White female, DOB 02/15/1960'),
+    ('traffic-fatality-4-6', 'White female, DOB 12/31/1960'),
+    ('traffic-fatality-20-4', 'Hispanic male, 19 years of age'),
+    ('traffic-fatality-73-2', 'White male, DOB 02/09/80'),
 ))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
-    actual = apd.parse_deceased_field(input_)
+    page_text = load_test_page(input_)
+    parsed_content = apd.parse_page_content(page_text)
+    assert parsed_content[Fields.DECEASED].endswith(expected)
 
 
 @pytest.mark.parametrize('input_,expected', (
