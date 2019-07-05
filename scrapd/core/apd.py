@@ -663,15 +663,18 @@ def parse_deceased_field(page):
     """
     deceased_pattern = re.compile(
         r'''
-        >Deceased:      # The name of the desired field.
-        \s*             # Any whitespace character.
-        (?:</span>)?    # Non-capture (literal match).
-        (?:</strong>)?  # Non-capture (literal match).
-        \s*             # Any whitespace character.
-        >?              # Literal match.
-        ([^<]*\d)       # Capture any character/digit except '<'.
-        \s*.*           # Any character/whitespace.
-        \)?<            # Literal match ')' and '<'
+        >Deceased:          # The name of the desired field.
+        \s*                 # Any whitespace character.
+        (?:</span>)?        # Non-capture (literal match).
+        (?:</strong>)?      # Non-capture (literal match).
+        \s*                 # Any whitespace character.
+        >?                  # Literal match.
+        (
+        [^<]*\d             # Capture any character/digit except '<'.
+        \s*.*               # Any character/whitespace.
+        (years\sof\sage)?   # Literal match for the "years of age" string (optional)
+        )                   #
+        \)?<                # Literal match ')' and '<'
         ''',
         re.VERBOSE,
     )

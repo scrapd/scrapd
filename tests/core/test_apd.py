@@ -718,6 +718,10 @@ def test_parse_date_field_00(input_, expected):
         '',
         '',
     ),
+    (
+        '<strong>Deceased:  </strong>Hispanic male, 19 years of age<br>',
+        'Hispanic male, 19 years of age',
+    ),
     pytest.param(
         '<p>	<strong>Deceased:   </strong>David John Medrano,<strong> </strong>Hispanic male, D.O.B. 6-9-70</p>',
         'David John Medrano, Hispanic male, D.O.B. 6-9-70',
