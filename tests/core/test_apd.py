@@ -250,6 +250,26 @@ def test_parse_notes_field(page, start, end):
     assert notes.startswith(start)
     assert notes.endswith(end)
 
+@pytest.mark.parametrize('page,age', (
+    ('traffic-fatality-20-4', 19),
+    ('traffic-fatality-4-6', 58)
+))
+def test_parse_page_and_get_age(page, age):
+    """
+    Test if correct deceased field is found in a parsed page.
+
+    This test is for issue scrapd/scrapd/issues/150.
+
+    Even though there is a test for getting a decedent's age
+    from the deceased field (test_process_deceased_field_00),
+    the correct age isn't reaching the JSON. This test checks
+    for an error in finding the Deceased field as well as parsing
+    it.
+    """
+    page_text = load_test_page(page)
+    parsed_content = apd.parse_page_content(page_text)
+    assert parsed_content[Fields.AGE] == age
+
 
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
     """Ensure page detail links are extracted from news page."""
