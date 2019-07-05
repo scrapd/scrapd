@@ -6,7 +6,7 @@ import unicodedata
 from urllib.parse import urljoin
 
 import aiohttp
-from bs4 import BeautifulSoup, SoupStrainer, NavigableString
+import bs4
 from dateparser.search import search_dates
 from loguru import logger
 from tenacity import retry
@@ -518,7 +518,7 @@ def notes_from_element(deceased, deceased_field_str):
     """
     Get Notes from deceased field's BeautifulSoup element.
 
-    :param deceased Beautifulsoup.element.Tag:
+    :param deceased bs4.Beautifulsoup.element.Tag:
         the first <p> tag of the Deceased field of the APD bulletin
     :param deceased_field_str:
         the string corresponding to the Deceased field
@@ -527,7 +527,7 @@ def notes_from_element(deceased, deceased_field_str):
     """
     text = deceased.text
     for sibling in deceased.next_siblings:
-        if isinstance(sibling, NavigableString):
+        if isinstance(sibling, bs4.NavigableString):
             text += sibling
         else:
             text += sibling.text
@@ -549,7 +549,9 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
-    soup = BeautifulSoup(normalized_detail_page, 'html.parser', parse_only=SoupStrainer(property="content:encoded"))
+    soup = bs4.BeautifulSoup(normalized_detail_page,
+                             'html.parser',
+                             parse_only=bs4.SoupStrainer(property="content:encoded"))
 
     # Parse the `Case` field.
     d[Fields.CASE] = parse_case_field(normalized_detail_page)
@@ -646,7 +648,7 @@ def parse_deceased_field(soup):
     """
     Extract content from deceased field on the fatality page.
 
-    :param BeautifulSoup soup: the content of the fatality page
+    :param bs4.BeautifulSoup soup: the content of the fatality page
     :return:
         a tuple containing the tag for the Deceased paragraph
         and the Deceased field as a string
