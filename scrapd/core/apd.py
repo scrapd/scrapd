@@ -555,6 +555,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     """
     d = {}
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
+    soup = BeautifulSoup(normalized_detail_page, 'html.parser', parse_only=SoupStrainer(property="content:encoded"))
 
     # Parse the `Case` field.
     d[Fields.CASE] = parse_case_field(normalized_detail_page)
@@ -572,7 +573,7 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.DATE] = date_field
 
     # Parse the `Deceased` field.
-    deceased_field_str = parse_deceased_field(normalized_detail_page)
+    deceased_tag_p, deceased_field_str = parse_deceased_field(soup)
     if deceased_field_str:
         d[Fields.DECEASED] = deceased_field_str
 
@@ -587,15 +588,8 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.LOCATION] = location_str
 
     # Fill in Notes from Details page if not in twitter description.
-    if not notes_parsed:
-        soup = BeautifulSoup(normalized_detail_page, 'html.parser', parse_only=SoupStrainer(property="content:encoded"))
-
-        def starts_with_deceased(tag):
-            return tag.get_text().strip().startswith("Deceased:")
-
-        deceased = soup.find(starts_with_deceased)
-        if deceased:
-            d[Fields.NOTES] = notes_from_element(deceased, deceased_field_str)
+    if deceased_field_str and not notes_parsed:
+        d[Fields.NOTES] = notes_from_element(deceased_tag_p, deceased_field_str)
 
     return common_fatality_parsing(d)
 
@@ -654,29 +648,26 @@ def parse_date_field(page):
     return date[0][1].date() if date else None
 
 
-def parse_deceased_field(page):
+def parse_deceased_field(soup):
     """
     Extract content from deceased field on the fatality page.
 
-    :param str page: the content of the fatality page
-    :return: a string representing the deceased field content.
-    :rtype: str
+    :param BeautifulSoup soup: the content of the fatality page
+    :return:
+        a tuple containing the tag for the Deceased paragraph
+        and the Deceased field as a string
+    :rtype: tuple
     """
-    deceased_pattern = re.compile(
-        r'''
-        >Deceased:      # The name of the desired field.
-        \s*             # Any whitespace character.
-        (?:</span>)?    # Non-capture (literal match).
-        (?:</strong>)?  # Non-capture (literal match).
-        \s*             # Any whitespace character.
-        >?              # Literal match.
-        ([^<]*\d)       # Capture any character/digit except '<'.
-        \s*.*           # Any character/whitespace.
-        \)?<            # Literal match ')' and '<'
-        ''',
-        re.VERBOSE,
-    )
-    return match_pattern(page, deceased_pattern)
+
+    def starts_with_deceased(tag):
+        return tag.get_text().strip().startswith("Deceased:")
+
+    deceased_tag_p = soup.find(starts_with_deceased)
+    try:
+        deceased_field_str = deceased_tag_p.find("strong").next_sibling.string.strip()
+    except AttributeError:
+        deceased_field_str = None
+    return deceased_tag_p, deceased_field_str
 
 
 def parse_time_field(page):
