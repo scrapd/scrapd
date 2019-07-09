@@ -612,7 +612,7 @@ def parse_page_content(detail_page, notes_parsed=False):
         d[Fields.NOTES] = notes_from_element(deceased_tag_p, deceased_field_str)
 
     r, err = common_fatality_parsing(d)
-    return d, parsing_errors + err
+    return r, parsing_errors + err
 
 
 def parse_case_field(page):
