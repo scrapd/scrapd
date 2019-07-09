@@ -1,5 +1,5 @@
 """Test the APD module."""
-from datetime import date
+import datetime
 from unittest import mock
 
 import aiohttp
@@ -47,8 +47,8 @@ parse_twitter_fields_scenarios = {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: date(1980, 2, 9),
-        Fields.DATE: date(2018, 12, 30),
+        Fields.DOB: datetime.date(1980, 2, 9),
+        Fields.DATE: datetime.date(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
@@ -59,21 +59,21 @@ parse_twitter_fields_scenarios = {
         'Highway 71, eastbound. The truck went across the E. Highway 71 and '
         'US Highway 183 ramp, rolled and came to a stop north of the '
         'roadway.',
-        Fields.TIME: '2:24 a.m.',
+        Fields.TIME: datetime.time(2, 24),
     },
     'traffic-fatality-72-1': {
         Fields.CASE: '18-3551763',
         Fields.CRASHES: '72',
-        Fields.DATE: date(2018, 12, 21),
+        Fields.DATE: datetime.date(2018, 12, 21),
         Fields.LOCATION: '9500 N Mopac SB',
-        Fields.TIME: '8:20 p.m.',
+        Fields.TIME: datetime.time(20, 20),
     },
     'traffic-fatality-71-2': {
         Fields.CASE: '18-3381590',
         Fields.CRASHES: '71',
-        Fields.DATE: date(2018, 12, 4),
+        Fields.DATE: datetime.date(2018, 12, 4),
         Fields.LOCATION: '183 service road westbound and Payton Gin Rd.',
-        Fields.TIME: '8:39 p.m.',
+        Fields.TIME: datetime.time(20, 39),
     },
 }
 
@@ -82,32 +82,32 @@ parse_page_content_scenarios = {
         **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
         Fields.AGE: 58,
         Fields.CRASHES: '2',
-        Fields.DOB: date(1960, 2, 15),
-        Fields.DATE: date(2019, 1, 16),
+        Fields.DOB: datetime.date(1960, 2, 15),
+        Fields.DATE: datetime.date(2019, 1, 16),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Ann',
         Fields.GENDER: 'female',
         Fields.LAST_NAME: 'Bottenfield-Seago',
         Fields.LOCATION: 'West William Cannon Drive and Ridge Oak Road',
-        Fields.TIME: '3:42 p.m.',
+        Fields.TIME: datetime.time(15, 42),
     },
     'traffic-fatality-73-2': {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: date(1980, 2, 9),
-        Fields.DATE: date(2018, 12, 30),
+        Fields.DOB: datetime.date(1980, 2, 9),
+        Fields.DATE: datetime.date(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
         Fields.LAST_NAME: 'Sabillon-Garcia',
         Fields.LOCATION: '1400 E. Highway 71 eastbound',
-        Fields.TIME: '2:24 a.m.',
+        Fields.TIME: datetime.time(2, 24),
     },
     'traffic-fatality-72-1': {
         **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
         Fields.AGE: 22,
-        Fields.DOB: date(1996, 3, 29),
+        Fields.DOB: datetime.date(1996, 3, 29),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Elijah',
         Fields.GENDER: 'male',
@@ -115,7 +115,7 @@ parse_page_content_scenarios = {
     },
     'traffic-fatality-71-2': {
         **parse_twitter_fields_scenarios['traffic-fatality-71-2'],
-        Fields.DOB: date(1964, 6, 1),
+        Fields.DOB: datetime.date(1964, 6, 1),
         Fields.FIRST_NAME: 'Barkat',
         Fields.LAST_NAME: 'Umatia',
         Fields.ETHNICITY: 'Other',
@@ -160,10 +160,10 @@ def test_parse_twitter_title_00(input_, expected):
         mock_data.twitter_description_00,
         {
             'Case': '18-3640187',
-            'Date': date(2018, 12, 30),
-            'Time': '2:24 a.m.',
+            'Date': datetime.date(2018, 12, 30),
+            'Time': datetime.time(2, 24),
             'Location': '1400 E. Highway 71 eastbound',
-            'DOB': date(1980, 2, 9),
+            'DOB': datetime.date(1980, 2, 9),
             'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
@@ -200,10 +200,10 @@ def test_parse_twitter_description_02():
     expected = {
         'Age': 57,
         'Case': '18-160882',
-        'DOB': date(1961, 1, 22),
-        'Date': date(2018, 1, 16),
+        'DOB': datetime.date(1961, 1, 22),
+        'Date': datetime.date(2018, 1, 16),
         'Location': '1500 W. Slaughter Lane',
-        'Time': '5:14 p.m.',
+        'Time': datetime.time(17, 14),
     }
     if 'Deceased' in actual:
         del actual['Deceased']
@@ -240,6 +240,9 @@ def test_parse_details_page_notes_01(input_, expected):
     ('traffic-fatality-15-4', 'Keaton', 'seatbelts. No charges are expected to be filed.'),
     ('traffic-fatality-16-4', 'The preliminary investigation revealed that the 2017', 'injuries on April 4, 2019.'),
     ('traffic-fatality-17-4', 'The preliminary investigation revealed that the 2010', 'at the time of the crash.'),
+    ('traffic-fatality-20-4', 'The preliminary investigation revealed that a 2016',
+     'pronounced deceased at the scene.'),
+    ('traffic-fatality-25-4', 'Suspect Vehicle:  dark colored', 'damage to its right, front end.'),
     ('traffic-fatality-71-2', 'The preliminary investigation shows that a 2004 Honda sedan',
      'at the scene at 8:50 p.m.'),
     ('traffic-fatality-72-1', 'The preliminary investigation shows that the 2016 Indian',
@@ -249,7 +252,7 @@ def test_parse_details_page_notes_01(input_, expected):
 ))
 def test_parse_notes_field(page, start, end):
     page_text = load_test_page(page)
-    parsed_content = apd.parse_page_content(page_text)
+    parsed_content, r = apd.parse_page_content(page_text)
     notes = parsed_content[Fields.NOTES]
     assert notes.startswith(start)
     assert notes.endswith(end)
@@ -275,19 +278,19 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         Fields.LAST_NAME: "Tamez",
         Fields.ETHNICITY: "Hispanic",
         Fields.GENDER: "male",
-        Fields.DOB: date(1954, 10, 10),
+        Fields.DOB: datetime.date(1954, 10, 10),
     }),
     ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
         Fields.FIRST_NAME: "Eva",
         Fields.LAST_NAME: "Gonzales",
         Fields.ETHNICITY: "White",
         Fields.GENDER: 'female',
-        Fields.DOB: date(1961, 1, 22),
+        Fields.DOB: datetime.date(1961, 1, 22),
     }),
     (
         'DOB: 01-01-99',
         {
-            Fields.DOB: date(1999, 1, 1),
+            Fields.DOB: datetime.date(1999, 1, 1),
         },
     ),
     (
@@ -297,7 +300,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Chou",
             Fields.ETHNICITY: "Asian",
             Fields.GENDER: "male",
-            Fields.DOB: date(1949, 8, 1),
+            Fields.DOB: datetime.date(1949, 8, 1),
         },
     ),
     (
@@ -307,7 +310,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Peterson",
             Fields.ETHNICITY: "White",
             Fields.GENDER: "male",
-            Fields.DOB: date(1981, 10, 8),
+            Fields.DOB: datetime.date(1981, 10, 8),
         },
     ),
     (
@@ -317,7 +320,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Tinoco",
             Fields.ETHNICITY: "Hispanic",
             Fields.GENDER: "male",
-            Fields.DOB: date(2007, 11, 12)
+            Fields.DOB: datetime.date(2007, 11, 12)
         },
     ),
     (
@@ -327,7 +330,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Hall",
             Fields.ETHNICITY: "White",
             Fields.GENDER: "male",
-            Fields.DOB: date(1951, 8, 28)
+            Fields.DOB: datetime.date(1951, 8, 28)
         },
     ),
     (
@@ -345,7 +348,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Ervin",
             Fields.ETHNICITY: "Black",
             Fields.GENDER: "male",
-            Fields.DOB: date(1966, 8, 30)
+            Fields.DOB: datetime.date(1966, 8, 30)
         },
     ),
     (
@@ -355,7 +358,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Garcia",
             Fields.ETHNICITY: "Hispanic",
             Fields.GENDER: "male",
-            Fields.DOB: date(1977, 11, 15)
+            Fields.DOB: datetime.date(1977, 11, 15)
         },
     ),
     (
@@ -363,7 +366,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         {
             Fields.ETHNICITY: "Black",
             Fields.GENDER: "female",
-            Fields.DOB: date(1999, 1, 1)
+            Fields.DOB: datetime.date(1999, 1, 1)
         },
     ),
 ))
@@ -465,7 +468,7 @@ def test_parse_page_content_00(filename, expected):
            Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page_content(page)
+    actual, err = apd.parse_page_content(page)
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     if 'Deceased' in actual and 'Deceased' not in expected:
@@ -478,7 +481,7 @@ def test_parse_page_content_01(mocker):
     page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
     page = page_fd.read_text()
     mocker.patch('scrapd.core.apd.process_deceased_field', side_effect=ValueError)
-    result = apd.parse_page_content(page)
+    result, err = apd.parse_page_content(page)
     if 'Deceased' in result:
         del result['Deceased']
     assert len(result) == 6
@@ -486,7 +489,7 @@ def test_parse_page_content_01(mocker):
 
 def test_parse_page_content_02(mocker):
     """Ensure a log entry is created if there is no deceased field."""
-    result = apd.parse_page_content('Case: 01-2345678')
+    result, err = apd.parse_page_content('Case: 01-2345678')
     assert result
 
 
@@ -513,12 +516,24 @@ def test_parse_page_00(filename, expected):
        Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page(page)
+    actual = apd.parse_page(page, fake.uri())
     if 'Deceased' in actual and 'Deceased' not in expected:
         del actual['Deceased']
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
+
+
+@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_scenarios.items()])
+def test_parse_page_01(mocker, filename, expected):
+    """Ensuring ."""
+    data = {}
+    parsing_errors = ['one error']
+    page_fd = TEST_DATA_DIR / filename
+    page = page_fd.read_text()
+    pc = mocker.patch('scrapd.core.apd.parse_page_content', return_value=(data, parsing_errors))
+    _ = apd.parse_page(page, fake.uri())
+    assert pc.called_once
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
@@ -684,19 +699,20 @@ def test_extract_twitter_description_meta_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('Time: </span>   Approximately 01:14a.m.', '01:14a.m.'),
-    ('<tag>Time:     08:35 pm<br />', '08:35 pm'),
-    ('Time:  8:47  P.M.', '8:47  P.M.'),
-    ('Time:12:47 p.M.', '12:47 p.M.'),
-    ('Time: 5:16', '5:16'),
-    ('Time: 05:16 ', '05:16'),
-    ('Time: 18:26', '18:26'),
-    ('Time: 22:56', '22:56'),
-    ('Time: 54:34', ''),
-    ('Time: 28:24', ''),
-    ('Time: 4:66 pm', ''),
-    ('Time: 18:46 pm', '18:46'),
-    ('Time: 00:24 a.m.', '00:24'),
+    ('Time: </span>   Approximately 01:14a.m.', datetime.time(1, 14)),
+    ('<tag>Time:     08:35 pm<br />', datetime.time(20, 35)),
+    ('Time:  8:47  P.M.', datetime.time(20, 47)),
+    ('Time:12:47 p.M.', datetime.time(12, 47)),
+    ('Time: 5:16', datetime.time(5, 16)),
+    ('Time: 05:16 ', datetime.time(5, 16)),
+    ('Time: 18:26', datetime.time(18, 26)),
+    ('Time: 22:56', datetime.time(22, 56)),
+    ('Time: 54:34', None),
+    ('Time: 28:24', None),
+    ('Time: 4:66 pm', None),
+    ('Time: 18:46 pm', datetime.time(18, 46)),
+    ('Time: 00:24 a.m.', datetime.time(0, 24)),
+    ('<p>	<strong>Time:</strong>       8 p.m.</p>', datetime.time(20, 0)),
 ))
 def test_parse_time_field_00(input_, expected):
     """Ensure a time field gets parsed correctly."""
@@ -705,14 +721,14 @@ def test_parse_time_field_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('<strong>Date:   </strong>April 18, 2019</p>', date(2019, 4, 18)),
-    ('>Date:   </strong> Night of May 22 2019</p>', date(2019, 5, 22)),
-    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', date(2018, 10, 3)),
-    ('>Date:  night Apr 1-2012</p>', date(2012, 4, 1)),
-    ('>Date:  feb. 2 2018</p>', date(2018, 2, 2)),
-    ('>Date:  10-1-17</p>', date(2017, 10, 1)),
-    ('>Date:  Morning of 2,2,19 </p>', date(2019, 2, 2)),
-    ('>Date:  3/3/19</p>', date(2019, 3, 3)),
+    ('<strong>Date:   </strong>April 18, 2019</p>', datetime.date(2019, 4, 18)),
+    ('>Date:   </strong> Night of May 22 2019</p>', datetime.date(2019, 5, 22)),
+    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', datetime.date(2018, 10, 3)),
+    ('>Date:  night Apr 1-2012</p>', datetime.date(2012, 4, 1)),
+    ('>Date:  feb. 2 2018</p>', datetime.date(2018, 2, 2)),
+    ('>Date:  10-1-17</p>', datetime.date(2017, 10, 1)),
+    ('>Date:  Morning of 2,2,19 </p>', datetime.date(2019, 2, 2)),
+    ('>Date:  3/3/19</p>', datetime.date(2019, 3, 3)),
     ('', None),
     ('>Date: Afternoon</p>', None),
 ))
@@ -726,12 +742,13 @@ def test_parse_date_field_00(input_, expected):
     ('traffic-fatality-2-3', 'White female, DOB 02/15/1960'),
     ('traffic-fatality-4-6', 'White female, DOB 12/31/1960'),
     ('traffic-fatality-20-4', 'Hispanic male, 19 years of age'),
+    ('traffic-fatality-25-4', ', Hispanic male, D.O.B. 6-9-70'),
     ('traffic-fatality-73-2', 'White male, DOB 02/09/80'),
 ))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     page_text = load_test_page(input_)
-    parsed_content = apd.parse_page_content(page_text)
+    parsed_content, r = apd.parse_page_content(page_text)
     assert parsed_content[Fields.DECEASED].endswith(expected)
 
 
@@ -779,6 +796,10 @@ def test_sanitize_fatality_entity(input_, expected):
     (
         '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
         '183 service road westbound and Payton Gin Rd.',
+    ),
+    (
+        '<p>	<strong>Location:  </strong>8900 block of N Capital of Texas Highway   </p>',
+        '8900 block of N Capital of Texas Highway   ',
     ),
 ))
 def test_parse_location_field_00(input_, expected):

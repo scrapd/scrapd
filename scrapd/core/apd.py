@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 
 import aiohttp
 import bs4
+import dateparser
 from dateparser.search import search_dates
 from loguru import logger
 from tenacity import retry
@@ -182,12 +183,22 @@ def parse_twitter_description(twitter_description):
         # Turn it into a date object.
         d[Fields.DATE] = date_utils.parse_date(fatality_date)
 
+    # Convert the time to a time object.
+    fatality_time = d.get(Fields.TIME)
+    if fatality_time:
+        # Ensure it is a string.
+        if isinstance(fatality_time, list):
+            fatality_time = ' '.join(fatality_time)
+        dt = dateparser.parse(fatality_time)
+        d[Fields.TIME] = dt.time() if dt else None
+
     # Handle special case where Date of birth is a token `DOB:`.
     tmp_dob = d.get(Fields.DOB)
     if tmp_dob and isinstance(tmp_dob, list):
         d[Fields.DOB] = date_utils.parse_date(tmp_dob[0])
 
-    return common_fatality_parsing(d)
+    r, _ = common_fatality_parsing(d)
+    return r
 
 
 def parse_details_page_notes(details_page_notes):
@@ -253,26 +264,25 @@ def common_fatality_parsing(d):
 
     :param dict d: the fatality to finish parsing
     :return: A dictionary containing the details information about the fatality with sanitized entries.
-    :rtype: dict
+    :rtype: dict, list
     """
-    # Extracting other fields from 'Deceased' field.
-    deceased_field = d.get(Fields.DECEASED)
-    if deceased_field:
-        if isinstance(deceased_field, list):
-            deceased_field = ' '.join(deceased_field)
+    parsing_errors = []
 
+    # Extracting other fields from 'Deceased' field.
+    if d.get(Fields.DECEASED):
         try:
-            d.update(process_deceased_field(deceased_field))
+            d.update(process_deceased_field(d.get(Fields.DECEASED)))
         except ValueError as e:
-            logger.trace(e)
-    else:
-        logger.trace('No deceased information to parse in fatality page.')
+            parsing_errors.append(e)
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
         d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
 
-    return sanitize_fatality_entity(d)
+    if d.get(Fields.AGE, -1) < 0:
+        parsing_errors.append(f'age is invalid: {d.get(Fields.AGE)}')
+
+    return sanitize_fatality_entity(d), parsing_errors
 
 
 def sanitize_fatality_entity(d):
@@ -358,6 +368,9 @@ def process_deceased_field(deceased_field):
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
+    if isinstance(deceased_field, list):
+        deceased_field = ' '.join(deceased_field)
+
     # Try to parse the deceased fields when the fields are comma separated.
     try:
         return parse_comma_delimited_deceased_field(deceased_field)
@@ -382,7 +395,7 @@ def process_deceased_field(deceased_field):
     except Exception:
         pass
 
-    raise ValueError(f'Cannot parse {Fields.DECEASED}: {deceased_field}')
+    raise ValueError(f'cannot parse {Fields.DECEASED}: {deceased_field}')
 
 
 def parse_age_deceased_field(deceased_field):
@@ -548,6 +561,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     :rtype: dict
     """
     d = {}
+    parsing_errors = []
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
     soup = bs4.BeautifulSoup(normalized_detail_page,
                              'html.parser',
@@ -562,32 +576,43 @@ def parse_page_content(detail_page, notes_parsed=False):
     crash_str = parse_crashes_field(normalized_detail_page)
     if crash_str:
         d[Fields.CRASHES] = crash_str
+    else:
+        parsing_errors.append("could not retrieve the crash number")
 
     # Parse the `Date` field.
     date_field = parse_date_field(normalized_detail_page)
     if date_field:
         d[Fields.DATE] = date_field
+    else:
+        parsing_errors.append("could not retrieve the crash date")
 
     # Parse the `Deceased` field.
     deceased_tag_p, deceased_field_str = parse_deceased_field(soup)
     if deceased_field_str:
         d[Fields.DECEASED] = deceased_field_str
+    else:
+        parsing_errors.append("could not retrieve the deceased information")
 
     # Parse the `Time` field.
     time_str = parse_time_field(normalized_detail_page)
     if time_str:
         d[Fields.TIME] = time_str
+    else:
+        parsing_errors.append("could not retrieve the crash time")
 
     # Parse the location field.
     location_str = parse_location_field(normalized_detail_page)
     if location_str:
         d[Fields.LOCATION] = location_str
+    else:
+        parsing_errors.append("could not retrieve the location")
 
     # Fill in Notes from Details page if not in twitter description.
     if deceased_field_str and not notes_parsed:
         d[Fields.NOTES] = notes_from_element(deceased_tag_p, deceased_field_str)
 
-    return common_fatality_parsing(d)
+    r, err = common_fatality_parsing(d)
+    return d, parsing_errors + err
 
 
 def parse_case_field(page):
@@ -660,6 +685,13 @@ def parse_deceased_field(soup):
 
     deceased_tag_p = soup.find(starts_with_deceased)
     try:
+        deceased_text = deceased_tag_p.get_text()
+        if len(deceased_text) < 100 and "preliminary" not in deceased_text:
+            return deceased_tag_p, deceased_text.split("Deceased:")[1].strip()
+    except AttributeError:
+        pass
+
+    try:
         deceased_field_str = deceased_tag_p.find("strong").next_sibling.string.strip()
     except AttributeError:
         deceased_field_str = None
@@ -677,16 +709,21 @@ def parse_time_field(page):
     time_pattern = re.compile(
         r'''
         Time:                             # The name of the desired field.
+        (?:</strong>)?                    # Non capture closing strong tag
         \D*?                              # Any non-digit character (lazy).
-        ((?:0?[1-9]|1[0-2]):[0-5]\d       # 12h format.
+        (
+        (?:0?[1-9]|1[0-2]):?[0-5]?\d?     # 12h format.
         \s*                               # Any whitespace (zero-unlimited).
         [AaPp]\.?[Mm]\.?                  # AM/PM variations.
         |                                 # OR
-        (?:[01]?[0-9]|2[0-3]):[0-5][0-9]) # 24h format.
+        (?:[01]?[0-9]|2[0-3]):[0-5][0-9]  # 24h format.
+        )
         ''',
         re.VERBOSE,
     )
-    return match_pattern(page, time_pattern)
+    time = match_pattern(page, time_pattern)
+    dt = dateparser.parse(time)
+    return dt.time() if time else None
 
 
 def parse_location_field(page):
@@ -699,11 +736,12 @@ def parse_location_field(page):
     location_pattern = re.compile(
         r'''
         >Location:      # The name of the desired field.
-        .*              # Any character
-        >               # The '>' character
+        \s*             # Any whitespace (at least 2)
+        (?:</span>)?    # Non capture closing span tag
+        (?:</strong>)?  # Non capture closing strong tag
         \s{2,}          # Any whitespace (at least 2)
-        (?:</strong>)   # Non capture closing strong tag
-        ?([^<]+)        # Capture any character except '<'.
+        (?:</strong>)?  # Non capture closing strong tag
+        ([^<]+)         # Capture any character except '<'.
         ''',
         re.VERBOSE,
     )
@@ -788,15 +826,20 @@ def parse_twitter_fields(page):
     return d
 
 
-def parse_page(page):
+def parse_page(page, url):
     """
     Parse the page using all parsing methods available.
 
     :param str  page: the content of the fatality page
+    :param str url: detail page URL
+    :return: a dictionary representing a fatality.
+    :rtype: dict
     """
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
-    page_d = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
+    page_d, err = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
+    if err:
+        logger.debug(f'Fatality report {url} was not parsed correctly:\n\t * ' + '\n\t * '.join(err))
 
     # We needed the deceased field to be in the return value of parse_page_content for testing.
     # But now we can delete it.
@@ -826,7 +869,7 @@ async def fetch_and_parse(session, url):
         raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
-    d = parse_page(page)
+    d = parse_page(page, url)
     if not d:
         raise ValueError(f'No data could be extracted from the page {url}.')
 
