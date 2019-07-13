@@ -273,7 +273,7 @@ def common_fatality_parsing(d):
         try:
             d.update(process_deceased_field(d.get(Fields.DECEASED)))
         except ValueError as e:
-            parsing_errors.append(e)
+            parsing_errors.append(str(e))
 
     # Compute the victim's age.
     if d.get(Fields.DATE) and d.get(Fields.DOB):
