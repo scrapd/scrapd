@@ -114,7 +114,7 @@ The profiling for the project is mostly done using `pyinstrument`_
 
 You can use the nox task to run the profiler automatically::
 
-  nox -s profiling
+  inv profile
 
 Additionally, you can also generate a flame graph with `py-spy`_. It requires root permissions, therefore must be run
 with sudo and will prompt you for your password::

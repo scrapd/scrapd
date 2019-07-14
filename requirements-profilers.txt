@@ -1,2 +1,0 @@
-pyinstrument==3.0.3
-py-spy==0.1.11
