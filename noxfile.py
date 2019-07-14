@@ -73,19 +73,6 @@ def lint_format(session):
 
 
 @nox.session()
-def profiling(session):
-    """Setup the developper environment."""
-    # Install dependencies.
-    session.install('--upgrade', 'pip', 'setuptools')
-    session.install('-r', 'requirements-profilers.txt')
-    session.install('-e', '.')
-
-    env_dir = Path(session.bin)
-    scrapd = env_dir / 'scrapd'
-    session.run("pyinstrument", "--renderer", "html", f'{scrapd.resolve()}', "-v", "--format", "count", "--pages", "5")
-
-
-@nox.session()
 def pydocstyle(session):
     """Check the docstrings."""
     session.install('-rrequirements-dev.txt')

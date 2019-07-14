@@ -5,7 +5,9 @@ aioresponses==0.6.0
 asynctest==0.12.4
 bpython
 flake8==3.7.7
+py-spy==0.1.11
 pydocstyle==3.0.0
+pyinstrument==3.0.3
 pylint==2.3.1
 pytest-asyncio==0.10.0
 pytest-bdd==3.1.0
