@@ -841,14 +841,14 @@ def parse_page(page, url):
     if err:
         logger.debug(f'Fatality report {url} was not parsed correctly:\n\t * ' + '\n\t * '.join(err))
 
-    # We needed the deceased field to be in the return value of parse_page_content for testing.
-    # But now we can delete it.
-    if page_d.get('Deceased'):
-        del page_d['Deceased']
-
     # Merge the results, from right to left.
     # (i.e. the rightmost object will override the object just before it, etc.)
     d = {**page_d, **twitter_d}
+
+    # We needed the deceased field to be in the return value of parse_page_content for testing.
+    # But now we can delete it.
+    if d.get('Deceased'):
+        del d['Deceased']
 
     return d
 

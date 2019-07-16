@@ -517,8 +517,6 @@ def test_parse_page_00(filename, expected):
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
     actual = apd.parse_page(page, fake.uri())
-    if 'Deceased' in actual and 'Deceased' not in expected:
-        del actual['Deceased']
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
