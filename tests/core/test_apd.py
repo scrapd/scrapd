@@ -180,6 +180,8 @@ def test_parse_twitter_title_00(input_, expected):
 def test_parse_twitter_description_00(input_, expected):
     """Ensure the Twitter description gets parsed correctly."""
     actual = apd.parse_twitter_description(input_)
+    if 'Deceased' in actual:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -203,6 +205,8 @@ def test_parse_twitter_description_02():
         'Location': '1500 W. Slaughter Lane',
         'Time': datetime.time(17, 14),
     }
+    if 'Deceased' in actual:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -227,6 +231,31 @@ def test_parse_details_page_notes_01(input_, expected):
     """Ensure details page notes parsed correctly."""
     actual = apd.parse_details_page_notes(input_)
     assert actual == expected
+
+
+@pytest.mark.parametrize('page,start,end', (
+    ('traffic-fatality-2-3', 'The preliminary investigation shows that the grey',
+     'No charges are expected to be filed.'),
+    ('traffic-fatality-4-6', 'The preliminary investigation shows that a black, Ford', 'scene at 01:48 a.m.'),
+    ('traffic-fatality-15-4', 'Keaton', 'seatbelts. No charges are expected to be filed.'),
+    ('traffic-fatality-16-4', 'The preliminary investigation revealed that the 2017', 'injuries on April 4, 2019.'),
+    ('traffic-fatality-17-4', 'The preliminary investigation revealed that the 2010', 'at the time of the crash.'),
+    ('traffic-fatality-20-4', 'The preliminary investigation revealed that a 2016',
+     'pronounced deceased at the scene.'),
+    ('traffic-fatality-25-4', 'Suspect Vehicle:  dark colored', 'damage to its right, front end.'),
+    ('traffic-fatality-71-2', 'The preliminary investigation shows that a 2004 Honda sedan',
+     'at the scene at 8:50 p.m.'),
+    ('traffic-fatality-72-1', 'The preliminary investigation shows that the 2016 Indian',
+     'whether charges will be filed.'),
+    ('traffic-fatality-73-2', 'The preliminary investigation shows that a 2003 Ford F150',
+     'St. David’s South Austin Hospital.'),
+))
+def test_parse_notes_field(page, start, end):
+    page_text = load_test_page(page)
+    parsed_content, r = apd.parse_page_content(page_text)
+    notes = parsed_content[Fields.NOTES]
+    assert notes.startswith(start)
+    assert notes.endswith(end)
 
 
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
@@ -442,6 +471,8 @@ def test_parse_page_content_00(filename, expected):
     actual, err = apd.parse_page_content(page)
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
+    if 'Deceased' in actual and 'Deceased' not in expected:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -451,6 +482,8 @@ def test_parse_page_content_01(mocker):
     page = page_fd.read_text()
     mocker.patch('scrapd.core.apd.process_deceased_field', side_effect=ValueError)
     result, err = apd.parse_page_content(page)
+    if 'Deceased' in result:
+        del result['Deceased']
     assert len(result) == 6
 
 
@@ -472,6 +505,8 @@ def test_parse_twitter_fields_00(filename, expected):
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
     actual = apd.parse_twitter_fields(page)
+    if 'Deceased' in actual and 'Deceased' not in expected:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -570,12 +605,12 @@ async def test_async_retrieve_00(fake_news):
 
 @pytest.mark.parametrize('input_,expected', (
     ('<p><strong>Case:         </strong>19-0881844</p>', '19-0881844'),
-    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
+    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
     ('<strong>Case:</strong></span><span style="color: rgb(32, 32, 32); '
      'font-family: &quot;Verdana&quot;,sans-serif; font-size: 10.5pt; '
      'mso-fareast-font-family: &quot;Times New Roman&quot;; '
      'mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA; '
-     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
+     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
     ('<p><strong>Case:</strong>            18-1591949 </p>', '18-1591949'),
     ('<p><strong>Case:</strong>            18-590287<br />', '18-590287'),
 ))
@@ -702,37 +737,17 @@ def test_parse_date_field_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    (
-        '>Deceased: </strong> Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994</p>',
-        'Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994',
-    ),
-    (
-        '>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70<',
-        'Cecil Wade Walker, White male, D.O.B. 3-7-70',
-    ),
-    (
-        '>Deceased: </span></strong> Halbert Glen Hendricks - Black male - 9-24-78<',
-        'Halbert Glen Hendricks - Black male - 9-24-78',
-    ),
-    (
-        '',
-        '',
-    ),
-    (
-        '<strong>Deceased:  </strong>Hispanic male, 19 years of age<br>',
-        'Hispanic male, 19 years of age',
-    ),
-    pytest.param(
-        '<p>	<strong>Deceased:   </strong>David John Medrano,<strong> </strong>Hispanic male, D.O.B. 6-9-70</p>',
-        'David John Medrano, Hispanic male, D.O.B. 6-9-70',
-        marks=pytest.mark.xfail(
-            reason='Do not know how to parse this one as the "<strong> </strong>" is throwing the regex off.'),
-    ),
+    ('traffic-fatality-2-3', 'White female, DOB 02/15/1960'),
+    ('traffic-fatality-4-6', 'White female, DOB 12/31/1960'),
+    ('traffic-fatality-20-4', 'Hispanic male, 19 years of age'),
+    ('traffic-fatality-25-4', ', Hispanic male, D.O.B. 6-9-70'),
+    ('traffic-fatality-73-2', 'White male, DOB 02/09/80'),
 ))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
-    actual = apd.parse_deceased_field(input_)
-    assert actual == expected
+    page_text = load_test_page(input_)
+    parsed_content, r = apd.parse_page_content(page_text)
+    assert parsed_content[Fields.DECEASED].endswith(expected)
 
 
 @pytest.mark.parametrize('input_,expected', (
@@ -773,11 +788,11 @@ def test_sanitize_fatality_entity(input_, expected):
 
 @pytest.mark.parametrize('input_,expected', (
     (
-        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
+        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
         'West William Cannon Drive and Ridge Oak Road',
     ),
     (
-        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
+        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
         '183 service road westbound and Payton Gin Rd.',
     ),
     (

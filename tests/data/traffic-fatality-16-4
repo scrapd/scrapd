@@ -1,3 +1,4 @@
+
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
@@ -6,39 +7,39 @@
 
 <head profile="http://www.w3.org/1999/xhtml/vocab">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="googlebot" content="unavailable_after: 18-Jan-2021 10:03:41 CST" />
-<link rel="shortcut icon" href="http://austintexas.gov/sites/all/themes/austintexas_ninesixty/images/favicon.png" type="image/png" />
-<meta name="twitter:title" content="Traffic Fatality #2" />
-<meta name="twitter:description" content="Case:           19-0161105" />
-  <title>Traffic Fatality #2 | AustinTexas.gov - The Official Website of the City of Austin</title>
+<meta name="googlebot" content="unavailable_after: 10-Apr-2021 14:53:51 CDT" />
+<link rel="shortcut icon" href="https://austintexas.gov/sites/all/themes/austintexas_ninesixty/images/favicon.png" type="image/png" />
+<meta name="twitter:title" content="Traffic Fatality #16" />
+<meta name="twitter:description" content="Case:         19-0930132 Date:          April 3, 2019 Time:          2:39 a.m. Location:    E. Wells Branch Parkway/S. Heatherwilde Boulevard" />
+  <title>Traffic Fatality #16 | AustinTexas.gov - The Official Website of the City of Austin</title>
   <link rel="shortcut icon" href="/sites/all/themes/austintexas_ninesixty/images/favicon.ico" type="image/vnd.microsoft.icon">
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
   <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9">
-  <link type="text/css" rel="stylesheet" href="http://austintexas.gov/sites/default/files/css/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css" media="all and (min-width: 720px)" />
-<link type="text/css" rel="stylesheet" href="http://austintexas.gov/sites/default/files/css/css_jUPkzjuISEKCFD3UTVx3NJPXpM2ZQ__Ao31ERvPrNlE.css" media="all and (min-width: 720px)" />
-<link type="text/css" rel="stylesheet" href="http://austintexas.gov/sites/default/files/css/css_xmK5BftMQSAZ3vaNn-WkxtfxRpSHYyOAYEDKXjIxSeU.css" media="all" />
-<link type="text/css" rel="stylesheet" href="http://austintexas.gov/sites/default/files/css/css_YjxgLs0qYdMrEomG2JLboQSch_opHXifPlSvWAwMdOQ.css" media="print" />
+  <link type="text/css" rel="stylesheet" href="https://austintexas.gov/sites/default/files/css/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css" media="all and (min-width: 720px)" />
+<link type="text/css" rel="stylesheet" href="https://austintexas.gov/sites/default/files/css/css_jUPkzjuISEKCFD3UTVx3NJPXpM2ZQ__Ao31ERvPrNlE.css" media="all and (min-width: 720px)" />
+<link type="text/css" rel="stylesheet" href="https://austintexas.gov/sites/default/files/css/css_xmK5BftMQSAZ3vaNn-WkxtfxRpSHYyOAYEDKXjIxSeU.css" media="all" />
+<link type="text/css" rel="stylesheet" href="https://austintexas.gov/sites/default/files/css/css_YjxgLs0qYdMrEomG2JLboQSch_opHXifPlSvWAwMdOQ.css" media="print" />
   <!--[if lt IE 9]>
   <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-  <script type="text/javascript" src="http://austintexas.gov/sites/all/libraries/respondjs/respond.min.js?pl2p2x"></script>
-<script type="text/javascript" src="http://austintexas.gov/sites/default/files/js/js_vDrW3Ry_4gtSYaLsh77lWhWjIC6ml2QNkcfvfP5CVFs.js"></script>
-<script type="text/javascript" src="http://austintexas.gov/sites/default/files/js/js_EqxjhUxbQBcm4Chk5aj7KPJN05wxpJ5hq1H62qbO_Y8.js"></script>
-<script type="text/javascript" src="http://austintexas.gov/sites/default/files/js/js_TscBVj1bj2vUmvUKTAge0UDajhU6wsLjOsHym5mf9qE.js"></script>
+  <script type="text/javascript" src="https://austintexas.gov/sites/all/libraries/respondjs/respond.min.js?pr7nk3"></script>
+<script type="text/javascript" src="https://austintexas.gov/sites/default/files/js/js_qikmINIYTWe4jcTUn8cKiMr8bmSDiZB9LQqvceZ6wlM.js"></script>
+<script type="text/javascript" src="https://austintexas.gov/sites/default/files/js/js_EqxjhUxbQBcm4Chk5aj7KPJN05wxpJ5hq1H62qbO_Y8.js"></script>
+<script type="text/javascript" src="https://austintexas.gov/sites/default/files/js/js_TscBVj1bj2vUmvUKTAge0UDajhU6wsLjOsHym5mf9qE.js"></script>
 <script type="text/javascript">
 <!--//--><![CDATA[//><!--
 var _gaq = _gaq || [];_gaq.push(["_setAccount", "UA-27761834-1"]);_gaq.push(["_setDomainName", ".austintexas.gov"]);_gaq.push(["_trackPageview"]);(function() {var ga = document.createElement("script");ga.type = "text/javascript";ga.async = true;ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga, s);})();
 //--><!]]>
 </script>
-<script type="text/javascript" src="http://austintexas.gov/sites/default/files/js/js_CHUGQAVFwPh2H3igzJglIs0cdH__8TSUZX73Hgz34ZY.js"></script>
+<script type="text/javascript" src="https://austintexas.gov/sites/default/files/js/js_CHUGQAVFwPh2H3igzJglIs0cdH__8TSUZX73Hgz34ZY.js"></script>
 <script type="text/javascript">
 <!--//--><![CDATA[//><!--
-jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"austintexas_ninesixty","theme_token":"gmjdX3Z0jb7vAlhRF-LlI20c30PeS0IHz8RBKnGL9nk","js":{"sites\/all\/libraries\/respondjs\/respond.min.js":1,"misc\/jquery.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/views_slideshow_xtra\/views_slideshow_xtra_overlay\/js\/views_slideshow_xtra_overlay.js":1,"sites\/all\/modules\/calendar_update\/calendar_update.js":1,"sites\/all\/libraries\/colorbox\/jquery.colorbox-min.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox.js":1,"sites\/all\/modules\/colorbox\/styles\/default\/colorbox_default_style.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox_inline.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/superfish.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/jquery.bgiframe.min.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/jquery.hoverIntent.minified.js":1,"sites\/all\/modules\/nice_menus\/nice_menus.js":1,"sites\/all\/modules\/panels\/js\/panels.js":1,"sites\/all\/modules\/flickr\/flickr_colorbox.js":1,"sites\/all\/modules\/field_group\/field_group.js":1,"sites\/all\/modules\/google_analytics\/googleanalytics.js":1,"0":1,"sites\/all\/themes\/austintexas_ninesixty\/js\/coascripts.js":1,"sites\/all\/themes\/austintexas_ninesixty\/js\/jquery.cycle.all.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"sites\/all\/modules\/ckeditor\/ckeditor.css":1,"sites\/all\/modules\/colorbox\/styles\/default\/colorbox_default_style.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/nice_menus\/nice_menus.css":1,"sites\/all\/modules\/nice_menus\/nice_menus_default.css":1,"sites\/all\/modules\/panels\/css\/panels.css":1,"modules\/aggregator\/aggregator.css":1,"modules\/book\/book.css":1,"modules\/comment\/comment.css":1,"sites\/all\/modules\/date\/date_api\/date.css":1,"sites\/all\/modules\/date\/date_popup\/themes\/datepicker.1.7.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"modules\/poll\/poll.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views_slideshow_xtra\/views_slideshow_xtra_overlay\/css\/views_slideshow_xtra_overlay.css":1,"sites\/all\/modules\/workbench_notification\/workbench_notification.css":1,"modules\/forum\/forum.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/themes\/austintexas_ninesixty\/layouts\/960_16_484_leftSb\/..\/..\/..\/..\/styles\/styles.css":1,"sites\/all\/modules\/field_group\/field_group.css":1,"sites\/all\/modules\/panels\/plugins\/layouts\/onecol\/onecol.css":1,"sites\/all\/modules\/flickr\/flickr.css":1,"sites\/all\/modules\/coa_imce_slideshow\/library\/GalleryView\/css\/jquery.galleryview-3.0-dev.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/reset.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/text.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/960.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/debug.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/styles.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/ie.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/blogs.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/print.css":1}},"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"100%","maxHeight":"100%","fixed":true},"nice_menus_options":{"delay":"800","speed":"slow"},"googleanalytics":{"trackOutbound":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls|xml|z|zip","trackDomainMode":"1"},"urlIsAjaxTrusted":{"\/news\/traffic-fatality-2-3":true}});
+jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"austintexas_ninesixty","theme_token":"RDNGa1JOWRMq16dzhv8yqznzXdwMLOLLah8-S8QzdTg","js":{"sites\/all\/libraries\/respondjs\/respond.min.js":1,"misc\/jquery.js":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/views_slideshow_xtra\/views_slideshow_xtra_overlay\/js\/views_slideshow_xtra_overlay.js":1,"sites\/all\/modules\/calendar_update\/calendar_update.js":1,"sites\/all\/libraries\/colorbox\/jquery.colorbox-min.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox.js":1,"sites\/all\/modules\/colorbox\/styles\/default\/colorbox_default_style.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox_inline.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/superfish.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/jquery.bgiframe.min.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/jquery.hoverIntent.minified.js":1,"sites\/all\/modules\/nice_menus\/nice_menus.js":1,"sites\/all\/modules\/panels\/js\/panels.js":1,"sites\/all\/modules\/flickr\/flickr_colorbox.js":1,"sites\/all\/modules\/field_group\/field_group.js":1,"sites\/all\/modules\/google_analytics\/googleanalytics.js":1,"0":1,"sites\/all\/themes\/austintexas_ninesixty\/js\/coascripts.js":1,"sites\/all\/themes\/austintexas_ninesixty\/js\/jquery.cycle.all.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"sites\/all\/modules\/ckeditor\/ckeditor.css":1,"sites\/all\/modules\/colorbox\/styles\/default\/colorbox_default_style.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/nice_menus\/nice_menus.css":1,"sites\/all\/modules\/nice_menus\/nice_menus_default.css":1,"sites\/all\/modules\/panels\/css\/panels.css":1,"modules\/aggregator\/aggregator.css":1,"modules\/book\/book.css":1,"modules\/comment\/comment.css":1,"sites\/all\/modules\/date\/date_api\/date.css":1,"sites\/all\/modules\/date\/date_popup\/themes\/datepicker.1.7.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"modules\/poll\/poll.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views_slideshow_xtra\/views_slideshow_xtra_overlay\/css\/views_slideshow_xtra_overlay.css":1,"sites\/all\/modules\/workbench_notification\/workbench_notification.css":1,"modules\/forum\/forum.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/themes\/austintexas_ninesixty\/layouts\/960_16_484_leftSb\/..\/..\/..\/..\/styles\/styles.css":1,"sites\/all\/modules\/field_group\/field_group.css":1,"sites\/all\/modules\/panels\/plugins\/layouts\/onecol\/onecol.css":1,"sites\/all\/modules\/flickr\/flickr.css":1,"sites\/all\/modules\/coa_imce_slideshow\/library\/GalleryView\/css\/jquery.galleryview-3.0-dev.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/reset.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/text.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/960.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/debug.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/styles.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/ie.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/blogs.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/print.css":1}},"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"100%","maxHeight":"100%","fixed":true},"nice_menus_options":{"delay":"800","speed":"slow"},"googleanalytics":{"trackOutbound":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls|xml|z|zip","trackDomainMode":"1"},"urlIsAjaxTrusted":{"\/news\/traffic-fatality-16-4":true}});
 //--><!]]>
 </script>
 
 </head>
-<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-56157 node-type-news-release show-grid" >
+<body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-57179 node-type-news-release show-grid" >
   <div id="skip-link">
     <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
   </div>
@@ -76,13 +77,13 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 
   <div class="content">
-    <form action="/news/traffic-fatality-2-3" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
+    <form action="/news/traffic-fatality-16-4" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
       <h2 class="element-invisible">Search form</h2>
     <div class="form-item form-type-textfield form-item-search-block-form">
   <label class="element-invisible" for="edit-search-block-form--2">Search </label>
  <input title="Enter the terms you wish to search for." type="text" id="edit-search-block-form--2" name="search_block_form" value="" size="15" maxlength="128" class="form-text" />
 </div>
-<div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Search" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-5klEkP19V4YICk0MH5hS1Mdu_hjbD_3lS7GcNm-OxmI" />
+<div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Search" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-PZvzOZybFWwzuCLxr-g8WNNkWJAVLivOok9NYRYQ4SM" />
 <input type="hidden" name="form_id" value="search_block_form" />
 </div>
 </div></form>  </div>
@@ -95,7 +96,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 	<div id="logo" class="grid-5 clearfix">
 
                               <div id="branding"><strong><a href="/">
-                          <img src="http://austintexas.gov/sites/all/themes/austintexas_ninesixty/images/logo.png" title="" alt="" id="logo" alt="AustinTexas.Gov" />
+                          <img src="https://austintexas.gov/sites/all/themes/austintexas_ninesixty/images/logo.png" title="" alt="" id="logo" alt="AustinTexas.Gov" />
                         </a></strong></div>
                   	</div><!-- /logo -->
 
@@ -150,7 +151,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
           <!-- START TABS -->
                     <div id="tabs-wrapper" class="clearfix">
 
-                                        <!--  class="with-tabs">Traffic Fatality #2 -->
+                                        <!--  class="with-tabs">Traffic Fatality #16 -->
 
 
           </div>          <!-- / TABS -->
@@ -166,8 +167,8 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 		<div id="main" class="rounded-corners">
 
-		    <h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="/departments">Department</a> » <a href="/department/police">Police</a> » Traffic Fatality #2</div>
-		    					     	<!-- <h1 class="title" id="page-title">Traffic Fatality #2</h1>  -->
+		    <h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="/departments">Department</a> » <a href="/department/police">Police</a> » Traffic Fatality #16</div>
+		    					     	<!-- <h1 class="title" id="page-title">Traffic Fatality #16</h1>  -->
 
 
 
@@ -195,7 +196,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <ul>
 <li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police">Home</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/about">About</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/services">Services</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/programs">Programs</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/divisions">Divisions</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/media">Media</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/faq">FAQ</a></span></div></li></ul>
 </div>
-<div class="view view-pdr-search-block view-id-pdr_search_block view-display-id-block view-dom-id-03585aaca84a53a13d4f8803044ff6f3">
+<div class="view view-pdr-search-block view-id-pdr_search_block view-display-id-block view-dom-id-74fb5688f76fac35d9319ed4f676ac8c">
 
 
 
@@ -226,14 +227,14 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 
   <div class="pane-content">
-    <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_6 nolink clearfix view-dom-id-369562e2a56bed050a8363c3d4a61613">
+    <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_6 nolink clearfix view-dom-id-da8ae197711e284a02cb1ef0a3436ea0">
 
 
 
       <div class="view-content">
         <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
 
-  <div class="views-field views-field-field-dept-banner">        <div class="field-content"><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/APD_banner_2.jpg" width="708" height="175" alt="" /></div>  </div>  </div>
+  <div class="views-field views-field-field-dept-banner">        <div class="field-content"><img typeof="foaf:Image" src="https://austintexas.gov/sites/default/files/APD_banner_3.jpg" width="708" height="175" alt="" /></div>  </div>  </div>
     </div>
 
 
@@ -255,7 +256,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 
   <div class="pane-content">
-    <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_22 news-release-header view-dom-id-aff6cac77728170ea0449c497ae2802a">
+    <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_22 news-release-header view-dom-id-f7a3213afb088b5832d39ff314856f5e">
 
 
 
@@ -266,7 +267,7 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <h1>City of Austin</h1>
 <hr />
 <b>FOR IMMEDIATE RELEASE</b><br></span>  </div>
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><b>Release Date:</b> <span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2019-01-18T00:00:00-06:00">Jan. 18, 2019</span></div>  </div>
+  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><b>Release Date:</b> <span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2019-04-10T00:00:00-05:00">Apr. 10, 2019</span></div>  </div>
   <div class="views-field views-field-php">        <span class="field-content"><b>Contact: </b>Contact: Public Information Office &nbsp;&nbsp;&nbsp; 512-974-5017 &nbsp;&nbsp;&nbsp;<a href= '/email/police3' >Email</a></span>  </div>  </div>
     </div>
 
@@ -284,34 +285,33 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 
 
   <div class="pane-content">
-    <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_19 nolink clearfix view-dom-id-1ef2389e3a84b2882a245bb5fceb26ca">
+    <div class="view view-extra-page-blocks view-id-extra_page_blocks view-display-id-panel_pane_19 nolink clearfix view-dom-id-1953e4a04f61f3d239edd750f932078d">
 
 
 
       <div class="view-content">
         <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
-    <div id="node-56157" class="node node-news-release clearfix" about="/news/traffic-fatality-2-3" typeof="sioc:Item foaf:Document">
+    <div id="node-57179" class="node node-news-release clearfix" about="/news/traffic-fatality-16-4" typeof="sioc:Item foaf:Document">
 
 
-        <h2><a href="/news/traffic-fatality-2-3">Traffic Fatality #2</a></h2>
-    <span property="dc:title" content="Traffic Fatality #2" class="rdf-meta element-hidden"></span><span property="sioc:num_replies" content="0" datatype="xsd:integer" class="rdf-meta element-hidden"></span>
+        <h2><a href="/news/traffic-fatality-16-4">Traffic Fatality #16</a></h2>
+    <span property="dc:title" content="Traffic Fatality #16" class="rdf-meta element-hidden"></span><span property="sioc:num_replies" content="0" datatype="xsd:integer" class="rdf-meta element-hidden"></span>
 
   <div class="content">
-    <span class="print-link"></span><div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p><span style="color: rgb(32, 32, 32); font-family: &quot;Verdana&quot;,sans-serif; font-size: 10.5pt; mso-fareast-font-family: &quot;Times New Roman&quot;; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA;"><strong>Case:</strong></span><span style="color: rgb(32, 32, 32); font-family: &quot;Verdana&quot;,sans-serif; font-size: 10.5pt; mso-fareast-font-family: &quot;Times New Roman&quot;; mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA; mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>
-<p>	<strong><span style="font-family: &quot;Verdana&quot;,sans-serif;">Date:</span></strong>            January 16, 2019</p>
-<p>	<strong><span style="font-family: &quot;Verdana&quot;,sans-serif;">Time:</span></strong>            3:42 p.m.</p>
-<p>	<strong><span style="font-family: &quot;Verdana&quot;,sans-serif;">Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>
-<p>	<strong><span style="font-family: &quot;Verdana&quot;,sans-serif;">Deceased:</span></strong>   Ann Bottenfield-Seago, White female, DOB 02/15/1960<br />
-	 <br />
-	The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed.<br />
-	 <br />
-	APD is investigating this case. Anyone with information regarding this case should call APD’s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD’s mobile app, Austin PD, for free on <a href="https://austintexas.us5.list-manage.com/track/click?u=1861810ce1dca1a4c1673747c&amp;id=d8c2ad5a29&amp;e=bcdeacc118"><span style="color: rgb(197, 46, 38); text-decoration: none; text-underline: none;">iPhone</span></a> and <a href="https://austintexas.us5.list-manage.com/track/click?u=1861810ce1dca1a4c1673747c&amp;id=5fcb8ff99e&amp;e=bcdeacc118"><span style="color: rgb(197, 46, 38); text-decoration: none; text-underline: none;">Android</span></a>.<br />
-	 <br />
-	This is Austin’s second fatal traffic crash of 2018, resulting in two fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities.<br />
-	 <br /><strong><i><span style="font-family: &quot;Verdana&quot;,sans-serif;">These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.</span></i></strong></p>
-</div></div></div><div class="service-links"><div class="service-label">Share </div><ul class="links"><li class="service-links-facebook first"><a href="http://www.facebook.com/sharer.php?u=http%3A//austintexas.gov/news/traffic-fatality-2-3&amp;t=Traffic%20Fatality%20%232" title="Share on Facebook." class="service-links-facebook" rel="nofollow" target="_blank"><img typeof="foaf:Image" src="http://austintexas.gov/sites/all/modules/service_links/images/facebook.png" alt="Facebook" /></a></li>
-<li class="service-links-twitter"><a href="http://twitter.com/share?url=http%3A//austintexas.gov/news/traffic-fatality-2-3&amp;text=Traffic%20Fatality%20%232" title="Share this on Twitter" class="service-links-twitter" rel="nofollow" target="_blank"><img typeof="foaf:Image" src="http://austintexas.gov/sites/all/modules/service_links/images/twitter.png" alt="Twitter" /></a></li>
-<li class="service-links-print last"><a href="http://austintexas.gov/print/news/traffic-fatality-2-3" title="Printable version" class="service-links-print" rel="nofollow" target="_blank"><img typeof="foaf:Image" src="http://austintexas.gov/sites/all/modules/service_links/images/print.png" alt="Print HTML" /></a></li>
+    <span class="print-link"></span><div class="field field-name-body field-type-text-with-summary field-label-hidden"><div class="field-items"><div class="field-item even" property="content:encoded"><p><strong>Case:         </strong>19-0930132</p>
+<p>	<strong>Date:          </strong>April 3, 2019</p>
+<p>	<strong>Time:         </strong> 2:39 a.m.</p>
+<p>	<strong>Location:    </strong>E. Wells Branch Parkway/S. Heatherwilde Boulevard</p>
+<p>	<strong>Deceased:  </strong>Hannah Jaggers | White female | 01/15/1994   <br />
+	 <br />
+	The preliminary investigation revealed that the 2017 Dodge Charger driven by Hannah Jaggers was traveling eastbound on E. Wells Branch Parkway near the intersection of S. Heatherwilde Boulevard when Ms. Jaggers veered left and struck the curb of the center media, going airborne. The vehicle rolled for several yards before stopping in the intersection. The driver was ejected. Hanna Jaggers was transported to St. David’s Round Rock Medical Center where she succumbed to her injuries on April 4, 2019.<br />
+	 <br />
+	Anyone with information regarding this case should call APD’s Vehicular Homicide Unit Detectives at (512) 974-5594. You can also submit tips by downloading APD’s mobile app, Austin PD, for free on <a href="https://austintexas.us5.list-manage.com/track/click?u=1861810ce1dca1a4c1673747c&amp;id=5725b9da6b&amp;e=bcdeacc118">iPhone</a> and <a href="https://austintexas.us5.list-manage.com/track/click?u=1861810ce1dca1a4c1673747c&amp;id=ea9d0f6563&amp;e=bcdeacc118">Android</a>. </p>
+<p>	This is Austin’s 16<sup>th</sup> fatal traffic crash of 2019, resulting in 16 fatalities this year. At this time in 2018, there were 15 fatal traffic crashes and 16 traffic fatalities.</p>
+<p>	<em><strong>These statements are from the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.</strong></em></p>
+</div></div></div><div class="service-links"><div class="service-label">Share </div><ul class="links"><li class="service-links-facebook first"><a href="http://www.facebook.com/sharer.php?u=https%3A//austintexas.gov/news/traffic-fatality-16-4&amp;t=Traffic%20Fatality%20%2316" title="Share on Facebook." class="service-links-facebook" rel="nofollow" target="_blank"><img typeof="foaf:Image" src="https://austintexas.gov/sites/all/modules/service_links/images/facebook.png" alt="Facebook" /></a></li>
+<li class="service-links-twitter"><a href="http://twitter.com/share?url=https%3A//austintexas.gov/news/traffic-fatality-16-4&amp;text=Traffic%20Fatality%20%2316" title="Share this on Twitter" class="service-links-twitter" rel="nofollow" target="_blank"><img typeof="foaf:Image" src="https://austintexas.gov/sites/all/modules/service_links/images/twitter.png" alt="Twitter" /></a></li>
+<li class="service-links-print last"><a href="https://austintexas.gov/print/news/traffic-fatality-16-4" title="Printable version" class="service-links-print" rel="nofollow" target="_blank"><img typeof="foaf:Image" src="https://austintexas.gov/sites/all/modules/service_links/images/print.png" alt="Print HTML" /></a></li>
 </ul></div>  </div>
 
 
