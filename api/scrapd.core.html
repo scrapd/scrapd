@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>scrapd.core package &#8212; scrapd 2.0.0 documentation</title>
+    <title>scrapd.core package &#8212; scrapd 2.1.0 documentation</title>
     <link rel="stylesheet" href="../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -39,7 +39,7 @@
 <p>Define the module containing the function used to scrap data from the APD website.</p>
 <dl class="function">
 <dt id="scrapd.core.apd.async_retrieve">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">async_retrieve</code><span class="sig-paren">(</span><em>pages=-1</em>, <em>from_=None</em>, <em>to=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#async_retrieve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.async_retrieve" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">async_retrieve</code><span class="sig-paren">(</span><em>pages=-1</em>, <em>from_=None</em>, <em>to=None</em>, <em>attempts=1</em>, <em>backoff=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#async_retrieve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.async_retrieve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve fatality data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -72,7 +72,7 @@ relevant information anymore.</p>
 <dd class="field-even"><p>A dictionary containing the details information about the fatality with sanitized entries.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p>dict, list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -283,6 +283,26 @@ relevant information anymore.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="scrapd.core.apd.notes_from_element">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">notes_from_element</code><span class="sig-paren">(</span><em>deceased</em>, <em>deceased_field_str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#notes_from_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.notes_from_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Notes from deceased field’s BeautifulSoup element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bs4.Beautifulsoup.element.Tag</strong> (<em>deceased</em>) – the first &lt;p&gt; tag of the Deceased field of the APD bulletin</p></li>
+<li><p><strong>deceased_field_str</strong> – the string corresponding to the Deceased field</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>notes from the Deceased field of the APD bulletin</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="scrapd.core.apd.parse_age_deceased_field">
 <code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_age_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_age_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_age_deceased_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse deceased field assuming it contains an age.</p>
@@ -369,17 +389,18 @@ relevant information anymore.</p>
 
 <dl class="function">
 <dt id="scrapd.core.apd.parse_deceased_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_deceased_field</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_deceased_field" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_deceased_field</code><span class="sig-paren">(</span><em>soup</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_deceased_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract content from deceased field on the fatality page.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
+<dd class="field-odd"><p><strong>soup</strong> (<em>bs4.BeautifulSoup</em>) – the content of the fatality page</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a string representing the deceased field content.</p>
+<dd class="field-even"><p>a tuple containing the tag for the Deceased paragraph
+and the Deceased field as a string</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -471,11 +492,20 @@ a perfectly parsed sentence as the HTML syntax varies widely.</p>
 
 <dl class="function">
 <dt id="scrapd.core.apd.parse_page">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_page</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_page" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_page</code><span class="sig-paren">(</span><em>page</em>, <em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_page" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the page using all parsing methods available.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p></li>
+<li><p><strong>url</strong> (<em>str</em>) – detail page URL</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dictionary representing a fatality.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -624,7 +654,6 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 <dt id="scrapd.core.apd.sanitize_fatality_entity">
 <code class="descclassname">scrapd.core.apd.</code><code class="descname">sanitize_fatality_entity</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#sanitize_fatality_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.sanitize_fatality_entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean up a fatality entity.</p>
-<p>Removes the ‘Deceased’ field which does not contain relevant information anymore.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A dictionary containing the details information about the fatality with sanitized entries.</p>
@@ -1065,7 +1094,7 @@ it.</p>
 <li class="toctree-l1"><a class="reference internal" href="../README.html">ScrAPD</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Detailed usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">scrapd.core package</a></li>
 </ul>

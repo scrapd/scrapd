@@ -13,15 +13,12 @@ Available formats are:
 * `CSV`: is a delimited text file that uses a comma to separate values.
 * `JSON`: is an open-standard file format that uses human-readable text to transmit data
   objects consisting of attribute–value pairs and array data types.
-* `GSheets`: allows you to populate a Google Spreasheet with the retrieved data.
 * `Python`: displays the data in a way that is directly usable in Python.
 
-If `gsheets` is selected, you must also specify the path of the credentials file using the `--gcredentials` flag,
-and the list of contributors to your document with `--gcontributors`. Contributors are defined as a comma separated
-list of `<account>:<type>:<role>`, for instance `'alice@gmail.com:user:owner,bob@gmail.com:user:writer'`.
+`attempts` defines the maximum number of attempts to parse a report before failing.
 
-* Valid account types are: `user`, `group`, `domain`, `anyone`.
-* Valid roles: `owner`, `writer`, `reader`.
+`backoff` defines the initial wait time, in seconds, between 2 retries. This time is then multiplied by 2 for each retry
+(3s, then 6s, then 12s, etc.).
 
 `page` is a way to limit the number of results by specifying of many APD news pages to parse. For instance, using
 `--pages 5` means parsing the results until the URL https://austintexas.gov/department/news/296?page=4 is reached.
@@ -60,7 +57,7 @@ docker
 ------
 
 In addition to installing the Python package, you can also use the
-[docker container](https://hub.docker.com/r/scrapd/scrapd).
+`docker container <https://hub.docker.com/r/scrapd/scrapd>`_
 
 .. code-block:: bash
 
@@ -71,17 +68,3 @@ The syntax is identical to the commands described above, simply use the `docker 
 .. code-block:: bash
 
   docker run --rm -it scrapd/scrapd -v --from "Feb 1 2019"
-
-If you intend to export the results to Google Sheets, you must also mount your credential file.
-It is a good practice to mount it as read-only.
-
-.. code-block:: bash
-
-  docker run --rm -it \
-    -v ${HOME}/.config/scrapd/gsheet-credentials.json:/usr/src/app/creds.json:ro \
-    scrapd/scrapd \
-      -v \
-      --from "Feb 1 2019" \
-      --format gsheets \
-      --gcredentials creds.json \
-      --gcontributors "remy.greinhofer@gmail.com:user:writer"

@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[2.1.0]] - 2019-07-17
+
+### Added
+
+- Add CLI flags to parametrize retries at runtime. [#159]
+- Add tasks to do some profiling of the application. [#163]
+- Improve logging ability by adding more details about a parsing failure. [#167]
+
+### Changed
+
+- Use [nox](https://nox.thea.codes) and [invoke](https://www.pyinvoke.org) for task management execution instead of `make`.
+
+### Fixed
+
+- Fix `Deceased` field parsing:
+  - to support date of birth with the following format `August 30, 1966`. [#155]
+  - to support describing the age instead of the date of birth (i.e. `19 years of age`).[#172]
+- Fix `Location` field parsing to support additional internal formats. [#169]
+- Fix `Date` field parsing to support single digit 12 hour format like `8 p.m.`. [#171]
+- Fix issues where the notes where either not parsed, or incorrectly parsed. [#166]
+
 ## [[2.0.0]] - 2019-06-11
 
 ### Added
@@ -121,6 +142,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [1.5.0]: https://github.com/scrapd/scrapd/releases/1.5.0
 [1.5.1]: https://github.com/scrapd/scrapd/releases/1.5.1
 [2.0.0]: https://github.com/scrapd/scrapd/releases/2.0.0
+[2.1.0]: https://github.com/scrapd/scrapd/releases/2.1.0
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/scrapd/scrapd/issues/13
@@ -153,3 +175,11 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#138]: https://github.com/scrapd/scrapd/pull/138
 [#139]: https://github.com/scrapd/scrapd/pull/139
 [#140]: https://github.com/scrapd/scrapd/pull/140
+[#155]: https://github.com/scrapd/scrapd/pull/155
+[#159]: https://github.com/scrapd/scrapd/pull/159
+[#163]: https://github.com/scrapd/scrapd/pull/163
+[#166]: https://github.com/scrapd/scrapd/pull/166
+[#167]: https://github.com/scrapd/scrapd/pull/167
+[#169]: https://github.com/scrapd/scrapd/pull/169
+[#171]: https://github.com/scrapd/scrapd/pull/171
+[#172]: https://github.com/scrapd/scrapd/pull/172

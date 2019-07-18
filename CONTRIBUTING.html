@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Contributing &#8212; scrapd 2.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api/modules.html" />
+    <link rel="prev" title="Changelog" href="CHANGELOG.html" />
+ 
+<link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+
+<link rel="canonical" href="https://scrapd.github.io/scrapd/CONTRIBUTING.html"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+<link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet">
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="instructions-for-contributors">
+<h2>Instructions for contributors<a class="headerlink" href="#instructions-for-contributors" title="Permalink to this headline">¶</a></h2>
+<p>We are interested in various different kinds of improvement for ScrAPD. Please feel free to raise an <a class="reference external" href="https://github.com/scrapd/scrapd/issues">Issue</a> if you
+would like to work on something major to ensure efficient collaboration and avoid duplicate effort.</p>
+<div class="section" id="guidelines">
+<h3>Guidelines<a class="headerlink" href="#guidelines" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Use the provided templates to file an <a class="reference external" href="https://github.com/scrapd/scrapd/issues">Issue</a> or a <a class="reference external" href="https://github.com/scrapd/scrapd/pulls">Pull Request</a>.</p></li>
+<li><p>Create a topic branch from where you want to base your work.</p></li>
+<li><p>We follow the <a class="reference external" href="https://docs.openstack.org/charm-guide/latest/coding-guidelines.html">Open Stack Coding Guidelines</a>.</p></li>
+<li><p>For formatting the files properly, please use <a class="reference external" href="https://github.com/google/yapf">YAPF</a>. In the root directory of the project, run the following
+command: <cite>make format</cite>.</p></li>
+<li><p>Make sure you added tests to validate your changes.</p></li>
+<li><p>Run all the tests to ensure nothing else was accidentally broken.</p></li>
+<li><p>Commit messages must start with a capitalized and short summary (max. 50 chars) written in the imperative, followed by
+an optional, more detailed explanatory text which is separated from the summary by an empty line.</p></li>
+<li><p>Commit messages should follow best practices, including explaining the context of the problem and how it was solved,
+including in caveats or follow up changes required. They should tell the story of the change and provide readers
+understanding of what led to it. Please refer to <a class="reference external" href="http://chris.beams.io/posts/git-commit">How to Write a Git Commit Message</a> for more details.</p></li>
+<li><p>If your <a class="reference external" href="https://github.com/scrapd/scrapd/pulls">Pull Request</a> is a work in progress, create it as a <a class="reference external" href="https://github.blog/2019-02-14-introducing-draft-pull-requests/">Draft Pull Request</a>.</p></li>
+<li><p>Any <a class="reference external" href="https://github.com/scrapd/scrapd/pulls">Pull Request</a> inactive for 28 days will be automatically closed. If you need more time to work on it, ask
+maintainers, to add the appropriate label to it. Use the <cite>&#64;scrapd/scrapper</cite> mention in the comments.</p></li>
+<li><p>Unless explicitly asked, <a class="reference external" href="https://github.com/scrapd/scrapd/pulls">Pull Request</a> which don’t pass all the CI checks will not be reviewed.
+Use the <cite>&#64;scrapd/scrapper</cite> mention in the comments if to ask maintainers to help you.</p></li>
+</ul>
+<div class="section" id="commit-example">
+<h4>Commit example<a class="headerlink" href="#commit-example" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Use Docker Hub build environment values
+
+Uses the Docker Hub build environment values in order to ensure the
+correct version of ScrAPD is installed into the image.
+
+Fixes scrapd/scrapd#54
+</pre></div>
+</div>
+<p>The following commit is a good example as:</p>
+<ol class="arabic simple">
+<li><p>The fist line is a short description and starts with an imperative verb</p></li>
+<li><p>The first paragraph describes why this commit may be useful</p></li>
+<li><p>The last line points to an existing issue and will automatically close it.</p></li>
+</ol>
+</div>
+</div>
+<div class="section" id="formatting-your-code">
+<h3>Formatting your code<a class="headerlink" href="#formatting-your-code" title="Permalink to this headline">¶</a></h3>
+<p>There is also a lot of YAPF plugins available for different editors. Here are a few:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://atom.io/packages/python-yapf">atom.io</a></p></li>
+<li><p><a class="reference external" href="https://github.com/paetzke/py-yapf.el">emacs</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jason-kane/PyYapf">sublime text</a></p></li>
+<li><p><a class="reference external" href="https://github.com/google/yapf/blob/master/plugins/yapf.vim">vim</a></p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="developer-setup">
+<h2>Developer setup<a class="headerlink" href="#developer-setup" title="Permalink to this headline">¶</a></h2>
+<p>You will need Python 3 <a class="reference external" href="https://docs.pyinvoke.org/">invoke</a> and <a class="reference external" href="https://nox.thea.codes/">nox</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">nox</span> <span class="n">invoke</span>
+</pre></div>
+</div>
+<p>Setup a local dev environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">inv</span>
+<span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>Run the CI tasks locally</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">inv</span> <span class="n">nox</span> <span class="o">-</span><span class="n">s</span> <span class="n">ci</span>
+</pre></div>
+</div>
+<p>Use <cite>inv –list</cite>  and <cite>inv nox</cite> to see all the available targets.</p>
+<p>The <cite>nox</cite> tasks can be invoked by running  either:</p>
+<ul class="simple">
+<li><p><cite>inv nox -s {task}</cite>, for instance <cite>inv nox -s test</cite></p></li>
+<li><p>or directly with <cite>nox -s test</cite></p></li>
+</ul>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="how-to-test-the-regexes">
+<h3>How to test the regexes<a class="headerlink" href="#how-to-test-the-regexes" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> tests/data
+curl -sLO http://austintexas.gov/news/traffic-fatality-72-1
+<span class="nb">export</span> <span class="nv">FIELD</span><span class="o">=</span><span class="s2">&quot;Date:&quot;</span>
+grep -h -e <span class="s2">&quot;</span><span class="si">${</span><span class="nv">FIELD</span><span class="si">}</span><span class="s2">&quot;</span> -C <span class="m">1</span> traffic-fatality-* <span class="p">|</span> pbcopy
+open https://regex101.com/
+</pre></div>
+</div>
+<p>Paste the result there, choose python, and work on your regex.</p>
+</div>
+</div>
+<div class="section" id="profiling">
+<h2>Profiling<a class="headerlink" href="#profiling" title="Permalink to this headline">¶</a></h2>
+<p>The profiling for the project is mostly done using <a class="reference external" href="https://github.com/joerick/pyinstrument">pyinstrument</a></p>
+<p>You can use the nox task to run the profiler automatically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">inv</span> <span class="n">profile</span>
+</pre></div>
+</div>
+<p>Additionally, you can also generate a flame graph with <a class="reference external" href="https://github.com/benfred/py-spy">py-spy</a>. It requires root permissions, therefore must be run
+with sudo and will prompt you for your password:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">inv</span> <span class="n">flame</span><span class="o">-</span><span class="n">graph</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/scrapd-logo-128x152.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Easily scrap APD traffic death repports</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=scrapd&repo=scrapd&type=star&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">ScrAPD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Detailed usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#instructions-for-contributors">Instructions for contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#developer-setup">Developer setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#profiling">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
+</ul>
+
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Rémy Greinhofer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      
+      |
+      <a href="_sources/CONTRIBUTING.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/scrapd/scrapd" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

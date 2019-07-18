@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Detailed usage &#8212; scrapd 2.0.0 documentation</title>
+    <title>Detailed usage &#8212; scrapd 2.1.0 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -42,6 +42,18 @@
 </pre></div>
 </div>
 <p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-scrapd-a">
+<code class="descname">-a</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--attempts</code><code class="descclassname"> &lt;attempts&gt;</code><a class="headerlink" href="#cmdoption-scrapd-a" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of attempts per report  [default: 3]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-scrapd-b">
+<code class="descname">-b</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--backoff</code><code class="descclassname"> &lt;backoff&gt;</code><a class="headerlink" href="#cmdoption-scrapd-b" title="Permalink to this definition">¶</a></dt>
+<dd><p>initial backoff time (second)  [default: 3]</p>
+</dd></dl>
+
 <dl class="option">
 <dt id="cmdoption-scrapd-f">
 <code class="descname">-f</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--format</code><code class="descclassname"> &lt;format_&gt;</code><a class="headerlink" href="#cmdoption-scrapd-f" title="Permalink to this definition">¶</a></dt>
@@ -87,16 +99,11 @@ results by specifying simple options.</p>
 <li><p><cite>CSV</cite>: is a delimited text file that uses a comma to separate values.</p></li>
 <li><p><cite>JSON</cite>: is an open-standard file format that uses human-readable text to transmit data
 objects consisting of attribute–value pairs and array data types.</p></li>
-<li><p><cite>GSheets</cite>: allows you to populate a Google Spreasheet with the retrieved data.</p></li>
 <li><p><cite>Python</cite>: displays the data in a way that is directly usable in Python.</p></li>
 </ul>
-<p>If <cite>gsheets</cite> is selected, you must also specify the path of the credentials file using the <cite>–gcredentials</cite> flag,
-and the list of contributors to your document with <cite>–gcontributors</cite>. Contributors are defined as a comma separated
-list of <cite>&lt;account&gt;:&lt;type&gt;:&lt;role&gt;</cite>, for instance <cite>‘alice&#64;gmail.com:user:owner,bob&#64;gmail.com:user:writer’</cite>.</p>
-<ul class="simple">
-<li><p>Valid account types are: <cite>user</cite>, <cite>group</cite>, <cite>domain</cite>, <cite>anyone</cite>.</p></li>
-<li><p>Valid roles: <cite>owner</cite>, <cite>writer</cite>, <cite>reader</cite>.</p></li>
-</ul>
+<p><cite>attempts</cite> defines the maximum number of attempts to parse a report before failing.</p>
+<p><cite>backoff</cite> defines the initial wait time, in seconds, between 2 retries. This time is then multiplied by 2 for each retry
+(3s, then 6s, then 12s, etc.).</p>
 <p><cite>page</cite> is a way to limit the number of results by specifying of many APD news pages to parse. For instance, using
 <cite>–pages 5</cite> means parsing the results until the URL <a class="reference external" href="https://austintexas.gov/department/news/296?page=4">https://austintexas.gov/department/news/296?page=4</a> is reached.
 The results of the specified page are included. In that case, the valid results of the 5th page will be included.</p>
@@ -152,24 +159,12 @@ bounderies will be included in the results. Now there are a few rules:</p>
 <div class="section" id="docker">
 <h2>docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
 <p>In addition to installing the Python package, you can also use the
-[docker container](<a class="reference external" href="https://hub.docker.com/r/scrapd/scrapd">https://hub.docker.com/r/scrapd/scrapd</a>).</p>
+<a class="reference external" href="https://hub.docker.com/r/scrapd/scrapd">docker container</a></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker pull scrapd/scrapd
 </pre></div>
 </div>
 <p>The syntax is identical to the commands described above, simply use the <cite>docker run</cite> command before.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run --rm -it scrapd/scrapd -v --from <span class="s2">&quot;Feb 1 2019&quot;</span>
-</pre></div>
-</div>
-<p>If you intend to export the results to Google Sheets, you must also mount your credential file.
-It is a good practice to mount it as read-only.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run --rm -it <span class="se">\</span>
-  -v <span class="si">${</span><span class="nv">HOME</span><span class="si">}</span>/.config/scrapd/gsheet-credentials.json:/usr/src/app/creds.json:ro <span class="se">\</span>
-  scrapd/scrapd <span class="se">\</span>
-    -v <span class="se">\</span>
-    --from <span class="s2">&quot;Feb 1 2019&quot;</span> <span class="se">\</span>
-    --format gsheets <span class="se">\</span>
-    --gcredentials creds.json <span class="se">\</span>
-    --gcontributors <span class="s2">&quot;remy.greinhofer@gmail.com:user:writer&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -215,7 +210,7 @@ It is a good practice to mount it as read-only.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
 </ul>
 
