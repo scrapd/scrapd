@@ -217,43 +217,14 @@ def test_parse_twitter_description_03():
     assert actual == expected
 
 
-parse_details_page_notes_scenarios = [
-    ((mock_data.details_page_notes_01, ''), 'Ensure a malformed entry is not parsed'),
-    ((mock_data.details_page_notes_02, mock_data.details_page_notes_02_expected),
-     'Ensure details page notes parsed correctly'),
-]
-
-
-@pytest.mark.parametrize('input_,expected',
-                         scenario_inputs(parse_details_page_notes_scenarios),
-                         ids=scenario_ids(parse_details_page_notes_scenarios))
-def test_parse_details_page_notes_01(input_, expected):
-    """Ensure details page notes parsed correctly."""
-    actual = apd.parse_details_page_notes(input_)
-    assert actual == expected
-
-
-@pytest.mark.parametrize('page,start,end', (
-    ('traffic-fatality-2-3', 'The preliminary investigation shows that the grey',
-     'No charges are expected to be filed.'),
-    ('traffic-fatality-4-6', 'The preliminary investigation shows that a black, Ford', 'scene at 01:48 a.m.'),
-    ('traffic-fatality-15-4', 'Keaton', 'seatbelts. No charges are expected to be filed.'),
-    ('traffic-fatality-16-4', 'The preliminary investigation revealed that the 2017', 'injuries on April 4, 2019.'),
-    ('traffic-fatality-17-4', 'The preliminary investigation revealed that the 2010', 'at the time of the crash.'),
-    ('traffic-fatality-20-4', 'The preliminary investigation revealed that a 2016',
-     'pronounced deceased at the scene.'),
-    ('traffic-fatality-25-4', 'Suspect Vehicle:  dark colored', 'damage to its right, front end.'),
-    ('traffic-fatality-71-2', 'The preliminary investigation shows that a 2004 Honda sedan',
-     'at the scene at 8:50 p.m.'),
-    ('traffic-fatality-72-1', 'The preliminary investigation shows that the 2016 Indian',
-     'whether charges will be filed.'),
-    ('traffic-fatality-73-2', 'The preliminary investigation shows that a 2003 Ford F150',
-     'St. David’s South Austin Hospital.'),
-))
+@pytest.mark.parametrize('page,start,end',
+                         scenario_inputs(mock_data.note_fields_scenarios),
+                         ids=scenario_ids(mock_data.note_fields_scenarios))
 def test_parse_notes_field(page, start, end):
-    page_text = load_test_page(page)
-    parsed_content, r = apd.parse_page_content(page_text)
-    notes = parsed_content[Fields.NOTES]
+    """Ensure Notes field are parsed correctly."""
+    soup = apd.to_soup(page)
+    deceased_tag_p, deceased_field_str = apd.parse_deceased_field(soup)
+    notes = apd.notes_from_element(deceased_tag_p, deceased_field_str)
     assert notes.startswith(start)
     assert notes.endswith(end)
 
@@ -737,17 +708,73 @@ def test_parse_date_field_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('traffic-fatality-2-3', 'White female, DOB 02/15/1960'),
-    ('traffic-fatality-4-6', 'White female, DOB 12/31/1960'),
-    ('traffic-fatality-20-4', 'Hispanic male, 19 years of age'),
-    ('traffic-fatality-25-4', ', Hispanic male, D.O.B. 6-9-70'),
-    ('traffic-fatality-73-2', 'White male, DOB 02/09/80'),
+    (pytest.param('<p>	<strong>Deceased: </strong> Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994</p>',
+                  'Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994',
+                  id="p, strong, pipes")),
+    (pytest.param('<p>	<strong>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70</p>',
+                  'Cecil Wade Walker, White male, D.O.B. 3-7-70',
+                  id="p, strong, commas")),
+    (pytest.param(
+        '<p style="margin-left:.25in;">'
+        '<strong>Deceased:&nbsp;</strong> Halbert Glen Hendricks | Black male | 9-24-78</p>',
+        'Halbert Glen Hendricks | Black male | 9-24-78',
+        id="p with style, strong, pipes")),
+    (pytest.param('', '', id="Deceased tag not found")),
+    (pytest.param(
+        '<p>	<strong>Deceased:&nbsp; </strong>Hispanic male, 19 years of age<br>'
+        '&nbsp;<br>'
+        'The preliminary investigation revealed that a 2016, black Toyota 4Runner was exiting a private driveway at '
+        '8000 W. Hwy. 290. Signs are posted for right turn only and the driver of the 4Runner failed to comply and '
+        'made a left turn. A 2008, gray Ford Mustang was traveling westbound in the inside lane and attempted to avoid '
+        'the 4Runner but struck its front end. The Mustang continued into eastbound lanes of traffic and was struck by '
+        'a 2013, maroon Dodge Ram.<br>'
+        '&nbsp;<br>'
+        'The driver of the Mustang was pronounced deceased at the scene.<br>'
+        '&nbsp;<br>'
+        'Anyone with information regarding this case should call APD’s Vehicular Homicide Unit Detectives at '
+        '(512) 974-6935. You can also submit tips by downloading APD’s mobile app, Austin PD, for free on '
+        '<a href="https://austintexas.us5.list-manage.com/track/click?u=1861810ce1dca1a4c1673747c&amp;'
+        'id=26ced4f341&amp;e=bcdeacc118">iPhone</a> and <a href="https://austintexas.us5.list-manage.com/track/click'
+        '?u=1861810ce1dca1a4c1673747c&amp;id=3abaf7d912&amp;e=bcdeacc118">Android</a>.&nbsp;</p>',
+        'Hispanic male, 19 years of age',
+        id='XX years of age of age format + included in notes paragraph')),
+    (pytest.param(
+        '<p>	<strong><span style="font-family: &quot;Verdana&quot;,sans-serif;">Deceased:</span></strong>&nbsp; '
+        '&nbsp;Ann Bottenfield-Seago, White female, DOB 02/15/1960<br>'
+        '&nbsp;<br>'
+        'The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by '
+        'Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William '
+        'Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in '
+        'the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The '
+        'passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life '
+        'threatening injuries. No charges are expected to be filed.<br>'
+        '&nbsp;<br>'
+        'APD is investigating this case. Anyone with information regarding this case should call APD’s Vehicular '
+        'Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD’s mobile app, '
+        'Austin PD, for free on <a href="https://austintexas.us5.list-manage.com/track/click?'
+        'u=1861810ce1dca1a4c1673747c&amp;id=d8c2ad5a29&amp;e=bcdeacc118"><span style="color: rgb(197, 46, 38); '
+        'text-decoration: none; text-underline: none;">iPhone</span></a> and '
+        '<a href="https://austintexas.us5.list-manage.com/track/click?'
+        'u=1861810ce1dca1a4c1673747c&amp;id=5fcb8ff99e&amp;e=bcdeacc118"><span style="color: rgb(197, 46, 38); '
+        'text-decoration: none; text-underline: none;">Android</span></a>.<br>'
+        '&nbsp;<br>'
+        'This is Austin’s second fatal traffic crash of 2018, resulting&nbsp;in two fatalities this year. At this time '
+        'in 2018, there were two fatal traffic crashes and three traffic fatalities.<br>'
+        '&nbsp;<br><strong><i><span style="font-family: &quot;Verdana&quot;,sans-serif;">These statements are based '
+        'on the initial assessment of the fatal crash and investigation is still pending. Fatality information may '
+        'change.</span></i></strong></p>',
+        'Ann Bottenfield-Seago, White female, DOB 02/15/1960',
+        id='included in notes paragraph')),
+    (pytest.param(
+        '<p>	<strong>Deceased:   </strong>David John Medrano,<strong> </strong>Hispanic male, D.O.B. 6-9-70</p>',
+        'David John Medrano, Hispanic male, D.O.B. 6-9-70',
+        id='stray strong in the middle')),
 ))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
-    page_text = load_test_page(input_)
-    parsed_content, r = apd.parse_page_content(page_text)
-    assert parsed_content[Fields.DECEASED].endswith(expected)
+    field = apd.to_soup(input_)
+    _, deceased_str = apd.parse_deceased_field(field)
+    assert deceased_str == expected
 
 
 @pytest.mark.parametrize('input_,expected', (

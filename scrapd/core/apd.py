@@ -201,60 +201,6 @@ def parse_twitter_description(twitter_description):
     return r
 
 
-def parse_details_page_notes(details_page_notes):
-    """
-    Clean up a details page notes section.
-
-    The purpose of this function is to attempt to extract the sentences about
-    the crash with some level of fidelity, but does not always return
-    a perfectly parsed sentence as the HTML syntax varies widely.
-
-    :param str details_description: the paragraph after the Deceased information
-    :return: A paragraph containing the details of the fatality in sentence form.
-    :rtype: str
-    """
-    # Ideally the Notes will be contained in a paragraph tag.
-    start_tag = details_page_notes.find('<p>') + len('<p>')
-    end_tag = details_page_notes.find('</p>', start_tag)
-
-    # Here .upper().isupper() tests if the substring of the
-    # text passed in contains any letters. If it doesn't,
-    # the Notes may be located after a <br \>.
-    if not details_page_notes[start_tag:end_tag].upper().isupper():
-        start_tag = details_page_notes.find(r'<br \>') + len(r'<br \>')
-
-    snippet = details_page_notes[start_tag:end_tag]
-
-    # Remove the end of line characters.
-    squished = snippet.replace('\n', ' ')
-
-    # Look for the first capital letter and start from there.
-    first_cap = 0
-    for index, c in enumerate(squished):
-        if c.isupper():
-            first_cap = index
-            break
-
-    # Remove HTML tags.
-    no_html = re.sub(re.compile('<.*?>'), '', squished[first_cap:])
-
-    # Remove tabs and, if subjects included, remove.
-    remove_subjects = re.split(r'\s{2,}', no_html)
-
-    # Demographic info is usually only included in subject description.
-    # DOB would be better, but that is sometimes missing.
-    final = ' '.join([segment for segment in remove_subjects if 'male' not in segment])
-
-    # This phrase signals the end of a report.
-    footer_string = 'Fatality information may change.'
-    end_pos = final.find(footer_string)
-
-    if end_pos != -1:
-        final = final[:end_pos + len(footer_string)]
-
-    return final
-
-
 def common_fatality_parsing(d):
     """
     Perform parsing common to Twitter descriptions and page content.
@@ -557,15 +503,13 @@ def parse_page_content(detail_page, notes_parsed=False):
     Parse the detail page to extract fatality information.
 
     :param str news_page: the content of the fatality page
-    :return: a dictionary representing a fatality.
-    :rtype: dict
+    :return: a dictionary representing a fatality and a list of errors.
+    :rtype: dict, list
     """
     d = {}
     parsing_errors = []
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
-    soup = bs4.BeautifulSoup(normalized_detail_page,
-                             'html.parser',
-                             parse_only=bs4.SoupStrainer(property="content:encoded"))
+    soup = to_soup(normalized_detail_page)
 
     # Parse the `Case` field.
     d[Fields.CASE] = parse_case_field(normalized_detail_page)
@@ -694,7 +638,7 @@ def parse_deceased_field(soup):
     try:
         deceased_field_str = deceased_tag_p.find("strong").next_sibling.string.strip()
     except AttributeError:
-        deceased_field_str = None
+        deceased_field_str = ''
     return deceased_tag_p, deceased_field_str
 
 
@@ -851,6 +795,18 @@ def parse_page(page, url):
         del d['Deceased']
 
     return d
+
+
+def to_soup(html):
+    """
+    Create a beautiful soup object from a HTML string.
+
+    :param string html: represents a HTML document
+    :return: A BeautifulSoup object.
+    :rtype: bs4.BeautifulSoup
+    """
+    soup = bs4.BeautifulSoup(html, 'html.parser')
+    return soup
 
 
 @retry()
