@@ -23,7 +23,7 @@ jobs:
             python -m venv venv
             source venv/bin/activate
             pip install --upgrade pip
-            pip install inv nox coveralls
+            pip install invoke nox coveralls
             nox --install-only -s lint-format lint docs test-units test-integrations
       - save_cache:
           paths:
