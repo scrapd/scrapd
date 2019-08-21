@@ -17,7 +17,7 @@ Guidelines
 * We follow the `Open Stack Coding Guidelines`_.
 
 * For formatting the files properly, please use `YAPF`_. In the root directory of the project, run the following
-  command: `make format`.
+  command: `nox -s format`.
 
 * Make sure you added tests to validate your changes.
 
@@ -36,7 +36,7 @@ Guidelines
   maintainers, to add the appropriate label to it. Use the `@scrapd/scrapper` mention in the comments.
 
 * Unless explicitly asked, `Pull Request`_ which don't pass all the CI checks will not be reviewed.
-  Use the `@scrapd/scrapper` mention in the comments if to ask maintainers to help you.
+  Use the `@scrapd/scrapper` mention in the comments to ask maintainers to help you.
 
 Commit example
 """"""""""""""
@@ -69,9 +69,11 @@ There is also a lot of YAPF plugins available for different editors. Here are a 
 Developer setup
 ---------------
 
-You will need Python 3 `invoke`_ and `nox`_::
+You will need `Python 3`, `invoke`_ and `nox`_::
 
-  pip3 install --user nox invoke
+  pip3 install nox invoke
+
+Fork the project, clone the repository.
 
 Setup a local dev environment::
 
