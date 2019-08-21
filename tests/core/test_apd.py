@@ -713,13 +713,11 @@ def test_parse_date_field_00(input_, expected):
                   id="p, strong, pipes")),
     (pytest.param('<p>	<strong>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70</p>',
                   'Cecil Wade Walker, White male, D.O.B. 3-7-70',
-                  id="p, strong, commas")),
-    (pytest.param(
-        '<p style="margin-left:.25in;">'
-        '<strong>Deceased:&nbsp;</strong> Halbert Glen Hendricks | Black male | 9-24-78</p>',
-        'Halbert Glen Hendricks | Black male | 9-24-78',
-        id="p with style, strong, pipes")),
-    (pytest.param('', '', id="Deceased tag not found")),
+                  id="p, strong, commas")), (pytest.param(
+                      '<p style="margin-left:.25in;">'
+                      '<strong>Deceased:&nbsp;</strong> Halbert Glen Hendricks | Black male | 9-24-78</p>',
+                      'Halbert Glen Hendricks | Black male | 9-24-78',
+                      id="p with style, strong, pipes")), (pytest.param('', '', id="Deceased tag not found")),
     (pytest.param(
         '<p>	<strong>Deceased:&nbsp; </strong>Hispanic male, 19 years of age<br>'
         '&nbsp;<br>'
@@ -764,12 +762,17 @@ def test_parse_date_field_00(input_, expected):
         'on the initial assessment of the fatal crash and investigation is still pending. Fatality information may '
         'change.</span></i></strong></p>',
         'Ann Bottenfield-Seago, White female, DOB 02/15/1960',
-        id='included in notes paragraph')),
-    (pytest.param(
+        id='included in notes paragraph',
+    )), (pytest.param(
         '<p>	<strong>Deceased:   </strong>David John Medrano,<strong> </strong>Hispanic male, D.O.B. 6-9-70</p>',
         'David John Medrano, Hispanic male, D.O.B. 6-9-70',
-        id='stray strong in the middle')),
-))
+        id='stray strong in the middle',
+    )), (pytest.param(
+        '<p>	<strong>Deceased 1:&nbsp; </strong>Cedric Benson | Black male | 12/28/1982</p>'
+        '<p>	<strong>Deceased 2:&nbsp; </strong>Aamna Najam | Asian female | 01/26/1992</p>',
+        'Cedric Benson | Black male | 12/28/1982',
+        id='double deceased',
+    ))))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     field = apd.to_soup(input_)
