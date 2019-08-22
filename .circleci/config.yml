@@ -7,7 +7,7 @@ defaults: &defaults
   working_directory: *working_directory
 
 repo_cache_key: &repo_cache_key
-  deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}.0
+  deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}.1
 
 version: 2
 jobs:
@@ -23,7 +23,7 @@ jobs:
             python -m venv venv
             source venv/bin/activate
             pip install --upgrade pip
-            pip install nox coveralls
+            pip install invoke nox coveralls
             nox --install-only -s lint-format lint docs test-units test-integrations
       - save_cache:
           paths:
@@ -119,7 +119,9 @@ jobs:
             nox -s docs
       - run:
           name: Publish the docs
-          command: inv publish
+          command: |
+            source venv/bin/activate
+            inv publish
 
   upload:
     <<: *defaults

@@ -1,5 +1,5 @@
 """Test the APD module."""
-from datetime import date
+import datetime
 from unittest import mock
 
 import aiohttp
@@ -47,8 +47,8 @@ parse_twitter_fields_scenarios = {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: date(1980, 2, 9),
-        Fields.DATE: date(2018, 12, 30),
+        Fields.DOB: datetime.date(1980, 2, 9),
+        Fields.DATE: datetime.date(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
@@ -59,21 +59,21 @@ parse_twitter_fields_scenarios = {
         'Highway 71, eastbound. The truck went across the E. Highway 71 and '
         'US Highway 183 ramp, rolled and came to a stop north of the '
         'roadway.',
-        Fields.TIME: '2:24 a.m.',
+        Fields.TIME: datetime.time(2, 24),
     },
     'traffic-fatality-72-1': {
         Fields.CASE: '18-3551763',
         Fields.CRASHES: '72',
-        Fields.DATE: date(2018, 12, 21),
+        Fields.DATE: datetime.date(2018, 12, 21),
         Fields.LOCATION: '9500 N Mopac SB',
-        Fields.TIME: '8:20 p.m.',
+        Fields.TIME: datetime.time(20, 20),
     },
     'traffic-fatality-71-2': {
         Fields.CASE: '18-3381590',
         Fields.CRASHES: '71',
-        Fields.DATE: date(2018, 12, 4),
+        Fields.DATE: datetime.date(2018, 12, 4),
         Fields.LOCATION: '183 service road westbound and Payton Gin Rd.',
-        Fields.TIME: '8:39 p.m.',
+        Fields.TIME: datetime.time(20, 39),
     },
 }
 
@@ -82,32 +82,32 @@ parse_page_content_scenarios = {
         **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
         Fields.AGE: 58,
         Fields.CRASHES: '2',
-        Fields.DOB: date(1960, 2, 15),
-        Fields.DATE: date(2019, 1, 16),
+        Fields.DOB: datetime.date(1960, 2, 15),
+        Fields.DATE: datetime.date(2019, 1, 16),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Ann',
         Fields.GENDER: 'female',
         Fields.LAST_NAME: 'Bottenfield-Seago',
         Fields.LOCATION: 'West William Cannon Drive and Ridge Oak Road',
-        Fields.TIME: '3:42 p.m.',
+        Fields.TIME: datetime.time(15, 42),
     },
     'traffic-fatality-73-2': {
         Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: date(1980, 2, 9),
-        Fields.DATE: date(2018, 12, 30),
+        Fields.DOB: datetime.date(1980, 2, 9),
+        Fields.DATE: datetime.date(2018, 12, 30),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Corbin',
         Fields.GENDER: 'male',
         Fields.LAST_NAME: 'Sabillon-Garcia',
         Fields.LOCATION: '1400 E. Highway 71 eastbound',
-        Fields.TIME: '2:24 a.m.',
+        Fields.TIME: datetime.time(2, 24),
     },
     'traffic-fatality-72-1': {
         **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
         Fields.AGE: 22,
-        Fields.DOB: date(1996, 3, 29),
+        Fields.DOB: datetime.date(1996, 3, 29),
         Fields.ETHNICITY: 'White',
         Fields.FIRST_NAME: 'Elijah',
         Fields.GENDER: 'male',
@@ -115,7 +115,7 @@ parse_page_content_scenarios = {
     },
     'traffic-fatality-71-2': {
         **parse_twitter_fields_scenarios['traffic-fatality-71-2'],
-        Fields.DOB: date(1964, 6, 1),
+        Fields.DOB: datetime.date(1964, 6, 1),
         Fields.FIRST_NAME: 'Barkat',
         Fields.LAST_NAME: 'Umatia',
         Fields.ETHNICITY: 'Other',
@@ -160,10 +160,10 @@ def test_parse_twitter_title_00(input_, expected):
         mock_data.twitter_description_00,
         {
             'Case': '18-3640187',
-            'Date': date(2018, 12, 30),
-            'Time': '2:24 a.m.',
+            'Date': datetime.date(2018, 12, 30),
+            'Time': datetime.time(2, 24),
             'Location': '1400 E. Highway 71 eastbound',
-            'DOB': date(1980, 2, 9),
+            'DOB': datetime.date(1980, 2, 9),
             'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
@@ -180,6 +180,8 @@ def test_parse_twitter_title_00(input_, expected):
 def test_parse_twitter_description_00(input_, expected):
     """Ensure the Twitter description gets parsed correctly."""
     actual = apd.parse_twitter_description(input_)
+    if 'Deceased' in actual:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -198,11 +200,13 @@ def test_parse_twitter_description_02():
     expected = {
         'Age': 57,
         'Case': '18-160882',
-        'DOB': date(1961, 1, 22),
-        'Date': date(2018, 1, 16),
+        'DOB': datetime.date(1961, 1, 22),
+        'Date': datetime.date(2018, 1, 16),
         'Location': '1500 W. Slaughter Lane',
-        'Time': '5:14 p.m.',
+        'Time': datetime.time(17, 14),
     }
+    if 'Deceased' in actual:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -213,20 +217,16 @@ def test_parse_twitter_description_03():
     assert actual == expected
 
 
-parse_details_page_notes_scenarios = [
-    ((mock_data.details_page_notes_01, ''), 'Ensure a malformed entry is not parsed'),
-    ((mock_data.details_page_notes_02, mock_data.details_page_notes_02_expected),
-     'Ensure details page notes parsed correctly'),
-]
-
-
-@pytest.mark.parametrize('input_,expected',
-                         scenario_inputs(parse_details_page_notes_scenarios),
-                         ids=scenario_ids(parse_details_page_notes_scenarios))
-def test_parse_details_page_notes_01(input_, expected):
-    """Ensure details page notes parsed correctly."""
-    actual = apd.parse_details_page_notes(input_)
-    assert actual == expected
+@pytest.mark.parametrize('page,start,end',
+                         scenario_inputs(mock_data.note_fields_scenarios),
+                         ids=scenario_ids(mock_data.note_fields_scenarios))
+def test_parse_notes_field(page, start, end):
+    """Ensure Notes field are parsed correctly."""
+    soup = apd.to_soup(page)
+    deceased_tag_p, deceased_field_str = apd.parse_deceased_field(soup)
+    notes = apd.notes_from_element(deceased_tag_p, deceased_field_str)
+    assert notes.startswith(start)
+    assert notes.endswith(end)
 
 
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
@@ -246,17 +246,37 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
 @pytest.mark.parametrize('deceased,expected', (
     ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
         Fields.LAST_NAME: "Tamez",
+<<<<<<< HEAD
         Fields.FIRST_NAME: "Rosbel"
+||||||| merged common ancestors
+        Fields.ETHNICITY: "Hispanic",
+        Fields.GENDER: "male",
+        Fields.DOB: date(1954, 10, 10),
+=======
+        Fields.ETHNICITY: "Hispanic",
+        Fields.GENDER: "male",
+        Fields.DOB: datetime.date(1954, 10, 10),
+>>>>>>> 930fe8febff9a0df67636052a2e41273e272d00b
     }),
     ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
         Fields.LAST_NAME: "Gonzales",
+<<<<<<< HEAD
         Fields.FIRST_NAME: "Eva",
         Fields.GENDER: 'f'
+||||||| merged common ancestors
+        Fields.ETHNICITY: "White",
+        Fields.GENDER: 'female',
+        Fields.DOB: date(1961, 1, 22),
+=======
+        Fields.ETHNICITY: "White",
+        Fields.GENDER: 'female',
+        Fields.DOB: datetime.date(1961, 1, 22),
+>>>>>>> 930fe8febff9a0df67636052a2e41273e272d00b
     }),
     (
         'DOB: 01-01-99',
         {
-            Fields.DOB: date(1999, 1, 1),
+            Fields.DOB: datetime.date(1999, 1, 1),
         },
     ),
     (
@@ -266,7 +286,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Chou",
             Fields.ETHNICITY: "Asian",
             Fields.GENDER: "male",
-            Fields.DOB: date(1949, 8, 1),
+            Fields.DOB: datetime.date(1949, 8, 1),
         },
     ),
     (
@@ -276,7 +296,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Peterson",
             Fields.ETHNICITY: "White",
             Fields.GENDER: "male",
-            Fields.DOB: date(1981, 10, 8),
+            Fields.DOB: datetime.date(1981, 10, 8),
         },
     ),
     (
@@ -286,7 +306,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Tinoco",
             Fields.ETHNICITY: "Hispanic",
             Fields.GENDER: "male",
-            Fields.DOB: date(2007, 11, 12)
+            Fields.DOB: datetime.date(2007, 11, 12)
         },
     ),
     (
@@ -296,7 +316,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Hall",
             Fields.ETHNICITY: "White",
             Fields.GENDER: "male",
-            Fields.DOB: date(1951, 8, 28)
+            Fields.DOB: datetime.date(1951, 8, 28)
         },
     ),
     (
@@ -314,7 +334,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Ervin",
             Fields.ETHNICITY: "Black",
             Fields.GENDER: "male",
-            Fields.DOB: date(1966, 8, 30)
+            Fields.DOB: datetime.date(1966, 8, 30)
         },
     ),
     (
@@ -324,7 +344,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
             Fields.LAST_NAME: "Garcia",
             Fields.ETHNICITY: "Hispanic",
             Fields.GENDER: "male",
-            Fields.DOB: date(1977, 11, 15)
+            Fields.DOB: datetime.date(1977, 11, 15)
         },
     ),
     (
@@ -332,7 +352,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         {
             Fields.ETHNICITY: "Black",
             Fields.GENDER: "female",
-            Fields.DOB: date(1999, 1, 1)
+            Fields.DOB: datetime.date(1999, 1, 1)
         },
     ),
 ))
@@ -429,9 +449,11 @@ def test_parse_page_content_00(filename, expected):
            Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page_content(page)
+    actual, err = apd.parse_page_content(page)
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
+    if 'Deceased' in actual and 'Deceased' not in expected:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -440,13 +462,15 @@ def test_parse_page_content_01(mocker):
     page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
     page = page_fd.read_text()
     mocker.patch('scrapd.core.apd.process_deceased_field', side_effect=ValueError)
-    result = apd.parse_page_content(page)
+    result, err = apd.parse_page_content(page)
+    if 'Deceased' in result:
+        del result['Deceased']
     assert len(result) == 6
 
 
 def test_parse_page_content_02(mocker):
     """Ensure a log entry is created if there is no deceased field."""
-    result = apd.parse_page_content('Case: 01-2345678')
+    result, err = apd.parse_page_content('Case: 01-2345678')
     assert result
 
 
@@ -462,6 +486,8 @@ def test_parse_twitter_fields_00(filename, expected):
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
     actual = apd.parse_twitter_fields(page)
+    if 'Deceased' in actual and 'Deceased' not in expected:
+        del actual['Deceased']
     assert actual == expected
 
 
@@ -471,10 +497,22 @@ def test_parse_page_00(filename, expected):
        Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page(page)
+    actual = apd.parse_page(page, fake.uri())
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
+
+
+@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_scenarios.items()])
+def test_parse_page_01(mocker, filename, expected):
+    """Ensuring ."""
+    data = {}
+    parsing_errors = ['one error']
+    page_fd = TEST_DATA_DIR / filename
+    page = page_fd.read_text()
+    pc = mocker.patch('scrapd.core.apd.parse_page_content', return_value=(data, parsing_errors))
+    _ = apd.parse_page(page, fake.uri())
+    assert pc.called_once
 
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
@@ -548,12 +586,12 @@ async def test_async_retrieve_00(fake_news):
 
 @pytest.mark.parametrize('input_,expected', (
     ('<p><strong>Case:         </strong>19-0881844</p>', '19-0881844'),
-    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
+    ('<p><strong>Case:</strong>           18-3640187</p>', '18-3640187'),
     ('<strong>Case:</strong></span><span style="color: rgb(32, 32, 32); '
      'font-family: &quot;Verdana&quot;,sans-serif; font-size: 10.5pt; '
      'mso-fareast-font-family: &quot;Times New Roman&quot;; '
      'mso-ansi-language: EN-US; mso-fareast-language: EN-US; mso-bidi-language: AR-SA; '
-     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
+     'mso-bidi-font-family: &quot;Times New Roman&quot;;">           19-0161105</span></p>', '19-0161105'),
     ('<p><strong>Case:</strong>            18-1591949 </p>', '18-1591949'),
     ('<p><strong>Case:</strong>            18-590287<br />', '18-590287'),
 ))
@@ -640,19 +678,20 @@ def test_extract_twitter_description_meta_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('Time: </span>   Approximately 01:14a.m.', '01:14a.m.'),
-    ('<tag>Time:     08:35 pm<br />', '08:35 pm'),
-    ('Time:  8:47  P.M.', '8:47  P.M.'),
-    ('Time:12:47 p.M.', '12:47 p.M.'),
-    ('Time: 5:16', '5:16'),
-    ('Time: 05:16 ', '05:16'),
-    ('Time: 18:26', '18:26'),
-    ('Time: 22:56', '22:56'),
-    ('Time: 54:34', ''),
-    ('Time: 28:24', ''),
-    ('Time: 4:66 pm', ''),
-    ('Time: 18:46 pm', '18:46'),
-    ('Time: 00:24 a.m.', '00:24'),
+    ('Time: </span>   Approximately 01:14a.m.', datetime.time(1, 14)),
+    ('<tag>Time:     08:35 pm<br />', datetime.time(20, 35)),
+    ('Time:  8:47  P.M.', datetime.time(20, 47)),
+    ('Time:12:47 p.M.', datetime.time(12, 47)),
+    ('Time: 5:16', datetime.time(5, 16)),
+    ('Time: 05:16 ', datetime.time(5, 16)),
+    ('Time: 18:26', datetime.time(18, 26)),
+    ('Time: 22:56', datetime.time(22, 56)),
+    ('Time: 54:34', None),
+    ('Time: 28:24', None),
+    ('Time: 4:66 pm', None),
+    ('Time: 18:46 pm', datetime.time(18, 46)),
+    ('Time: 00:24 a.m.', datetime.time(0, 24)),
+    ('<p>	<strong>Time:</strong>       8 p.m.</p>', datetime.time(20, 0)),
 ))
 def test_parse_time_field_00(input_, expected):
     """Ensure a time field gets parsed correctly."""
@@ -661,14 +700,14 @@ def test_parse_time_field_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('<strong>Date:   </strong>April 18, 2019</p>', date(2019, 4, 18)),
-    ('>Date:   </strong> Night of May 22 2019</p>', date(2019, 5, 22)),
-    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', date(2018, 10, 3)),
-    ('>Date:  night Apr 1-2012</p>', date(2012, 4, 1)),
-    ('>Date:  feb. 2 2018</p>', date(2018, 2, 2)),
-    ('>Date:  10-1-17</p>', date(2017, 10, 1)),
-    ('>Date:  Morning of 2,2,19 </p>', date(2019, 2, 2)),
-    ('>Date:  3/3/19</p>', date(2019, 3, 3)),
+    ('<strong>Date:   </strong>April 18, 2019</p>', datetime.date(2019, 4, 18)),
+    ('>Date:   </strong> Night of May 22 2019</p>', datetime.date(2019, 5, 22)),
+    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', datetime.date(2018, 10, 3)),
+    ('>Date:  night Apr 1-2012</p>', datetime.date(2012, 4, 1)),
+    ('>Date:  feb. 2 2018</p>', datetime.date(2018, 2, 2)),
+    ('>Date:  10-1-17</p>', datetime.date(2017, 10, 1)),
+    ('>Date:  Morning of 2,2,19 </p>', datetime.date(2019, 2, 2)),
+    ('>Date:  3/3/19</p>', datetime.date(2019, 3, 3)),
     ('', None),
     ('>Date: Afternoon</p>', None),
 ))
@@ -679,17 +718,73 @@ def test_parse_date_field_00(input_, expected):
 
 
 @pytest.mark.parametrize('input_,expected', (
-    ('>Deceased: </strong> Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994</p>', \
-    'Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994'),
-    ('>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70<', \
-    'Cecil Wade Walker, White male, D.O.B. 3-7-70'),
-    ('>Deceased: </span></strong> Halbert Glen Hendricks - Black male - 9-24-78<', \
-    'Halbert Glen Hendricks - Black male - 9-24-78'),
-    ('', ''),
+    (pytest.param('<p>	<strong>Deceased: </strong> Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994</p>',
+                  'Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994',
+                  id="p, strong, pipes")),
+    (pytest.param('<p>	<strong>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70</p>',
+                  'Cecil Wade Walker, White male, D.O.B. 3-7-70',
+                  id="p, strong, commas")),
+    (pytest.param(
+        '<p style="margin-left:.25in;">'
+        '<strong>Deceased:&nbsp;</strong> Halbert Glen Hendricks | Black male | 9-24-78</p>',
+        'Halbert Glen Hendricks | Black male | 9-24-78',
+        id="p with style, strong, pipes")),
+    (pytest.param('', '', id="Deceased tag not found")),
+    (pytest.param(
+        '<p>	<strong>Deceased:&nbsp; </strong>Hispanic male, 19 years of age<br>'
+        '&nbsp;<br>'
+        'The preliminary investigation revealed that a 2016, black Toyota 4Runner was exiting a private driveway at '
+        '8000 W. Hwy. 290. Signs are posted for right turn only and the driver of the 4Runner failed to comply and '
+        'made a left turn. A 2008, gray Ford Mustang was traveling westbound in the inside lane and attempted to avoid '
+        'the 4Runner but struck its front end. The Mustang continued into eastbound lanes of traffic and was struck by '
+        'a 2013, maroon Dodge Ram.<br>'
+        '&nbsp;<br>'
+        'The driver of the Mustang was pronounced deceased at the scene.<br>'
+        '&nbsp;<br>'
+        'Anyone with information regarding this case should call APD’s Vehicular Homicide Unit Detectives at '
+        '(512) 974-6935. You can also submit tips by downloading APD’s mobile app, Austin PD, for free on '
+        '<a href="https://austintexas.us5.list-manage.com/track/click?u=1861810ce1dca1a4c1673747c&amp;'
+        'id=26ced4f341&amp;e=bcdeacc118">iPhone</a> and <a href="https://austintexas.us5.list-manage.com/track/click'
+        '?u=1861810ce1dca1a4c1673747c&amp;id=3abaf7d912&amp;e=bcdeacc118">Android</a>.&nbsp;</p>',
+        'Hispanic male, 19 years of age',
+        id='XX years of age of age format + included in notes paragraph')),
+    (pytest.param(
+        '<p>	<strong><span style="font-family: &quot;Verdana&quot;,sans-serif;">Deceased:</span></strong>&nbsp; '
+        '&nbsp;Ann Bottenfield-Seago, White female, DOB 02/15/1960<br>'
+        '&nbsp;<br>'
+        'The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by '
+        'Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William '
+        'Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in '
+        'the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The '
+        'passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life '
+        'threatening injuries. No charges are expected to be filed.<br>'
+        '&nbsp;<br>'
+        'APD is investigating this case. Anyone with information regarding this case should call APD’s Vehicular '
+        'Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD’s mobile app, '
+        'Austin PD, for free on <a href="https://austintexas.us5.list-manage.com/track/click?'
+        'u=1861810ce1dca1a4c1673747c&amp;id=d8c2ad5a29&amp;e=bcdeacc118"><span style="color: rgb(197, 46, 38); '
+        'text-decoration: none; text-underline: none;">iPhone</span></a> and '
+        '<a href="https://austintexas.us5.list-manage.com/track/click?'
+        'u=1861810ce1dca1a4c1673747c&amp;id=5fcb8ff99e&amp;e=bcdeacc118"><span style="color: rgb(197, 46, 38); '
+        'text-decoration: none; text-underline: none;">Android</span></a>.<br>'
+        '&nbsp;<br>'
+        'This is Austin’s second fatal traffic crash of 2018, resulting&nbsp;in two fatalities this year. At this time '
+        'in 2018, there were two fatal traffic crashes and three traffic fatalities.<br>'
+        '&nbsp;<br><strong><i><span style="font-family: &quot;Verdana&quot;,sans-serif;">These statements are based '
+        'on the initial assessment of the fatal crash and investigation is still pending. Fatality information may '
+        'change.</span></i></strong></p>',
+        'Ann Bottenfield-Seago, White female, DOB 02/15/1960',
+        id='included in notes paragraph')),
+    (pytest.param(
+        '<p>	<strong>Deceased:   </strong>David John Medrano,<strong> </strong>Hispanic male, D.O.B. 6-9-70</p>',
+        'David John Medrano, Hispanic male, D.O.B. 6-9-70',
+        id='stray strong in the middle')),
 ))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
-    actual = apd.parse_deceased_field(input_)
+    field = apd.to_soup(input_)
+    _, deceased_str = apd.parse_deceased_field(field)
+    assert deceased_str == expected
 
 
 @pytest.mark.parametrize('input_,expected', (
@@ -730,12 +825,16 @@ def test_sanitize_fatality_entity(input_, expected):
 
 @pytest.mark.parametrize('input_,expected', (
     (
-        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
+        '>Location:</span></strong>     West William Cannon Drive and Ridge Oak Road</p>',
         'West William Cannon Drive and Ridge Oak Road',
     ),
     (
-        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
+        '>Location:</strong>     183 service road westbound and Payton Gin Rd.</p>',
         '183 service road westbound and Payton Gin Rd.',
+    ),
+    (
+        '<p>	<strong>Location:  </strong>8900 block of N Capital of Texas Highway   </p>',
+        '8900 block of N Capital of Texas Highway   ',
     ),
 ))
 def test_parse_location_field_00(input_, expected):

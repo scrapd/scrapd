@@ -4,6 +4,7 @@ from invoke import task
 from nox.virtualenv import VirtualEnv
 
 # Configuration values.
+VENV = 'venv'
 project_name = 'scrapd'
 docker_org = 'scrapd'
 docker_repo = f'{docker_org}/{project_name}'
@@ -39,12 +40,10 @@ def clean_repo(c):
 
 @task
 def flame_graph(c):
-    c.run(f'nox --install-only -s profiling')
-    location = Path('.nox/profiling')
-    venv = VirtualEnv(location.resolve())
-    venv_bin = Path(venv.bin)
-    scrapd = venv_bin / 'scrapd'
-    c.run(f'sudo py-spy -d 20 --flame profile.svg -- {scrapd.resolve()} -v --pages 5')
+    """Create an interactive CPU flame graph."""
+    _, venv_bin, _ = get_venv(VENV)
+    pyspy = venv_bin / 'py-spy'
+    c.run(f'sudo {pyspy.resolve()} -d 20 --flame profile.svg -- {(venv_bin /project_name ).resolve()} -v --pages 5')
 
 
 @task
@@ -57,6 +56,15 @@ def nox(c, s=''):
 
 
 @task
+def profile(c):
+    """Create an interactive CPU flame graph."""
+    _, venv_bin, _ = get_venv(VENV)
+    pyinstrument = venv_bin / 'pyinstrument'
+    c.run(f'{pyinstrument.resolve()} --renderer html {(venv_bin /project_name ).resolve()} -v --format count --pages 5',
+          pty=True)
+
+
+@task
 def publish(c):
     """Publish the documentation."""
     c.run('./.circleci/publish.sh')
@@ -66,3 +74,19 @@ def publish(c):
 def setup(c):
     """Setup the developper environment."""
     c.run('nox --envdir .')
+
+
+def get_venv(venv):
+    """
+    Return `Path` objects from the venv.
+
+    :param str venv: venv name
+    :return: the venv `Path`, the `bin` folder `Path` within the venv, and if specified, the `Path` object of the
+        activate script within the venv.
+    :rtype: a tuple of 3 `Path` objects.
+    """
+    location = Path(venv)
+    venv = VirtualEnv(location.resolve())
+    venv_bin = Path(venv.bin)
+    activate = venv_bin / 'activate'
+    return venv, venv_bin, activate
