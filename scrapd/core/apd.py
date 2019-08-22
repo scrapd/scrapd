@@ -625,13 +625,13 @@ def parse_deceased_field(soup):
     """
 
     def starts_with_deceased(tag):
-        return tag.get_text().strip().startswith("Deceased:")
+        return tag.get_text().strip().startswith("Deceased")
 
     deceased_tag_p = soup.find(starts_with_deceased)
     try:
         deceased_text = deceased_tag_p.get_text()
         if len(deceased_text) < 100 and "preliminary" not in deceased_text:
-            return deceased_tag_p, deceased_text.split("Deceased:")[1].strip()
+            return deceased_tag_p, deceased_text.split(":")[1].strip()
     except AttributeError:
         pass
 
