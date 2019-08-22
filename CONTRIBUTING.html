@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Contributing &#8212; scrapd 2.1.0 documentation</title>
+    <title>Contributing &#8212; scrapd 2.1.1 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -46,7 +46,7 @@ would like to work on something major to ensure efficient collaboration and avoi
 <li><p>Create a topic branch from where you want to base your work.</p></li>
 <li><p>We follow the <a class="reference external" href="https://docs.openstack.org/charm-guide/latest/coding-guidelines.html">Open Stack Coding Guidelines</a>.</p></li>
 <li><p>For formatting the files properly, please use <a class="reference external" href="https://github.com/google/yapf">YAPF</a>. In the root directory of the project, run the following
-command: <cite>make format</cite>.</p></li>
+command: <cite>nox -s format</cite>.</p></li>
 <li><p>Make sure you added tests to validate your changes.</p></li>
 <li><p>Run all the tests to ensure nothing else was accidentally broken.</p></li>
 <li><p>Commit messages must start with a capitalized and short summary (max. 50 chars) written in the imperative, followed by
@@ -58,7 +58,7 @@ understanding of what led to it. Please refer to <a class="reference external" h
 <li><p>Any <a class="reference external" href="https://github.com/scrapd/scrapd/pulls">Pull Request</a> inactive for 28 days will be automatically closed. If you need more time to work on it, ask
 maintainers, to add the appropriate label to it. Use the <cite>&#64;scrapd/scrapper</cite> mention in the comments.</p></li>
 <li><p>Unless explicitly asked, <a class="reference external" href="https://github.com/scrapd/scrapd/pulls">Pull Request</a> which don’t pass all the CI checks will not be reviewed.
-Use the <cite>&#64;scrapd/scrapper</cite> mention in the comments if to ask maintainers to help you.</p></li>
+Use the <cite>&#64;scrapd/scrapper</cite> mention in the comments to ask maintainers to help you.</p></li>
 </ul>
 <div class="section" id="commit-example">
 <h4>Commit example<a class="headerlink" href="#commit-example" title="Permalink to this headline">¶</a></h4>
@@ -93,10 +93,11 @@ Fixes scrapd/scrapd#54
 </div>
 <div class="section" id="developer-setup">
 <h2>Developer setup<a class="headerlink" href="#developer-setup" title="Permalink to this headline">¶</a></h2>
-<p>You will need Python 3 <a class="reference external" href="https://docs.pyinvoke.org/">invoke</a> and <a class="reference external" href="https://nox.thea.codes/">nox</a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">nox</span> <span class="n">invoke</span>
+<p>You will need <cite>Python 3</cite>, <a class="reference external" href="https://docs.pyinvoke.org/">invoke</a> and <a class="reference external" href="https://nox.thea.codes/">nox</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">nox</span> <span class="n">invoke</span>
 </pre></div>
 </div>
+<p>Fork the project, clone the repository.</p>
 <p>Setup a local dev environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">inv</span>
 <span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>

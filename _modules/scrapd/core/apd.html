@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>scrapd.core.apd &#8212; scrapd 2.1.0 documentation</title>
+    <title>scrapd.core.apd &#8212; scrapd 2.1.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -233,60 +233,6 @@
 
     <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">common_fatality_parsing</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span></div>
-
-
-<div class="viewcode-block" id="parse_details_page_notes"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_details_page_notes">[docs]</a><span class="k">def</span> <span class="nf">parse_details_page_notes</span><span class="p">(</span><span class="n">details_page_notes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Clean up a details page notes section.</span>
-
-<span class="sd">    The purpose of this function is to attempt to extract the sentences about</span>
-<span class="sd">    the crash with some level of fidelity, but does not always return</span>
-<span class="sd">    a perfectly parsed sentence as the HTML syntax varies widely.</span>
-
-<span class="sd">    :param str details_description: the paragraph after the Deceased information</span>
-<span class="sd">    :return: A paragraph containing the details of the fatality in sentence form.</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Ideally the Notes will be contained in a paragraph tag.</span>
-    <span class="n">start_tag</span> <span class="o">=</span> <span class="n">details_page_notes</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;&lt;p&gt;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39;&lt;p&gt;&#39;</span><span class="p">)</span>
-    <span class="n">end_tag</span> <span class="o">=</span> <span class="n">details_page_notes</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;&lt;/p&gt;&#39;</span><span class="p">,</span> <span class="n">start_tag</span><span class="p">)</span>
-
-    <span class="c1"># Here .upper().isupper() tests if the substring of the</span>
-    <span class="c1"># text passed in contains any letters. If it doesn&#39;t,</span>
-    <span class="c1"># the Notes may be located after a &lt;br \&gt;.</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">details_page_notes</span><span class="p">[</span><span class="n">start_tag</span><span class="p">:</span><span class="n">end_tag</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
-        <span class="n">start_tag</span> <span class="o">=</span> <span class="n">details_page_notes</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;br \&gt;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;br \&gt;&#39;</span><span class="p">)</span>
-
-    <span class="n">snippet</span> <span class="o">=</span> <span class="n">details_page_notes</span><span class="p">[</span><span class="n">start_tag</span><span class="p">:</span><span class="n">end_tag</span><span class="p">]</span>
-
-    <span class="c1"># Remove the end of line characters.</span>
-    <span class="n">squished</span> <span class="o">=</span> <span class="n">snippet</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
-
-    <span class="c1"># Look for the first capital letter and start from there.</span>
-    <span class="n">first_cap</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">squished</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
-            <span class="n">first_cap</span> <span class="o">=</span> <span class="n">index</span>
-            <span class="k">break</span>
-
-    <span class="c1"># Remove HTML tags.</span>
-    <span class="n">no_html</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;&lt;.*?&gt;&#39;</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">squished</span><span class="p">[</span><span class="n">first_cap</span><span class="p">:])</span>
-
-    <span class="c1"># Remove tabs and, if subjects included, remove.</span>
-    <span class="n">remove_subjects</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s{2,}&#39;</span><span class="p">,</span> <span class="n">no_html</span><span class="p">)</span>
-
-    <span class="c1"># Demographic info is usually only included in subject description.</span>
-    <span class="c1"># DOB would be better, but that is sometimes missing.</span>
-    <span class="n">final</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">segment</span> <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">remove_subjects</span> <span class="k">if</span> <span class="s1">&#39;male&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">segment</span><span class="p">])</span>
-
-    <span class="c1"># This phrase signals the end of a report.</span>
-    <span class="n">footer_string</span> <span class="o">=</span> <span class="s1">&#39;Fatality information may change.&#39;</span>
-    <span class="n">end_pos</span> <span class="o">=</span> <span class="n">final</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">footer_string</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">end_pos</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-        <span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="p">[:</span><span class="n">end_pos</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">footer_string</span><span class="p">)]</span>
-
-    <span class="k">return</span> <span class="n">final</span></div>
 
 
 <div class="viewcode-block" id="common_fatality_parsing"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.common_fatality_parsing">[docs]</a><span class="k">def</span> <span class="nf">common_fatality_parsing</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
@@ -591,15 +537,13 @@
 <span class="sd">    Parse the detail page to extract fatality information.</span>
 
 <span class="sd">    :param str news_page: the content of the fatality page</span>
-<span class="sd">    :return: a dictionary representing a fatality.</span>
-<span class="sd">    :rtype: dict</span>
+<span class="sd">    :return: a dictionary representing a fatality and a list of errors.</span>
+<span class="sd">    :rtype: dict, list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">parsing_errors</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">normalized_detail_page</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">&quot;NFKD&quot;</span><span class="p">,</span> <span class="n">detail_page</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">,</span>
-                             <span class="s1">&#39;html.parser&#39;</span><span class="p">,</span>
-                             <span class="n">parse_only</span><span class="o">=</span><span class="n">bs4</span><span class="o">.</span><span class="n">SoupStrainer</span><span class="p">(</span><span class="nb">property</span><span class="o">=</span><span class="s2">&quot;content:encoded&quot;</span><span class="p">))</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">to_soup</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">)</span>
 
     <span class="c1"># Parse the `Case` field.</span>
     <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">CASE</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_case_field</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">)</span>
@@ -715,20 +659,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">starts_with_deceased</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">tag</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Deceased:&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tag</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Deceased&quot;</span><span class="p">)</span>
 
     <span class="n">deceased_tag_p</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">starts_with_deceased</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">deceased_text</span> <span class="o">=</span> <span class="n">deceased_tag_p</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deceased_text</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="ow">and</span> <span class="s2">&quot;preliminary&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">deceased_text</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">deceased_tag_p</span><span class="p">,</span> <span class="n">deceased_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;Deceased:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">deceased_tag_p</span><span class="p">,</span> <span class="n">deceased_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="k">pass</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">deceased_field_str</span> <span class="o">=</span> <span class="n">deceased_tag_p</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;strong&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next_sibling</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="n">deceased_field_str</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">deceased_field_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="k">return</span> <span class="n">deceased_tag_p</span><span class="p">,</span> <span class="n">deceased_field_str</span></div>
 
 
@@ -885,6 +829,18 @@
         <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;Deceased&#39;</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="to_soup"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.to_soup">[docs]</a><span class="k">def</span> <span class="nf">to_soup</span><span class="p">(</span><span class="n">html</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a beautiful soup object from a HTML string.</span>
+
+<span class="sd">    :param string html: represents a HTML document</span>
+<span class="sd">    :return: A BeautifulSoup object.</span>
+<span class="sd">    :rtype: bs4.BeautifulSoup</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">soup</span></div>
 
 
 <div class="viewcode-block" id="fetch_and_parse"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.fetch_and_parse">[docs]</a><span class="nd">@retry</span><span class="p">()</span>

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>scrapd.core package &#8212; scrapd 2.1.0 documentation</title>
+    <title>scrapd.core package &#8212; scrapd 2.1.1 documentation</title>
     <link rel="stylesheet" href="../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -426,26 +426,6 @@ and the Deceased field as a string</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="scrapd.core.apd.parse_details_page_notes">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_details_page_notes</code><span class="sig-paren">(</span><em>details_page_notes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_details_page_notes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_details_page_notes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clean up a details page notes section.</p>
-<p>The purpose of this function is to attempt to extract the sentences about
-the crash with some level of fidelity, but does not always return
-a perfectly parsed sentence as the HTML syntax varies widely.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>details_description</strong> (<em>str</em>) – the paragraph after the Deceased information</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A paragraph containing the details of the fatality in sentence form.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="scrapd.core.apd.parse_fleg">
 <code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_fleg</code><span class="sig-paren">(</span><em>fleg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_fleg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_fleg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse FLEG. <cite>fleg</cite> stands for First, Last, Ethnicity, Gender.</p>
@@ -519,10 +499,10 @@ a perfectly parsed sentence as the HTML syntax varies widely.</p>
 <dd class="field-odd"><p><strong>news_page</strong> (<em>str</em>) – the content of the fatality page</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing a fatality.</p>
+<dd class="field-even"><p>a dictionary representing a fatality and a list of errors.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p>dict, list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -660,6 +640,23 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.apd.to_soup">
+<code class="descclassname">scrapd.core.apd.</code><code class="descname">to_soup</code><span class="sig-paren">(</span><em>html</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#to_soup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.to_soup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a beautiful soup object from a HTML string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>html</strong> (<em>string</em>) – represents a HTML document</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A BeautifulSoup object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bs4.BeautifulSoup</p>
 </dd>
 </dl>
 </dd></dl>
