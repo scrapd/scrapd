@@ -181,10 +181,11 @@ used ScrAPD to compile a detailed presentation of the status of the traffic deat
 
 * `2018 PAC retrospective presentation <http://www.austintexas.gov/edims/document.cfm?id=314367>`_
 
-The following grassroots organizations use ScrAPD:
+The following organizations also use ScrAPD:
 
 * `Walk Austin <http://www.walkaustintx.org/>`_
 * `Farm&City <http://www.farmandcity.org/>`_
+* `Bicycle Advisory Council <https://www.austintexas.gov/department/bicycle-advisory-council>`_
 
 See more at `<http://docs.scrapd.org/who-is-using-us/>`_
 

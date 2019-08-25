@@ -144,7 +144,7 @@ jobs:
           name: upload the package
           command: |
             source venv/bin/activate
-            nox -s dist-upload
+            nox -s dist_upload
 
 workflows:
   version: 2
