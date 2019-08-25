@@ -46,6 +46,11 @@ def from_date(date):
     return parse_date(date, datetime.date.min, settings={'PREFER_DAY_OF_MONTH': 'first'})
 
 
+def parse_time(time):
+    dt = dateparser.parse(time)
+    return None if not dt else dt.time()
+
+
 def to_date(date):
     """
     Parse the date from a human readable format, with options for the to date.

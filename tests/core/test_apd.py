@@ -12,6 +12,9 @@ from tenacity import RetryError
 from tenacity import stop_after_attempt
 
 from scrapd.core import apd
+from scrapd.core import date_utils
+from scrapd.core import parsing
+from scrapd.core import regex
 from scrapd.core.constant import Fields
 from tests import mock_data
 from tests.test_common import TEST_DATA_DIR
@@ -151,7 +154,7 @@ parse_page_scenarios = {
 ))
 def test_parse_twitter_title_00(input_, expected):
     """Ensure the Twitter title gets parsed correct."""
-    actual = apd.parse_twitter_title(input_)
+    actual = parsing.parse_twitter_title(input_)
     assert actual == expected
 
 
@@ -179,7 +182,7 @@ def test_parse_twitter_title_00(input_, expected):
 ))
 def test_parse_twitter_description_00(input_, expected):
     """Ensure the Twitter description gets parsed correctly."""
-    actual = apd.parse_twitter_description(input_)
+    actual = parsing.parse_twitter_description(input_)
     if 'Deceased' in actual:
         del actual['Deceased']
     assert actual == expected
@@ -187,7 +190,7 @@ def test_parse_twitter_description_00(input_, expected):
 
 def test_parse_twitter_description_01():
     """Ensure the Twitter description gets parsed correctly."""
-    actual = apd.parse_twitter_description(mock_data.twitter_description_01)
+    actual = parsing.parse_twitter_description(mock_data.twitter_description_01)
     expected = {
         Fields.CASE: '19-0161105',
     }
@@ -196,7 +199,7 @@ def test_parse_twitter_description_01():
 
 def test_parse_twitter_description_02():
     """Ensure a DOB recognized as a field can be parsed."""
-    actual = apd.parse_twitter_description(mock_data.twitter_description_02)
+    actual = parsing.parse_twitter_description(mock_data.twitter_description_02)
     expected = {
         'Age': 57,
         'Case': '18-160882',
@@ -212,7 +215,7 @@ def test_parse_twitter_description_02():
 
 def test_parse_twitter_description_03():
     """Ensure a DOB recognized as a field can be parsed."""
-    actual = apd.parse_twitter_description(mock_data.twitter_description_03)
+    actual = parsing.parse_twitter_description(mock_data.twitter_description_03)
     expected = {}
     assert actual == expected
 
@@ -222,9 +225,9 @@ def test_parse_twitter_description_03():
                          ids=scenario_ids(mock_data.note_fields_scenarios))
 def test_parse_notes_field(page, start, end):
     """Ensure Notes field are parsed correctly."""
-    soup = apd.to_soup(page)
-    deceased_tag_p, deceased_field_str = apd.parse_deceased_field(soup)
-    notes = apd.notes_from_element(deceased_tag_p, deceased_field_str)
+    soup = parsing.to_soup(page)
+    deceased_tag_p, deceased_field_str = parsing.parse_deceased_field(soup)
+    notes = parsing.notes_from_element(deceased_tag_p, deceased_field_str)
     assert notes.startswith(start)
     assert notes.endswith(end)
 
@@ -248,7 +251,7 @@ def test_parse_notes_field(page, start, end):
 ))
 def test_parse_notes_field(page, start, end):
     page_text = load_test_page(page)
-    parsed_content, r = apd.parse_page_content(page_text)
+    parsed_content, r = parsing.parse_page_content(page_text)
     notes = parsed_content[Fields.NOTES]
     assert notes.startswith(start)
     assert notes.endswith(end)
@@ -274,10 +277,9 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         Fields.LAST_NAME: "Tamez",
         Fields.ETHNICITY: "Hispanic",
         Fields.GENDER: "male",
-        Fields.DOB: date(1954, 10, 10),
+        Fields.DOB: datetime.date(1954, 10, 10),
     }),
     ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
-        Fields.LAST_NAME: "Gonzales",
         Fields.FIRST_NAME: "Eva",
         Fields.LAST_NAME: "Gonzales",
         Fields.ETHNICITY: "White",
@@ -369,7 +371,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
 ))
 def test_process_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""
-    d = apd.process_deceased_field(deceased)
+    d = parsing.process_deceased_field(deceased)
     for key in expected:
         assert d[key] == expected[key]
 
@@ -406,7 +408,7 @@ def test_process_deceased_field_00(deceased, expected):
 ))
 def test_parse_name(name, expected):
     """Ensure parser finds the first and last name given the full name."""
-    parsed = apd.parse_name(name)
+    parsed = parsing.parse_name(name)
     assert parsed.get("first") == expected["first"]
     assert parsed.get("last") == expected["last"]
 
@@ -465,7 +467,7 @@ def test_parse_page_content_00(filename, expected):
            Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual, err = apd.parse_page_content(page)
+    actual, err = parsing.parse_page_content(page)
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     if 'Deceased' in actual and 'Deceased' not in expected:
@@ -477,8 +479,8 @@ def test_parse_page_content_01(mocker):
     """Ensure a `process_deceased_field` exception is caught and does not propagate."""
     page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
     page = page_fd.read_text()
-    mocker.patch('scrapd.core.apd.process_deceased_field', side_effect=ValueError)
-    result, err = apd.parse_page_content(page)
+    mocker.patch('scrapd.core.parsing.process_deceased_field', side_effect=ValueError)
+    result, err = parsing.parse_page_content(page)
     if 'Deceased' in result:
         del result['Deceased']
     assert len(result) == 6
@@ -486,14 +488,14 @@ def test_parse_page_content_01(mocker):
 
 def test_parse_page_content_02(mocker):
     """Ensure a log entry is created if there is no deceased field."""
-    result, err = apd.parse_page_content('Case: 01-2345678')
+    result, err = parsing.parse_page_content('Case: 01-2345678')
     assert result
 
 
 def test_parse_page_content_03():
     """Ensure a missing case number raises an exception."""
     with pytest.raises(ValueError):
-        apd.parse_page_content('The is no case number here.')
+        parsing.parse_page_content('The is no case number here.')
 
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_twitter_fields_scenarios.items()])
@@ -501,7 +503,7 @@ def test_parse_twitter_fields_00(filename, expected):
     """Ensure information are properly extracted from the twitter fields on detail page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_twitter_fields(page)
+    actual = parsing.parse_twitter_fields(page)
     if 'Deceased' in actual and 'Deceased' not in expected:
         del actual['Deceased']
     assert actual == expected
@@ -513,21 +515,34 @@ def test_parse_page_00(filename, expected):
        Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page(page, fake.uri())
+    actual = parsing.parse_page(page, fake.uri())
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
 
 
+parse_location_scenarios = {
+    'traffic-fatality-50-3': '4500 FM 2222/Mount Bonnell Road',
+}
+@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_location_scenarios.items()])
+def test_parse_page_get_location(filename, expected):
+    """Ensure location information is properly extracted from the page."""
+    page_fd = TEST_DATA_DIR / filename
+    page = page_fd.read_text()
+    actual = parsing.parse_page(page, fake.uri())
+    assert actual['Location'] == expected
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_scenarios.items()])
 def test_parse_page_01(mocker, filename, expected):
-    """Ensuring ."""
+    """Ensuri
+    ng ."""
     data = {}
     parsing_errors = ['one error']
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    pc = mocker.patch('scrapd.core.apd.parse_page_content', return_value=(data, parsing_errors))
-    _ = apd.parse_page(page, fake.uri())
+    pc = mocker.patch('scrapd.core.parsing.parse_page_content', return_value=(data, parsing_errors))
+    _ = parsing.parse_page(page, fake.uri())
     assert pc.called_once
 
 
@@ -613,7 +628,7 @@ async def test_async_retrieve_00(fake_news):
 ))
 def test_parse_case_field_00(input_, expected):
     """Ensure a case field gets parsed correctly."""
-    actual = apd.parse_case_field(input_)
+    actual = regex.match_case_field(input_)
     assert actual == expected
 
 
@@ -622,7 +637,7 @@ def test_parse_case_field_00(input_, expected):
     (('<span property="dc:title" content="Traffic Fatality #12" class="rdf-meta element-hidden"></span>', '12'), ))
 def test_parse_crashes_field_00(input_, expected):
     """Ensure the crashes field gets parsed correctly."""
-    actual = apd.parse_crashes_field(input_)
+    actual = regex.match_crashes_field(input_)
     assert actual == expected
 
 
@@ -639,7 +654,7 @@ async def test_fetch_and_parse_00(empty_page):
 @pytest.mark.asyncio
 async def test_fetch_and_parse_01(page, mocker):
     """Ensure a page that cannot be parsed returns an exception."""
-    mocker.patch("scrapd.core.apd.parse_page", return_value={})
+    mocker.patch("scrapd.core.parsing.parse_page", return_value={})
     with pytest.raises(RetryError):
         apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
         await apd.fetch_and_parse(None, 'url')
@@ -676,7 +691,7 @@ async def test_fetch_detail_page_00(fetch_text):
                          (('<meta name="twitter:title" content="Traffic Fatality #2" />', 'Traffic Fatality #2'), ))
 def test_extract_twitter_tittle_meta_00(input_, expected):
     """Ensure we can extract the twitter tittle from the meta tag."""
-    actual = apd.extract_twitter_tittle_meta(input_)
+    actual = regex.match_twitter_title_meta(input_)
     assert actual == expected
 
 
@@ -689,47 +704,8 @@ def test_extract_twitter_tittle_meta_00(input_, expected):
 ))
 def test_extract_twitter_description_meta_00(input_, expected):
     """Ensure we can extract the twitter tittle from the meta tag."""
-    actual = apd.extract_twitter_description_meta(input_)
-    assert actual == expected
+    actual = regex.match_twitter_description_meta(input_)
 
-
-@pytest.mark.parametrize('input_,expected', (
-    ('Time: </span>   Approximately 01:14a.m.', datetime.time(1, 14)),
-    ('<tag>Time:     08:35 pm<br />', datetime.time(20, 35)),
-    ('Time:  8:47  P.M.', datetime.time(20, 47)),
-    ('Time:12:47 p.M.', datetime.time(12, 47)),
-    ('Time: 5:16', datetime.time(5, 16)),
-    ('Time: 05:16 ', datetime.time(5, 16)),
-    ('Time: 18:26', datetime.time(18, 26)),
-    ('Time: 22:56', datetime.time(22, 56)),
-    ('Time: 54:34', None),
-    ('Time: 28:24', None),
-    ('Time: 4:66 pm', None),
-    ('Time: 18:46 pm', datetime.time(18, 46)),
-    ('Time: 00:24 a.m.', datetime.time(0, 24)),
-    ('<p>	<strong>Time:</strong>       8 p.m.</p>', datetime.time(20, 0)),
-))
-def test_parse_time_field_00(input_, expected):
-    """Ensure a time field gets parsed correctly."""
-    actual = apd.parse_time_field(input_)
-    assert actual == expected
-
-
-@pytest.mark.parametrize('input_,expected', (
-    ('<strong>Date:   </strong>April 18, 2019</p>', datetime.date(2019, 4, 18)),
-    ('>Date:   </strong> Night of May 22 2019</p>', datetime.date(2019, 5, 22)),
-    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', datetime.date(2018, 10, 3)),
-    ('>Date:  night Apr 1-2012</p>', datetime.date(2012, 4, 1)),
-    ('>Date:  feb. 2 2018</p>', datetime.date(2018, 2, 2)),
-    ('>Date:  10-1-17</p>', datetime.date(2017, 10, 1)),
-    ('>Date:  Morning of 2,2,19 </p>', datetime.date(2019, 2, 2)),
-    ('>Date:  3/3/19</p>', datetime.date(2019, 3, 3)),
-    ('', None),
-    ('>Date: Afternoon</p>', None),
-))
-def test_parse_date_field_00(input_, expected):
-    """Ensure a date field gets parsed correctly."""
-    actual = apd.parse_date_field(input_)
     assert actual == expected
 
 
@@ -801,8 +777,8 @@ def test_parse_date_field_00(input_, expected):
     ))))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
-    field = apd.to_soup(input_)
-    _, deceased_str = apd.parse_deceased_field(field)
+    field = parsing.to_soup(input_)
+    _, deceased_str = parsing.parse_deceased_field(field)
     assert deceased_str == expected
 
 
@@ -838,7 +814,7 @@ def test_parse_deceased_field_00(input_, expected):
 ))
 def test_sanitize_fatality_entity(input_, expected):
     """Ensure field values are sanitized."""
-    actual = apd.sanitize_fatality_entity(input_)
+    actual = parsing.sanitize_fatality_entity(input_)
     assert actual == expected
 
 
@@ -858,5 +834,5 @@ def test_sanitize_fatality_entity(input_, expected):
 ))
 def test_parse_location_field_00(input_, expected):
     """Ensure."""
-    actual = apd.parse_location_field(input_)
+    actual = regex.match_location_field(input_)
     assert actual == expected
