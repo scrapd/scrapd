@@ -778,7 +778,7 @@ def test_extract_twitter_description_meta_00(input_, expected):
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     field = parsing.to_soup(input_)
-    _, deceased_str = parsing.parse_deceased_field(field)
+    deceased_str = parsing.parse_deceased_field(field)
     assert deceased_str == expected
 
 

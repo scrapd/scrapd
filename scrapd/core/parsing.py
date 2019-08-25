@@ -62,17 +62,22 @@ def dob_search(split_deceased_field):
     return dob_index
 
 
-def notes_from_element(deceased, deceased_field_str):
+def parse_notes_field(soup, deceased_field_str):
     """
     Get Notes from deceased field's BeautifulSoup element.
 
-    :param deceased bs4.Beautifulsoup.element.Tag:
-        the first <p> tag of the Deceased field of the APD bulletin
-    :param deceased_field_str:
-        the string corresponding to the Deceased field
+    :param soup bs4.Beautifulsoup:
+        the content of the bulletin page
+
+    :param str deceased_field_str:
+        the Deceased field, other than the Notes section, as a string
+
     :return: notes from the Deceased field of the APD bulletin
     :rtype: str
     """
+    deceased = get_deceased_tag(soup)
+    if not deceased:
+        return ''
     text = deceased.text
     for sibling in deceased.next_siblings:
         if isinstance(sibling, bs4.NavigableString):
@@ -224,25 +229,37 @@ def parse_comma_delimited_deceased_field(deceased_field):
     return d
 
 
-def parse_deceased_field(soup):
+def get_deceased_tag(soup):
     """
-    Extract content from deceased field on the fatality page.
+    Get the tag with information about one or more deceased people.
 
-    :param bs4.BeautifulSoup soup: the content of the fatality page
+    :param bs4.BeautifulSoup soup: the content of the bulletin page
+
     :return:
-        a tuple containing the tag for the Deceased paragraph
-        and the Deceased field as a string
-    :rtype: tuple
-    """
+        the tag labeled "Deceased" in the bulletin
+"""
 
     def starts_with_deceased(tag):
         return tag.get_text().strip().startswith("Deceased")
 
-    deceased_tag_p = soup.find(starts_with_deceased)
+    return soup.find(starts_with_deceased)
+
+
+def parse_deceased_field(soup):
+    """
+    Extract content from deceased field on the fatality page.
+
+    :param bs4.BeautifulSoup soup: the content of the bulletin page
+    :return:
+        the Deceased field as a string
+    :rtype: str
+    """
+    deceased_tag_p = get_deceased_tag(soup)
+
     try:
         deceased_text = deceased_tag_p.get_text()
         if len(deceased_text) < 100 and "preliminary" not in deceased_text:
-            return deceased_tag_p, deceased_text.split(":")[1].strip()
+            return deceased_text.split(":")[1].strip()
     except AttributeError:
         pass
 
@@ -250,7 +267,7 @@ def parse_deceased_field(soup):
         deceased_field_str = deceased_tag_p.find("strong").next_sibling.string.strip()
     except AttributeError:
         deceased_field_str = ''
-    return deceased_tag_p, deceased_field_str
+    return deceased_field_str
 
 
 def parse_pipe_delimited_deceased_field(deceased_field):
@@ -394,15 +411,19 @@ def parse_page_content(detail_page, notes_parsed=False):
         parsing_errors.append("could not retrieve the location")
 
     # Parse the `Deceased` field.
-    deceased_tag_p, deceased_field_str = parse_deceased_field(soup)
+    deceased_field_str = parse_deceased_field(soup)
     if deceased_field_str:
         d[Fields.DECEASED] = deceased_field_str
     else:
         parsing_errors.append("could not retrieve the deceased information")
 
     # Fill in Notes from Details page if not in twitter description.
-    if deceased_field_str and not notes_parsed:
-        d[Fields.NOTES] = notes_from_element(deceased_tag_p, deceased_field_str)
+    if not notes_parsed:
+        notes = parse_notes_field(soup, deceased_field_str)
+        if notes:
+            d[Fields.NOTES] = notes
+        else:
+            parsing_errors.append("could not retrieve the notes information")
 
     r, err = common_fatality_parsing(d)
     return r, parsing_errors + err
