@@ -229,6 +229,31 @@ def test_parse_notes_field(page, start, end):
     assert notes.endswith(end)
 
 
+@pytest.mark.parametrize('page,start,end', (
+    ('traffic-fatality-2-3', 'The preliminary investigation shows that the grey',
+     'No charges are expected to be filed.'),
+    ('traffic-fatality-4-6', 'The preliminary investigation shows that a black, Ford', 'scene at 01:48 a.m.'),
+    ('traffic-fatality-15-4', 'Keaton', 'seatbelts. No charges are expected to be filed.'),
+    ('traffic-fatality-16-4', 'The preliminary investigation revealed that the 2017', 'injuries on April 4, 2019.'),
+    ('traffic-fatality-17-4', 'The preliminary investigation revealed that the 2010', 'at the time of the crash.'),
+    ('traffic-fatality-20-4', 'The preliminary investigation revealed that a 2016',
+     'pronounced deceased at the scene.'),
+    ('traffic-fatality-25-4', 'Suspect Vehicle:  dark colored', 'damage to its right, front end.'),
+    ('traffic-fatality-71-2', 'The preliminary investigation shows that a 2004 Honda sedan',
+     'at the scene at 8:50 p.m.'),
+    ('traffic-fatality-72-1', 'The preliminary investigation shows that the 2016 Indian',
+     'whether charges will be filed.'),
+    ('traffic-fatality-73-2', 'The preliminary investigation shows that a 2003 Ford F150',
+     'St. David’s South Austin Hospital.'),
+))
+def test_parse_notes_field(page, start, end):
+    page_text = load_test_page(page)
+    parsed_content, r = apd.parse_page_content(page_text)
+    notes = parsed_content[Fields.NOTES]
+    assert notes.startswith(start)
+    assert notes.endswith(end)
+
+
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
     """Ensure page detail links are extracted from news page."""
     actual = apd.extract_traffic_fatalities_page_details_link(news_page)
@@ -245,33 +270,19 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
 
 @pytest.mark.parametrize('deceased,expected', (
     ("Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)", {
+        Fields.FIRST_NAME: "Rosbel",
         Fields.LAST_NAME: "Tamez",
-<<<<<<< HEAD
-        Fields.FIRST_NAME: "Rosbel"
-||||||| merged common ancestors
         Fields.ETHNICITY: "Hispanic",
         Fields.GENDER: "male",
         Fields.DOB: date(1954, 10, 10),
-=======
-        Fields.ETHNICITY: "Hispanic",
-        Fields.GENDER: "male",
-        Fields.DOB: datetime.date(1954, 10, 10),
->>>>>>> 930fe8febff9a0df67636052a2e41273e272d00b
     }),
     ("Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)", {
         Fields.LAST_NAME: "Gonzales",
-<<<<<<< HEAD
         Fields.FIRST_NAME: "Eva",
-        Fields.GENDER: 'f'
-||||||| merged common ancestors
-        Fields.ETHNICITY: "White",
-        Fields.GENDER: 'female',
-        Fields.DOB: date(1961, 1, 22),
-=======
+        Fields.LAST_NAME: "Gonzales",
         Fields.ETHNICITY: "White",
         Fields.GENDER: 'female',
         Fields.DOB: datetime.date(1961, 1, 22),
->>>>>>> 930fe8febff9a0df67636052a2e41273e272d00b
     }),
     (
         'DOB: 01-01-99',
@@ -356,8 +367,9 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
         },
     ),
 ))
-def test_parse_deceased_field(deceased, expected):
-    d = apd.parse_deceased_field(deceased)
+def test_process_deceased_field_00(deceased, expected):
+    """Ensure a deceased field is parsed correctly."""
+    d = apd.process_deceased_field(deceased)
     for key in expected:
         assert d[key] == expected[key]
 
@@ -385,7 +397,11 @@ def test_parse_deceased_field(deceased, expected):
     }),
     (None, {
         'first': None,
-        'last': None
+        'last': None,
+    }),
+    (['Carlos', 'Cardenas', 'Jr.'], {
+        'first': 'Carlos',
+        'last': 'Cardenas',
     }),
 ))
 def test_parse_name(name, expected):
