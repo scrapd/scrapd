@@ -89,7 +89,7 @@ def parse_date(date, default=None, settings=None):
     except Exception:
         if default:
             return default
-        raise Exception
+        raise ValueError(f'No default value for unparseable date: {date}')
 
 
 def is_between(date, from_=None, to=None):

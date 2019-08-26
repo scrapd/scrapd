@@ -61,7 +61,7 @@ def parse_page(page, url):
     """
     Parse the page using all parsing methods available.
 
-    :param str  page: the content of the fatality page
+    :param str page: the content of the fatality page
     :param str url: detail page URL
     :return: a dictionary representing a fatality.
     :rtype: dict

@@ -72,25 +72,25 @@ def process_deceased_field(deceased_field):
     # Try to parse the deceased fields when the fields are comma separated.
     try:
         return parse_comma_delimited_deceased_field(deceased_field)
-    except Exception:
+    except ValueError:
         pass
 
     # Try to parse the deceased fields when the fields are pipe separated.
     try:
         return parse_pipe_delimited_deceased_field(deceased_field)
-    except Exception:
+    except IndexError:
         pass
 
     # Try to parse the deceased fields when the fields are space separated.
     try:
         return parse_space_delimited_deceased_field(deceased_field)
-    except Exception:
+    except ValueError:
         pass
 
     # Try to parse the deceased fields assuming it contains an age.
     try:
         return parse_age_deceased_field(deceased_field)
-    except Exception:
+    except ValueError:
         pass
 
     raise ValueError(f'cannot parse {Fields.DECEASED}: {deceased_field}')
@@ -106,11 +106,13 @@ def parse_age_deceased_field(deceased_field):
     """
     age_pattern = re.compile(r'([0-9]+) years')
 
-    # Raises AttributeError upon failure.
-    age = re.search(age_pattern, deceased_field).group(1)
+    age = re.search(age_pattern, deceased_field)
+    if age is None:
+        raise ValueError("age not found in Deceased field")
     split_deceased_field = age_pattern.split(deceased_field)
     d = parse_fleg(split_deceased_field[0].split())
-    d[Fields.AGE] = int(age)
+    d[Fields.AGE] = int(age.group(1))
+
     return d
 
 
