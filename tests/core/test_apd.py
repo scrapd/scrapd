@@ -12,8 +12,8 @@ from tenacity import RetryError
 from tenacity import stop_after_attempt
 
 from scrapd.core import apd
-from scrapd.core import date_utils
 from scrapd.core import parsing
+from scrapd.core import person
 from scrapd.core import regex
 from scrapd.core.constant import Fields
 from tests import mock_data
@@ -371,7 +371,7 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
 ))
 def test_process_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""
-    d = parsing.process_deceased_field(deceased)
+    d = person.process_deceased_field(deceased)
     for key in expected:
         assert d[key] == expected[key]
 
@@ -479,7 +479,7 @@ def test_parse_page_content_01(mocker):
     """Ensure a `process_deceased_field` exception is caught and does not propagate."""
     page_fd = TEST_DATA_DIR / 'traffic-fatality-2-3'
     page = page_fd.read_text()
-    mocker.patch('scrapd.core.parsing.process_deceased_field', side_effect=ValueError)
+    mocker.patch('scrapd.core.person.process_deceased_field', side_effect=ValueError)
     result, err = parsing.parse_page_content(page)
     if 'Deceased' in result:
         del result['Deceased']
