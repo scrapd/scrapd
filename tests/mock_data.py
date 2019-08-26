@@ -80,7 +80,7 @@ note_fields_scenarios = [
             'still pending. Fatality information may change.</strong></em><br>'
             '&nbsp;</p>'
             '</div>',
-            'Keaton',
+            'The preliminary investigation indicated that Garrett',
             'No charges are expected to be filed.',
         ),
         'Two deaths',

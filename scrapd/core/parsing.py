@@ -69,26 +69,26 @@ def parse_page(page, url):
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
     page_d, err = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
-    person_d, person_err = person.parse_person(deceased=twitter_d.get(Fields.DECEASED) or page_d.get(Fields.DECEASED),
-                                               birth_date=twitter_d.get(Fields.DOB) or page_d.get(Fields.DOB),
-                                               collision_date=twitter_d.get(Fields.DATE) or page_d.get(Fields.DATE))
-    err = err + person_err
 
-    if err:
-        logger.debug(f'Fatality report {url} was not parsed correctly:\n\t * ' + '\n\t * '.join(err))
+    deceased_people = person.parse_people(deceased=twitter_d.get(Fields.DECEASED) or page_d.get(Fields.DECEASED),
+                                          birth_date=twitter_d.get(Fields.DOB) or page_d.get(Fields.DOB),
+                                          collision_date=twitter_d.get(Fields.DATE) or page_d.get(Fields.DATE))
 
-    # Merge the results, from right to left.
-    # (i.e. the rightmost object will override the object just before it, etc.)
-    d = {**page_d, **twitter_d, **person_d}
+    for person_d, parsing_errors in deceased_people:
+        # Merge the results, from right to left.
+        # (i.e. the rightmost object will override the object just before it, etc.)
+        d = {**page_d, **twitter_d, **person_d}
+        err = err + parsing_errors
+        if err:
+            logger.debug(f'Fatality report {url} was not parsed correctly:\n\t * ' + '\n\t * '.join(err))
 
-    # We needed the deceased field to be in the return value of parse_page_content for testing.
-    # But now we can delete it.
-    if d.get('Deceased'):
-        del d['Deceased']
+        # We needed the deceased field to be in the return value of parse_page_content for testing.
+        # But now we can delete it.
+        if d.get('Deceased'):
+            del d['Deceased']
 
-    d = sanitize_fatality_entity(d)
-
-    yield d
+        d = sanitize_fatality_entity(d)
+        yield d
 
 
 def to_soup(html):
@@ -121,10 +121,16 @@ def parse_deceased_field(soup):
     except AttributeError:
         pass
 
+    deceased_field_str = ''
     try:
-        deceased_field_str = deceased_tag_p.find("strong").next_sibling.string.strip()
+        for passage in deceased_tag_p.find("strong").next_siblings:
+            if not passage.string:
+                continue
+            if "preliminary" in passage:
+                return deceased_field_str.strip()
+            deceased_field_str += passage.string
     except AttributeError:
-        deceased_field_str = ''
+        return ''
     return deceased_field_str
 
 
@@ -139,7 +145,7 @@ def parse_page_content(detail_page, notes_parsed=False):
     d = {}
     parsing_errors = []
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
-    soup = to_soup(normalized_detail_page)
+    soup = to_soup(normalized_detail_page.replace("<br>", "</br>"))
 
     # Parse the `Case` field.
     d[Fields.CASE] = regex.match_case_field(normalized_detail_page)
@@ -240,6 +246,9 @@ def parse_twitter_description(twitter_description):
             d[current_field] = d[current_field] + f" {word}"
         else:
             d[current_field] = word
+
+    if "Deceased" in twitter_description and "Deceased" not in d.keys():
+        d["Deceased"] = twitter_description.split("Deceased", maxsplit=1)[1].strip()
 
     # Parse the `Date` field.
     fatality_date = d.get(Fields.DATE)

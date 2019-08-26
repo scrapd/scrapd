@@ -47,15 +47,9 @@ parse_twitter_fields_scenarios = {
         Fields.CRASHES: '2',
     },
     'traffic-fatality-73-2': {
-        Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: datetime.date(1980, 2, 9),
         Fields.DATE: datetime.date(2018, 12, 30),
-        Fields.ETHNICITY: 'White',
-        Fields.FIRST_NAME: 'Corbin',
-        Fields.GENDER: 'male',
-        Fields.LAST_NAME: 'Sabillon-Garcia',
         Fields.LOCATION: '1400 E. Highway 71 eastbound',
         Fields.NOTES: 'The preliminary investigation shows that a 2003 Ford F150 was '
         'traveling northbound on the US Highway 183 northbound ramp to E. '
@@ -228,7 +222,7 @@ def test_parse_notes(page, start, end):
     ('traffic-fatality-2-3', 'The preliminary investigation shows that the grey',
      'No charges are expected to be filed.'),
     ('traffic-fatality-4-6', 'The preliminary investigation shows that a black, Ford', 'scene at 01:48 a.m.'),
-    ('traffic-fatality-15-4', 'Keaton', 'seatbelts. No charges are expected to be filed.'),
+    ('traffic-fatality-15-4', 'The preliminary investigation indicated that Garrett', 'seatbelts. No charges are expected to be filed.'),
     ('traffic-fatality-16-4', 'The preliminary investigation revealed that the 2017', 'injuries on April 4, 2019.'),
     ('traffic-fatality-17-4', 'The preliminary investigation revealed that the 2010', 'at the time of the crash.'),
     ('traffic-fatality-20-4', 'The preliminary investigation revealed that a 2016',
@@ -247,6 +241,28 @@ def test_parse_notes_field(page, start, end):
     notes = parsed_content[Fields.NOTES]
     assert notes.startswith(start)
     assert notes.endswith(end)
+
+
+@pytest.mark.parametrize('page,start,end', (
+    ('traffic-fatality-50-3', '1:  Ced', '| 01/26/1992'),
+))
+def test_extract_deceased_field_twitter(page, start, end):
+    page_text = load_test_page(page)
+    parsed_content = parsing.parse_twitter_fields(page_text)
+    deceased = parsed_content[Fields.DECEASED]
+    assert deceased.startswith(start)
+    assert deceased.endswith(end)
+
+
+@pytest.mark.parametrize('page,start,end', (
+    ('traffic-fatality-15-4', 'Garre', '13/1991'),
+))
+def test_extract_deceased_field_from_page(page, start, end):
+    page_text = load_test_page(page)
+    parsed_content, _ = parsing.parse_page_content(page_text)
+    deceased = parsed_content[Fields.DECEASED]
+    assert deceased.startswith(start)
+    assert deceased.endswith(end)
 
 
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
