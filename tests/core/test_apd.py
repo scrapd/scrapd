@@ -792,6 +792,24 @@ def test_parse_deceased_field_00(input_, expected):
     assert deceased_str == expected
 
 
+parse_multiple_scenarios = {
+    'traffic-fatality-50-3': {
+                Fields.FIRST_NAME: "Aamna",
+                Fields.LAST_NAME: "Najam",
+                Fields.ETHNICITY: "Asian",
+                Fields.GENDER: "female",
+                Fields.DOB: datetime.date(1992, 1, 26)
+            }
+    }
+
+@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_multiple_scenarios.items()])
+def test_multiple_deceased(filename, expected):
+    page_text = load_test_page(filename)
+    content_parser = parsing.parse_page(page_text, 'fake_url')
+    _ = next(content_parser)
+    second = next(content_parser)
+    assert second == expected
+
 @pytest.mark.parametrize('input_,expected', (
     (
         {
