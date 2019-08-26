@@ -166,16 +166,11 @@ def test_parse_twitter_title_00(input_, expected):
             'Date': datetime.date(2018, 12, 30),
             'Time': datetime.time(2, 24),
             'Location': '1400 E. Highway 71 eastbound',
-            'DOB': datetime.date(1980, 2, 9),
             'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
             'and came to a stop north of the roadway.',
-            'Gender': 'male',
-            'Ethnicity': 'White',
-            'Last Name': 'Sabillon-Garcia',
-            'First Name': 'Corbin',
-            'Age': 38,
+            'Deceased': 'Corbin Sabillon-Garcia, White male, DOB 02/09/80'
         },
     ),
     (None, {}),
@@ -183,8 +178,6 @@ def test_parse_twitter_title_00(input_, expected):
 def test_parse_twitter_description_00(input_, expected):
     """Ensure the Twitter description gets parsed correctly."""
     actual = parsing.parse_twitter_description(input_)
-    if 'Deceased' in actual:
-        del actual['Deceased']
     assert actual == expected
 
 
@@ -201,7 +194,6 @@ def test_parse_twitter_description_02():
     """Ensure a DOB recognized as a field can be parsed."""
     actual = parsing.parse_twitter_description(mock_data.twitter_description_02)
     expected = {
-        'Age': 57,
         'Case': '18-160882',
         'DOB': datetime.date(1961, 1, 22),
         'Date': datetime.date(2018, 1, 16),
@@ -223,11 +215,11 @@ def test_parse_twitter_description_03():
 @pytest.mark.parametrize('page,start,end',
                          scenario_inputs(mock_data.note_fields_scenarios),
                          ids=scenario_ids(mock_data.note_fields_scenarios))
-def test_parse_notes_field(page, start, end):
+def test_parse_notes(page, start, end):
     """Ensure Notes field are parsed correctly."""
     soup = parsing.to_soup(page)
-    deceased_tag_p, deceased_field_str = parsing.parse_deceased_field(soup)
-    notes = parsing.notes_from_element(deceased_tag_p, deceased_field_str)
+    deceased_field_str = parsing.parse_deceased_field(soup)
+    notes = parsing.notes_from_element(soup, deceased_field_str)
     assert notes.startswith(start)
     assert notes.endswith(end)
 
@@ -515,7 +507,7 @@ def test_parse_page_00(filename, expected):
        Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = parsing.parse_page(page, fake.uri())
+    actual = next(parsing.parse_page(page, fake.uri()))
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
@@ -530,7 +522,7 @@ def test_parse_page_get_location(filename, expected):
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
     actual = parsing.parse_page(page, fake.uri())
-    assert actual['Location'] == expected
+    assert next(actual)['Location'] == expected
 
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_scenarios.items()])

@@ -46,11 +46,6 @@ def from_date(date):
     return parse_date(date, datetime.date.min, settings={'PREFER_DAY_OF_MONTH': 'first'})
 
 
-def parse_time(time):
-    dt = dateparser.parse(time)
-    return None if not dt else dt.time()
-
-
 def to_date(date):
     """
     Parse the date from a human readable format, with options for the to date.
@@ -90,6 +85,19 @@ def parse_date(date, default=None, settings=None):
         if default:
             return default
         raise ValueError(f'No default value for unparseable date: {date}')
+
+
+def parse_time(time):
+    """
+    Parse the time from a human readable format.
+
+    :param str time: time
+    :return: a time object representing the time.
+    :rtype: datetime.time
+    """
+
+    dt = dateparser.parse(time)
+    return None if not dt else dt.time()
 
 
 def is_between(date, from_=None, to=None):

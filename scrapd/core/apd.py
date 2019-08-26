@@ -139,15 +139,18 @@ async def fetch_and_parse(session, url):
         raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
-    d = parsing.parse_page(page, url)
-    if not d:
+    deceased_people = parsing.parse_page(page, url)
+    entries = []
+
+    for d in deceased_people:
+        # Add the link.
+        d[Fields.LINK] = url
+        entries.append(d)
+
+    if not entries:
         raise ValueError(f'No data could be extracted from the page {url}.')
 
-    # Add the link.
-    d[Fields.LINK] = url
-
-    # Return the result.
-    return d
+    return entries
 
 
 async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
@@ -194,7 +197,7 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
                 )(session, link) for link in links
             ]
             page_res = await asyncio.gather(*tasks)
-
+            page_res = [person for task in tasks for person in task]
             # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
                 entries_in_time_range = [

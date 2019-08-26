@@ -69,19 +69,29 @@ def parse_page(page, url):
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
     page_d, err = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
+    person_d, person_err = person.common_fatality_parsing(deceased=twitter_d.get(Fields.DECEASED)
+                                                          or page_d.get(Fields.DECEASED),
+                                                          birth_date=twitter_d.get(Fields.DOB)
+                                                          or page_d.get(Fields.DOB),
+                                                          collision_date=twitter_d.get(Fields.DATE)
+                                                          or page_d.get(Fields.DATE))
+    err = err + person_err
+
     if err:
         logger.debug(f'Fatality report {url} was not parsed correctly:\n\t * ' + '\n\t * '.join(err))
 
     # Merge the results, from right to left.
     # (i.e. the rightmost object will override the object just before it, etc.)
-    d = {**page_d, **twitter_d}
+    d = {**page_d, **twitter_d, **person_d}
 
     # We needed the deceased field to be in the return value of parse_page_content for testing.
     # But now we can delete it.
     if d.get('Deceased'):
         del d['Deceased']
 
-    return d
+    d = sanitize_fatality_entity(d)
+
+    yield d
 
 
 def to_soup(html):
@@ -183,9 +193,25 @@ def parse_page_content(detail_page, notes_parsed=False):
         else:
             parsing_errors.append("could not retrieve the notes information")
 
-    r, err = person.common_fatality_parsing(d)
-    r = sanitize_fatality_entity(r)
-    return r, parsing_errors + err
+    return d, parsing_errors
+
+
+def split_twitter_deceased_field(deceased):
+    """
+    Split the Twitter Deceased field to create a Notes section even if
+    there is no label for Notes.
+
+    :param str deceased:
+        the Twitter Deceased field
+
+    :return: Deceased and Notes fields
+    :rtype: str, str
+    """
+    notes = ''
+    if "The preliminary" in deceased:
+        notes = "The preliminary" + deceased.split("The preliminary")[1]
+        deceased = deceased.split("The preliminary")[0].strip()
+    return deceased, notes.strip()
 
 
 def parse_twitter_description(twitter_description):
@@ -235,9 +261,11 @@ def parse_twitter_description(twitter_description):
     if tmp_dob:
         d[Fields.DOB] = date_utils.parse_date(tmp_dob.split()[0])
 
-    r, _ = person.common_fatality_parsing(d)
-    r = sanitize_fatality_entity(r)
-    return r
+    if d.get(Fields.DECEASED) and not d.get(Fields.NOTES):
+        d[Fields.DECEASED], notes = split_twitter_deceased_field(d[Fields.DECEASED])
+        if notes:
+            d[Fields.NOTES] = notes
+    return d
 
 
 def parse_twitter_fields(page):

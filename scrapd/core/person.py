@@ -6,17 +6,19 @@ from scrapd.core.constant import Fields
 from scrapd.core import date_utils
 
 
-def common_fatality_parsing(d):
+def common_fatality_parsing(deceased, birth_date=None, collision_date=None):
     """
     Perform parsing common to Twitter descriptions and page content.
 
-    Ensures that the values are all strings and removes the 'Deceased' field which does not contain
-    relevant information anymore.
+    :param str deceased: the text describing the deceased person
+    :param datetime.date birth_date: the date of the person's birth
+    :param datetime.date collision_date:
+        the date of the fatal collision (even if the person died later)
 
-    :param dict d: the fatality to finish parsing
-    :return: A dictionary containing the details information about the fatality with sanitized entries.
+    :return: A dictionary containing the details information about the fatality.
     :rtype: dict, list
     """
+    d = {}
     parsing_errors = []
 
     # Extracting other fields from 'Deceased' field.
