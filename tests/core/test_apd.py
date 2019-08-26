@@ -408,7 +408,7 @@ def test_process_deceased_field_00(deceased, expected):
 ))
 def test_parse_name(name, expected):
     """Ensure parser finds the first and last name given the full name."""
-    parsed = parsing.parse_name(name)
+    parsed = person.parse_name(name)
     assert parsed.get("first") == expected["first"]
     assert parsed.get("last") == expected["last"]
 

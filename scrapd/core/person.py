@@ -68,13 +68,11 @@ def process_deceased_field(deceased_field):
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
-    if isinstance(deceased_field, list):
-        deceased_field = ' '.join(deceased_field)
 
     # Try to parse the deceased fields when the fields are comma separated.
     try:
         return parse_comma_delimited_deceased_field(deceased_field)
-    except ValueError:
+    except Exception:
         pass
 
     # Try to parse the deceased fields when the fields are pipe separated.

@@ -1,7 +1,5 @@
 """Parsing functions for Austin Police Department bulletins about fatal collisions."""
 
-import calendar
-import re
 import unicodedata
 
 import bs4
@@ -11,28 +9,6 @@ from scrapd.core import date_utils
 from scrapd.core import person
 from scrapd.core import regex
 from scrapd.core.constant import Fields
-
-
-def dob_search(split_deceased_field):
-    """
-    Search for the DOB in a deceased field.
-
-    :param list split_deceased_field: a list representing the deceased field
-    :return: the DOB index within the split deceased field.
-    :rtype: int
-    """
-    dob_index = -1
-    dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
-    while dob_index < 0 and dob_tokens:
-        dob_token = dob_tokens.pop()
-        try:
-            dob_index = split_deceased_field.index(dob_token)
-        except ValueError:
-            pass
-        else:
-            break
-
-    return dob_index
 
 
 def get_deceased_tag(soup):
@@ -105,27 +81,6 @@ def parse_page(page, url):
     if d.get('Deceased'):
         del d['Deceased']
 
-    return d
-
-
-def parse_name(name):
-    """
-    Parse the victim's name.
-
-    :param list name: a list reprenting the deceased person's full name split on space characters
-    :return: a dictionary representing just the victim's first and last name
-    :rtype: dict
-    """
-    GENERATIONAL_TITLES = ['jr', 'jr.', 'sr', 'sr.']
-    d = {}
-    try:
-        for i in range(1, len(name)):
-            d["last"] = name[-i].replace(',', '')
-            if d["last"].lower() not in GENERATIONAL_TITLES:
-                break
-        d["first"] = name[0].replace(',', '')
-    except (IndexError, TypeError):
-        pass
     return d
 
 
@@ -258,14 +213,14 @@ def parse_twitter_description(twitter_description):
             continue
         if not current_field:
             continue
-        d.setdefault(current_field, []).append(word)
+        if d.get(current_field):
+            d[current_field] = d[current_field] + f" {word}"
+        else:
+            d[current_field] = word
 
     # Parse the `Date` field.
     fatality_date = d.get(Fields.DATE)
     if fatality_date:
-        # Ensure it is a string.
-        if isinstance(fatality_date, list):
-            fatality_date = ' '.join(fatality_date)
 
         # Turn it into a date object.
         d[Fields.DATE] = date_utils.parse_date(fatality_date)
@@ -273,15 +228,12 @@ def parse_twitter_description(twitter_description):
     # Convert the time to a time object.
     fatality_time = d.get(Fields.TIME)
     if fatality_time:
-        # Ensure it is a string.
-        if isinstance(fatality_time, list):
-            fatality_time = ' '.join(fatality_time)
         d[Fields.TIME] = date_utils.parse_time(fatality_time)
 
     # Handle special case where Date of birth is a token `DOB:`.
     tmp_dob = d.get(Fields.DOB)
-    if tmp_dob and isinstance(tmp_dob, list):
-        d[Fields.DOB] = date_utils.parse_date(tmp_dob[0])
+    if tmp_dob:
+        d[Fields.DOB] = date_utils.parse_date(tmp_dob.split()[0])
 
     r, _ = person.common_fatality_parsing(d)
     r = sanitize_fatality_entity(r)
