@@ -70,7 +70,7 @@ def parse_page(page, url):
     twitter_d = parse_twitter_fields(page)
     page_d, err = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
 
-    deceased_people = person.parse_people(deceased=twitter_d.get(Fields.DECEASED) or page_d.get(Fields.DECEASED),
+    deceased_people = person.parse_people(deceased=page_d.get(Fields.DECEASED) or twitter_d.get(Fields.DECEASED),
                                           birth_date=twitter_d.get(Fields.DOB) or page_d.get(Fields.DOB),
                                           collision_date=twitter_d.get(Fields.DATE) or page_d.get(Fields.DATE))
 
@@ -221,8 +221,10 @@ def parse_twitter_description(twitter_description):
     """
     Parse the Twitter description metadata.
 
-    The Twitter description contains all the information that we need, and even though it is still unstructured data,
-    it is easier to parse than the data from the detail page.
+    The Twitter description sometimes contains all the information that we need,
+    but sometimes doesn't have the deceased person's name.
+    Even though it is still unstructured data, it sometimes is easier
+    to parse than the data from the detail page.
 
     :param str twitter_description: Twitter description embedded in the fatality details page
     :return: A dictionary containing the details information about the fatality.
@@ -235,12 +237,21 @@ def parse_twitter_description(twitter_description):
     # Split the description to be able to parse it.
     current_field = None
     description_words = twitter_description.split()
+    expected_headings = {"Age", "Case", "Date", "Deceased", "DOB", "D.O.B.", "Location", "Time", "Notes"}
     for word in description_words:
-        # A word ending with a colon (':') is considered a field.
-        if word.endswith(':'):
-            current_field = word.replace(':', '')
-            continue
+        if current_field:
+            expected_headings.discard(current_field)
+        for heading in expected_headings:
+            if word.startswith(heading):
+                current_field = heading
+            if word == 'preliminary':
+                current_field = 'Notes'
+                word = 'The preliminary'
         if not current_field:
+            continue
+        if word.startswith(current_field):
+            continue
+        if word.endswith(":"):
             continue
         if d.get(current_field):
             d[current_field] = d[current_field] + f" {word}"

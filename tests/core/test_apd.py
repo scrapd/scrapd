@@ -50,6 +50,7 @@ parse_twitter_fields_scenarios = {
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
         Fields.DATE: datetime.date(2018, 12, 30),
+        Fields.DOB: datetime.date(1980, 2, 9),
         Fields.LOCATION: '1400 E. Highway 71 eastbound',
         Fields.NOTES: 'The preliminary investigation shows that a 2003 Ford F150 was '
         'traveling northbound on the US Highway 183 northbound ramp to E. '
@@ -158,13 +159,14 @@ def test_parse_twitter_title_00(input_, expected):
         {
             'Case': '18-3640187',
             'Date': datetime.date(2018, 12, 30),
+            'DOB': datetime.date(1980, 2, 9),
             'Time': datetime.time(2, 24),
             'Location': '1400 E. Highway 71 eastbound',
             'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
             'and came to a stop north of the roadway.',
-            'Deceased': 'Corbin Sabillon-Garcia, White male, DOB 02/09/80'
+            'Deceased': 'Corbin Sabillon-Garcia, White male,'
         },
     ),
     (None, {}),
@@ -244,7 +246,7 @@ def test_parse_notes_field(page, start, end):
 
 
 @pytest.mark.parametrize('page,start,end', (
-    ('traffic-fatality-50-3', '1:  Ced', '| 01/26/1992'),
+    ('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'),
 ))
 def test_extract_deceased_field_twitter(page, start, end):
     page_text = load_test_page(page)
