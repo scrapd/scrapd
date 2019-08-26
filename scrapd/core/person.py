@@ -8,7 +8,7 @@ from scrapd.core import date_utils
 
 def common_fatality_parsing(deceased, birth_date=None, collision_date=None):
     """
-    Perform parsing common to Twitter descriptions and page content.
+    Perform parsing about a person who died in a collision.
 
     :param str deceased: the text describing the deceased person
     :param datetime.date birth_date: the date of the person's birth
@@ -22,15 +22,16 @@ def common_fatality_parsing(deceased, birth_date=None, collision_date=None):
     parsing_errors = []
 
     # Extracting other fields from 'Deceased' field.
-    if d.get(Fields.DECEASED):
+    if deceased:
         try:
-            d.update(process_deceased_field(d.get(Fields.DECEASED)))
+            d.update(process_deceased_field(deceased))
         except ValueError as e:
             parsing_errors.append(str(e))
 
     # Compute the victim's age.
-    if d.get(Fields.DATE) and d.get(Fields.DOB):
-        d[Fields.AGE] = date_utils.compute_age(d.get(Fields.DATE), d.get(Fields.DOB))
+    birth_date = birth_date or d[Fields.DOB]
+    if collision_date and birth_date:
+        d[Fields.AGE] = date_utils.compute_age(collision_date, birth_date)
 
     if d.get(Fields.AGE, -1) < 0:
         parsing_errors.append(f'age is invalid: {d.get(Fields.AGE)}')

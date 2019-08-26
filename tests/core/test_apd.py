@@ -219,7 +219,7 @@ def test_parse_notes(page, start, end):
     """Ensure Notes field are parsed correctly."""
     soup = parsing.to_soup(page)
     deceased_field_str = parsing.parse_deceased_field(soup)
-    notes = parsing.notes_from_element(soup, deceased_field_str)
+    notes = parsing.parse_notes_field(soup, deceased_field_str)
     assert notes.startswith(start)
     assert notes.endswith(end)
 
@@ -459,7 +459,7 @@ def test_parse_page_content_00(filename, expected):
            Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual, err = parsing.parse_page_content(page)
+    actual = next(parsing.parse_page(page, 'fake_url'))
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     if 'Deceased' in actual and 'Deceased' not in expected:

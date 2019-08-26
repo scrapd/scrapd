@@ -69,12 +69,9 @@ def parse_page(page, url):
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
     page_d, err = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
-    person_d, person_err = person.common_fatality_parsing(deceased=twitter_d.get(Fields.DECEASED)
-                                                          or page_d.get(Fields.DECEASED),
-                                                          birth_date=twitter_d.get(Fields.DOB)
-                                                          or page_d.get(Fields.DOB),
-                                                          collision_date=twitter_d.get(Fields.DATE)
-                                                          or page_d.get(Fields.DATE))
+    person_d, person_err = person.parse_person(deceased=twitter_d.get(Fields.DECEASED) or page_d.get(Fields.DECEASED),
+                                               birth_date=twitter_d.get(Fields.DOB) or page_d.get(Fields.DOB),
+                                               collision_date=twitter_d.get(Fields.DATE) or page_d.get(Fields.DATE))
     err = err + person_err
 
     if err:
