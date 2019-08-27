@@ -797,7 +797,8 @@ parse_multiple_scenarios = {
     'traffic-fatality-50-3': {
                 Fields.GENDER: "female",
                 Fields.DOB: datetime.date(1992, 1, 26)
-            }
+            },
+    'traffic-fatality-15-4': {Fields.DOB: datetime.date(1991, 11, 13)}
     }
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_multiple_scenarios.items()])

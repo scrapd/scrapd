@@ -1,5 +1,6 @@
 """Parsing functions for Austin Police Department bulletins about fatal collisions."""
 
+import re
 import unicodedata
 
 import bs4
@@ -130,6 +131,29 @@ def parse_deceased_tag(deceased_tag_p):
     return deceased_field_str
 
 
+def split_on_dates(entry):
+    """
+    Use dates to determine if a Deceased field refers to multiple people.
+
+    If more than one date appears, the entry is split into multiple
+    Deceased fields, each ending with a date, which is presumably the
+    date of birth.
+
+    :param entry:
+        a candidate Deceased field
+
+    :return: one or more Deceased fields
+    :rtype list:
+    """
+    date_regex = r'\d\/\d{1,2}\/\d{4}'
+    date_split_regex = r'(?<=\d\/\d{2}\/\d{4})\s'
+
+    date_occurences = len(re.findall(date_regex, entry))
+    if date_occurences > 1:
+        return re.split(date_split_regex, entry)[:date_occurences]
+    return [entry]
+
+
 def parse_deceased_field(soup):
     """
     Extract content from deceased field on the fatality page.
@@ -142,7 +166,8 @@ def parse_deceased_field(soup):
     deceased_tag_p = get_deceased_tag(soup)
 
     deceased_fields = [parse_deceased_tag(tag) for tag in deceased_tag_p]
-    return deceased_fields
+    flattened_list = [deceased for entry in deceased_fields for deceased in split_on_dates(entry)]
+    return flattened_list
 
 
 def parse_page_content(detail_page, notes_parsed=False):

@@ -10,6 +10,17 @@ def parse_people(people, birth_date=None, collision_date=None):
     """
     Parse Deceased field that may be about more than one person who died in a collision.
 
+    :param list people:
+        list of strings each corresponding to an unparsed Deceased field
+
+    :param datetime.date birth_date:
+        a DOB that may have been discovered in a Deceased field
+
+    :param datetime.date collision_date:
+        the text of a Date field
+
+    :rtype: generator
+    :returns: generator of one or more dicts representing people
     """
     yield parse_person(people[0], birth_date=birth_date, collision_date=collision_date)
     if len(people) > 1:
