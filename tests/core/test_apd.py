@@ -166,7 +166,7 @@ def test_parse_twitter_title_00(input_, expected):
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
             'and came to a stop north of the roadway.',
-            'Deceased': 'Corbin Sabillon-Garcia, White male,'
+            'Deceased': ['Corbin Sabillon-Garcia, White male,']
         },
     ),
     (None, {}),
@@ -214,8 +214,8 @@ def test_parse_twitter_description_03():
 def test_parse_notes(page, start, end):
     """Ensure Notes field are parsed correctly."""
     soup = parsing.to_soup(page)
-    deceased_field_str = parsing.parse_deceased_field(soup)
-    notes = parsing.parse_notes_field(soup, deceased_field_str)
+    deceased_field_list = parsing.parse_deceased_field(soup)
+    notes = parsing.parse_notes_field(soup, deceased_field_list[-1])
     assert notes.startswith(start)
     assert notes.endswith(end)
 
@@ -252,19 +252,20 @@ def test_extract_deceased_field_twitter(page, start, end):
     page_text = load_test_page(page)
     parsed_content = parsing.parse_twitter_fields(page_text)
     deceased = parsed_content[Fields.DECEASED]
-    assert deceased.startswith(start)
-    assert deceased.endswith(end)
+    assert deceased[0].startswith(start)
+    assert deceased[-1].endswith(end)
 
 
 @pytest.mark.parametrize('page,start,end', (
     ('traffic-fatality-15-4', 'Garre', '13/1991'),
+    ('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'),
 ))
 def test_extract_deceased_field_from_page(page, start, end):
     page_text = load_test_page(page)
     parsed_content, _ = parsing.parse_page_content(page_text)
     deceased = parsed_content[Fields.DECEASED]
-    assert deceased.startswith(start)
-    assert deceased.endswith(end)
+    assert deceased[0].startswith(start)
+    assert deceased[-1].endswith(end)
 
 
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
@@ -721,15 +722,15 @@ def test_extract_twitter_description_meta_00(input_, expected):
 
 @pytest.mark.parametrize('input_,expected', (
     (pytest.param('<p>	<strong>Deceased: </strong> Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994</p>',
-                  'Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994',
+                  ['Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994'],
                   id="p, strong, pipes")),
     (pytest.param('<p>	<strong>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70</p>',
-                  'Cecil Wade Walker, White male, D.O.B. 3-7-70',
+                  ['Cecil Wade Walker, White male, D.O.B. 3-7-70'],
                   id="p, strong, commas")), (pytest.param(
                       '<p style="margin-left:.25in;">'
                       '<strong>Deceased:&nbsp;</strong> Halbert Glen Hendricks | Black male | 9-24-78</p>',
-                      'Halbert Glen Hendricks | Black male | 9-24-78',
-                      id="p with style, strong, pipes")), (pytest.param('', '', id="Deceased tag not found")),
+                      ['Halbert Glen Hendricks | Black male | 9-24-78'],
+                      id="p with style, strong, pipes")), (pytest.param('', [], id="Deceased tag not found")),
     (pytest.param(
         '<p>	<strong>Deceased:&nbsp; </strong>Hispanic male, 19 years of age<br>'
         '&nbsp;<br>'
@@ -746,7 +747,7 @@ def test_extract_twitter_description_meta_00(input_, expected):
         '<a href="https://austintexas.us5.list-manage.com/track/click?u=1861810ce1dca1a4c1673747c&amp;'
         'id=26ced4f341&amp;e=bcdeacc118">iPhone</a> and <a href="https://austintexas.us5.list-manage.com/track/click'
         '?u=1861810ce1dca1a4c1673747c&amp;id=3abaf7d912&amp;e=bcdeacc118">Android</a>.&nbsp;</p>',
-        'Hispanic male, 19 years of age',
+        ['Hispanic male, 19 years of age'],
         id='XX years of age of age format + included in notes paragraph')),
     (pytest.param(
         '<p>	<strong><span style="font-family: &quot;Verdana&quot;,sans-serif;">Deceased:</span></strong>&nbsp; '
@@ -773,16 +774,16 @@ def test_extract_twitter_description_meta_00(input_, expected):
         '&nbsp;<br><strong><i><span style="font-family: &quot;Verdana&quot;,sans-serif;">These statements are based '
         'on the initial assessment of the fatal crash and investigation is still pending. Fatality information may '
         'change.</span></i></strong></p>',
-        'Ann Bottenfield-Seago, White female, DOB 02/15/1960',
+        ['Ann Bottenfield-Seago, White female, DOB 02/15/1960'],
         id='included in notes paragraph',
     )), (pytest.param(
         '<p>	<strong>Deceased:   </strong>David John Medrano,<strong> </strong>Hispanic male, D.O.B. 6-9-70</p>',
-        'David John Medrano, Hispanic male, D.O.B. 6-9-70',
+        ['David John Medrano, Hispanic male, D.O.B. 6-9-70'],
         id='stray strong in the middle',
     )), (pytest.param(
         '<p>	<strong>Deceased 1:&nbsp; </strong>Cedric Benson | Black male | 12/28/1982</p>'
         '<p>	<strong>Deceased 2:&nbsp; </strong>Aamna Najam | Asian female | 01/26/1992</p>',
-        'Cedric Benson | Black male | 12/28/1982',
+        ['Cedric Benson | Black male | 12/28/1982', 'Aamna Najam | Asian female | 01/26/1992'],
         id='double deceased',
     ))))
 def test_parse_deceased_field_00(input_, expected):
@@ -794,9 +795,6 @@ def test_parse_deceased_field_00(input_, expected):
 
 parse_multiple_scenarios = {
     'traffic-fatality-50-3': {
-                Fields.FIRST_NAME: "Aamna",
-                Fields.LAST_NAME: "Najam",
-                Fields.ETHNICITY: "Asian",
                 Fields.GENDER: "female",
                 Fields.DOB: datetime.date(1992, 1, 26)
             }
@@ -808,7 +806,8 @@ def test_multiple_deceased(filename, expected):
     content_parser = parsing.parse_page(page_text, 'fake_url')
     _ = next(content_parser)
     second = next(content_parser)
-    assert second == expected
+    for key in expected:
+        assert second[key] == expected[key]
 
 @pytest.mark.parametrize('input_,expected', (
     (

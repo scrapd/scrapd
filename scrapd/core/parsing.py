@@ -24,7 +24,13 @@ def get_deceased_tag(soup):
     def starts_with_deceased(tag):
         return tag.get_text().strip().startswith("Deceased")
 
-    return soup.find(starts_with_deceased)
+    answers = []
+    first = soup.find(starts_with_deceased)
+    if first:
+        answers = [first]
+        for next_tag in first.find_next_siblings(starts_with_deceased):
+            answers.append(next_tag)
+    return answers
 
 
 def parse_notes_field(soup, deceased_field_str):
@@ -40,7 +46,7 @@ def parse_notes_field(soup, deceased_field_str):
     :return: notes from the Deceased field of the APD bulletin
     :rtype: str
     """
-    deceased = get_deceased_tag(soup)
+    deceased = get_deceased_tag(soup)[-1]
     if not deceased:
         return ''
     text = deceased.text
@@ -70,7 +76,7 @@ def parse_page(page, url):
     twitter_d = parse_twitter_fields(page)
     page_d, err = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
 
-    deceased_people = person.parse_people(deceased=page_d.get(Fields.DECEASED) or twitter_d.get(Fields.DECEASED),
+    deceased_people = person.parse_people(people=page_d.get(Fields.DECEASED) or twitter_d.get(Fields.DECEASED),
                                           birth_date=twitter_d.get(Fields.DOB) or page_d.get(Fields.DOB),
                                           collision_date=twitter_d.get(Fields.DATE) or page_d.get(Fields.DATE))
 
@@ -103,17 +109,7 @@ def to_soup(html):
     return soup
 
 
-def parse_deceased_field(soup):
-    """
-    Extract content from deceased field on the fatality page.
-
-    :param bs4.BeautifulSoup soup: the content of the bulletin page
-    :return:
-        the Deceased field as a string
-    :rtype: str
-    """
-    deceased_tag_p = get_deceased_tag(soup)
-
+def parse_deceased_tag(deceased_tag_p):
     try:
         deceased_text = deceased_tag_p.get_text()
         if len(deceased_text) < 100 and "preliminary" not in deceased_text:
@@ -132,6 +128,21 @@ def parse_deceased_field(soup):
     except AttributeError:
         return ''
     return deceased_field_str
+
+
+def parse_deceased_field(soup):
+    """
+    Extract content from deceased field on the fatality page.
+
+    :param bs4.BeautifulSoup soup: the content of the bulletin page
+    :return:
+        the Deceased field as a string
+    :rtype: str
+    """
+    deceased_tag_p = get_deceased_tag(soup)
+
+    deceased_fields = [parse_deceased_tag(tag) for tag in deceased_tag_p]
+    return deceased_fields
 
 
 def parse_page_content(detail_page, notes_parsed=False):
@@ -182,15 +193,15 @@ def parse_page_content(detail_page, notes_parsed=False):
         parsing_errors.append("could not retrieve the location")
 
     # Parse the `Deceased` field.
-    deceased_field_str = parse_deceased_field(soup)
-    if deceased_field_str:
-        d[Fields.DECEASED] = deceased_field_str
+    deceased_field_list = parse_deceased_field(soup)
+    if deceased_field_list:
+        d[Fields.DECEASED] = deceased_field_list
     else:
         parsing_errors.append("could not retrieve the deceased information")
 
     # Fill in Notes from Details page if not in twitter description.
-    if not notes_parsed:
-        notes = parse_notes_field(soup, deceased_field_str)
+    if deceased_field_list and not notes_parsed:
+        notes = parse_notes_field(soup, d[Fields.DECEASED][-1])
         if notes:
             d[Fields.NOTES] = notes
         else:
@@ -258,8 +269,11 @@ def parse_twitter_description(twitter_description):
         else:
             d[current_field] = word
 
-    if "Deceased" in twitter_description and "Deceased" not in d.keys():
-        d["Deceased"] = twitter_description.split("Deceased", maxsplit=1)[1].strip()
+    if d.get("Deceased"):
+        if "Deceased" in d["Deceased"]:
+            d["Deceased"] = d["Deceased"].split("Deceased")
+        else:
+            d["Deceased"] = [d["Deceased"]]
 
     # Parse the `Date` field.
     fatality_date = d.get(Fields.DATE)
@@ -279,7 +293,7 @@ def parse_twitter_description(twitter_description):
         d[Fields.DOB] = date_utils.parse_date(tmp_dob.split()[0])
 
     if d.get(Fields.DECEASED) and not d.get(Fields.NOTES):
-        d[Fields.DECEASED], notes = split_twitter_deceased_field(d[Fields.DECEASED])
+        d[Fields.DECEASED][-1], notes = split_twitter_deceased_field(d[Fields.DECEASED][-1])
         if notes:
             d[Fields.NOTES] = notes
     return d

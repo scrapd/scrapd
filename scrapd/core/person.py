@@ -6,20 +6,15 @@ from scrapd.core.constant import Fields
 from scrapd.core import date_utils
 
 
-def parse_people(deceased, birth_date=None, collision_date=None):
+def parse_people(people, birth_date=None, collision_date=None):
     """
     Parse Deceased field that may be about more than one person who died in a collision.
 
     """
-
-    if "Deceased" in deceased:
-        people = deceased.split("Deceased")
-        people = [person.lstrip(" :12345") for person in people]
-        for person in people:
-            yield parse_person(deceased, collision_date=collision_date)
-
-    else:
-        yield parse_person(deceased, birth_date=birth_date, collision_date=collision_date)
+    yield parse_person(people[0], birth_date=birth_date, collision_date=collision_date)
+    if len(people) > 1:
+        for person in people[1:]:
+            yield parse_person(person, collision_date=collision_date)
 
 
 def parse_person(deceased, birth_date=None, collision_date=None):
@@ -39,6 +34,7 @@ def parse_person(deceased, birth_date=None, collision_date=None):
 
     # Extracting other fields from 'Deceased' field.
     if deceased:
+        deceased = deceased.lstrip(" :1234567890")
         try:
             d.update(process_deceased_field(deceased))
         except ValueError as e:
