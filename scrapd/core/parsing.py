@@ -111,6 +111,15 @@ def to_soup(html):
 
 
 def parse_deceased_tag(deceased_tag_p):
+    """
+    Find the part of the relevant HTML tag with the text of a Deceased record.
+
+    :param bs4.tag deceased_tag_p: HTML tag starting with "Deceased"
+
+    :return: the part of the tag's text with Name, Ethnicity, and DOB.
+    :rtype str:
+    """
+
     try:
         deceased_text = deceased_tag_p.get_text()
         if len(deceased_text) < 100 and "preliminary" not in deceased_text:
@@ -237,8 +246,7 @@ def parse_page_content(detail_page, notes_parsed=False):
 
 def split_twitter_deceased_field(deceased):
     """
-    Split the Twitter Deceased field to create a Notes section even if
-    there is no label for Notes.
+    Split Notes out of Twitter Deceased field even if there is no Notes label.
 
     :param str deceased:
         the Twitter Deceased field

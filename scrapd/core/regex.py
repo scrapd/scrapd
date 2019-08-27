@@ -1,3 +1,5 @@
+"""Functions with regex patterns for parsing APD crash bulletins."""
+
 import re
 
 from dateparser.search import search_dates
