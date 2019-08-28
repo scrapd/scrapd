@@ -261,14 +261,9 @@ def split_twitter_deceased_field(deceased):
     return deceased, notes.strip()
 
 
-def parse_twitter_description(twitter_description):
+def twitter_description_to_dict(twitter_description):
     """
-    Parse the Twitter description metadata.
-
-    The Twitter description sometimes contains all the information that we need,
-    but sometimes doesn't have the deceased person's name.
-    Even though it is still unstructured data, it sometimes is easier
-    to parse than the data from the detail page.
+    Convert text of twitter_description field to a dict with string values.
 
     :param str twitter_description: Twitter description embedded in the fatality details page
     :return: A dictionary containing the details information about the fatality.
@@ -304,6 +299,24 @@ def parse_twitter_description(twitter_description):
             d["Deceased"] = d["Deceased"].split("Deceased")
         else:
             d["Deceased"] = [d["Deceased"]]
+
+    return d
+
+
+def parse_twitter_description(twitter_description):
+    """
+    Convert text of twitter_description field to a dict with list and datetime values.
+
+    The Twitter description sometimes contains all the information that we need,
+    but sometimes doesn't have the deceased person's name.
+    Even though it is still unstructured data, it sometimes is easier
+    to parse than the data from the detail page.
+
+    :param str twitter_description: Twitter description embedded in the fatality details page
+    :return: A dictionary containing the details information about the fatality.
+    :rtype: dict
+    """
+    d = twitter_description_to_dict(twitter_description)
 
     # Parse the `Date` field.
     fatality_date = d.get(Fields.DATE)

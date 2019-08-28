@@ -207,6 +207,7 @@ def test_parse_twitter_description_03():
     expected = {}
     assert actual == expected
 
+
 @pytest.mark.parametrize('input_,expected', (
     ("traffic-fatality-50-3", 2),
     ("traffic-fatality-73-2", 1),
@@ -220,6 +221,7 @@ def test_parse_twitter_description_number_deceased(input_, expected):
     d = parsing.parse_twitter_description(twitter_description)
     actual = len(d["Deceased"])
     assert actual == expected
+
 
 @pytest.mark.parametrize('page,start,end',
                          scenario_inputs(mock_data.note_fields_scenarios),
