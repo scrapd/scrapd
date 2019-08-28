@@ -242,23 +242,6 @@ def parse_page_content(detail_page, notes_parsed=False):
     return d, parsing_errors
 
 
-def split_twitter_deceased_field(deceased):
-    """
-    Split Notes out of Twitter Deceased field even if there is no Notes label.
-
-    :param str deceased:
-        the Twitter Deceased field
-
-    :return: Deceased and Notes fields
-    :rtype: str, str
-    """
-    notes = ''
-    if "The preliminary" in deceased:
-        notes = "The preliminary" + deceased.split("The preliminary")[1]
-        deceased = deceased.split("The preliminary")[0].strip()
-    return deceased, notes.strip()
-
-
 def twitter_description_to_dict(twitter_description):
     """
     Convert text of twitter_description field to a dict with string values.
@@ -333,10 +316,6 @@ def parse_twitter_description(twitter_description):
     if tmp_dob:
         d[Fields.DOB] = date_utils.parse_date(tmp_dob.split()[0])
 
-    if d.get(Fields.DECEASED) and not d.get(Fields.NOTES):
-        d[Fields.DECEASED][-1], notes = split_twitter_deceased_field(d[Fields.DECEASED][-1])
-        if notes:
-            d[Fields.NOTES] = notes
     return d
 
 
