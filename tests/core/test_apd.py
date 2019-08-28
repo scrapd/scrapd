@@ -628,6 +628,19 @@ async def test_date_filtering_02(fake_details, fake_news):
     assert len(data) == 1
     assert page_count == 2
 
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
+@asynctest.patch(
+    "scrapd.core.apd.fetch_detail_page",
+    side_effect=[load_test_page('traffic-fatality-50-3')] * 15)
+@pytest.mark.asyncio
+async def test_both_fatalities_from_one_incident(fake_details, fake_news):
+    data, page_count = await apd.async_retrieve(pages=-1, from_="2019-08-16", to="2019-08-18", attempts=1, backoff=1)
+    assert isinstance(data, list)
+    assert len(data) == 2
+    assert data[0]["Age"] == 36
+    assert data[1]["Age"] == 27
+
 
 @pytest.mark.asyncio
 async def test_fetch_text_00():

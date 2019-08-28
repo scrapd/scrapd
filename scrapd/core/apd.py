@@ -142,9 +142,13 @@ async def fetch_and_parse(session, url):
     deceased_people = parsing.parse_page(page, url)
     entries = []
 
+    person_index = 0
     for d in deceased_people:
         # Add the link.
         d[Fields.LINK] = url
+        # Add a unique ID
+        d[Fields.ID] = f"{d[Fields.CASE]}-{person_index}"
+        person_index += 1
         entries.append(d)
 
     if not entries:
@@ -227,11 +231,10 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
                     logger.debug(f'There are no data within the specified time range on page {page}.')
                     break
 
-                # Store the results if the case number is new.
-                res.update({
-                    entry.get(Fields.CASE): entry
-                    for entry in entries_in_time_range if entry.get(Fields.CASE) not in res
-                })
+                # Store the results if the ID number is new.
+                res.update(
+                    {entry.get(Fields.ID): entry
+                     for entry in entries_in_time_range if entry.get(Fields.ID) not in res})
 
             # Stop if there is no further pages.
             if not has_next(news_page) or page >= pages > 0:
