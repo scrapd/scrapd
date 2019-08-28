@@ -283,17 +283,14 @@ def parse_twitter_description(twitter_description):
     description_words = twitter_description.split()
     expected_headings = {"Age", "Case", "Date", "Deceased", "DOB", "D.O.B.", "Location", "Time", "Notes"}
     for word in description_words:
-        if current_field:
-            expected_headings.discard(current_field)
-        for heading in expected_headings:
-            if word.startswith(heading):
-                current_field = heading
-            if word == 'preliminary':
-                current_field = 'Notes'
-                word = 'The preliminary'
-        if not current_field:
+        if word.strip(":") in expected_headings:
+            current_field = word.strip(":")
+            expected_headings.remove(word.strip(":"))
             continue
-        if word.startswith(current_field):
+        if word == 'preliminary':
+            current_field = 'Notes'
+            word = 'The preliminary'
+        if not current_field:
             continue
         if word.endswith(":"):
             continue

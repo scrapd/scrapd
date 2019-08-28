@@ -199,7 +199,7 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
             page_res = await asyncio.gather(*tasks)
 
             if page_res:
-                page_res = [person for task in tasks for person in task]
+                page_res = [person for item in page_res for person in item]
                 # If the page contains fatalities, ensure all of them happened within the specified time range.
                 entries_in_time_range = [
                     entry for entry in page_res if date_utils.is_between(entry[Fields.DATE], from_date, to_date)

@@ -207,6 +207,19 @@ def test_parse_twitter_description_03():
     expected = {}
     assert actual == expected
 
+@pytest.mark.parametrize('input_,expected', (
+    ("traffic-fatality-50-3", 2),
+    ("traffic-fatality-73-2", 1),
+))
+def test_parse_twitter_description_number_deceased(input_, expected):
+    """
+    Test that the parser finds the right number of deceased people.
+    """
+    page_text = load_test_page(input_)
+    twitter_description = regex.match_twitter_description_meta(page_text)
+    d = parsing.parse_twitter_description(twitter_description)
+    actual = len(d["Deceased"])
+    assert actual == expected
 
 @pytest.mark.parametrize('page,start,end',
                          scenario_inputs(mock_data.note_fields_scenarios),
@@ -224,7 +237,8 @@ def test_parse_notes(page, start, end):
     ('traffic-fatality-2-3', 'The preliminary investigation shows that the grey',
      'No charges are expected to be filed.'),
     ('traffic-fatality-4-6', 'The preliminary investigation shows that a black, Ford', 'scene at 01:48 a.m.'),
-    ('traffic-fatality-15-4', 'The preliminary investigation indicated that Garrett', 'seatbelts. No charges are expected to be filed.'),
+    ('traffic-fatality-15-4', 'The preliminary investigation indicated that Garrett',
+     'seatbelts. No charges are expected to be filed.'),
     ('traffic-fatality-16-4', 'The preliminary investigation revealed that the 2017', 'injuries on April 4, 2019.'),
     ('traffic-fatality-17-4', 'The preliminary investigation revealed that the 2010', 'at the time of the crash.'),
     ('traffic-fatality-20-4', 'The preliminary investigation revealed that a 2016',
@@ -245,9 +259,7 @@ def test_parse_notes_field(page, start, end):
     assert notes.endswith(end)
 
 
-@pytest.mark.parametrize('page,start,end', (
-    ('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'),
-))
+@pytest.mark.parametrize('page,start,end', (('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'), ))
 def test_extract_deceased_field_twitter(page, start, end):
     page_text = load_test_page(page)
     parsed_content = parsing.parse_twitter_fields(page_text)
@@ -535,6 +547,8 @@ def test_parse_page_00(filename, expected):
 parse_location_scenarios = {
     'traffic-fatality-50-3': '4500 FM 2222/Mount Bonnell Road',
 }
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_location_scenarios.items()])
 def test_parse_page_get_location(filename, expected):
     """Ensure location information is properly extracted from the page."""
@@ -795,11 +809,14 @@ def test_parse_deceased_field_00(input_, expected):
 
 parse_multiple_scenarios = {
     'traffic-fatality-50-3': {
-                Fields.GENDER: "female",
-                Fields.DOB: datetime.date(1992, 1, 26)
-            },
-    'traffic-fatality-15-4': {Fields.DOB: datetime.date(1991, 11, 13)}
+        Fields.GENDER: "female",
+        Fields.DOB: datetime.date(1992, 1, 26)
+    },
+    'traffic-fatality-15-4': {
+        Fields.DOB: datetime.date(1991, 11, 13)
     }
+}
+
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_multiple_scenarios.items()])
 def test_multiple_deceased(filename, expected):
@@ -809,6 +826,7 @@ def test_multiple_deceased(filename, expected):
     second = next(content_parser)
     for key in expected:
         assert second[key] == expected[key]
+
 
 @pytest.mark.parametrize('input_,expected', (
     (
