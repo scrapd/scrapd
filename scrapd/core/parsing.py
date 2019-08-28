@@ -118,23 +118,18 @@ def parse_deceased_tag(deceased_tag_p):
     :rtype str:
     """
 
-    try:
-        deceased_text = deceased_tag_p.get_text()
-        if len(deceased_text) < 100 and "preliminary" not in deceased_text:
-            return deceased_text.split(":")[1].strip()
-    except AttributeError:
-        pass
+    deceased_text = deceased_tag_p.get_text()
+    if len(deceased_text) < 100 and "preliminary" not in deceased_text:
+        return re.split(r'Deceased(?: \d)?:', deceased_text, maxsplit=1)[1].strip()
 
     deceased_field_str = ''
-    try:
-        for passage in deceased_tag_p.find("strong").next_siblings:
-            if not passage.string:
-                continue
-            if "preliminary" in passage:
-                return deceased_field_str.strip()
-            deceased_field_str += passage.string
-    except AttributeError:
-        return ''
+    for passage in deceased_tag_p.find("strong").next_siblings:
+        if not passage.string:
+            continue
+        if "preliminary" in passage:
+            return deceased_field_str.strip()
+        deceased_field_str += passage.string
+
     return deceased_field_str
 
 
