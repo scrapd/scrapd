@@ -127,10 +127,10 @@ def parse_deceased_tag(deceased_tag_p):
         if not passage.string:
             continue
         if "preliminary" in passage:
-            return deceased_field_str.strip()
+            break
         deceased_field_str += passage.string
 
-    return deceased_field_str
+    return deceased_field_str.strip()
 
 
 def split_on_dates(entry):
