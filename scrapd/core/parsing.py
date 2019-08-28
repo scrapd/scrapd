@@ -119,11 +119,14 @@ def parse_deceased_tag(deceased_tag_p):
     """
 
     deceased_text = deceased_tag_p.get_text()
-    if len(deceased_text) < 100 and "preliminary" not in deceased_text:
+    if 20 < len(deceased_text) < 100 and "preliminary" not in deceased_text:
         return re.split(r'Deceased(?: \d)?:', deceased_text, maxsplit=1)[1].strip()
 
     deceased_field_str = ''
-    for passage in deceased_tag_p.find("strong").next_siblings:
+    starting_tag = deceased_tag_p.find("strong")
+    if not starting_tag:
+        starting_tag = deceased_tag_p
+    for passage in starting_tag.next_siblings:
         if not passage.string:
             continue
         if "preliminary" in passage:
