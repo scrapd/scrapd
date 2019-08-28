@@ -48,8 +48,6 @@ def parse_notes_field(soup, deceased_field_str):
     :rtype: str
     """
     deceased = get_deceased_tag(soup)[-1]
-    if not deceased:
-        return ''
     text = deceased.text
     for sibling in deceased.next_siblings:
         if isinstance(sibling, bs4.NavigableString):
@@ -238,8 +236,8 @@ def parse_page_content(detail_page, notes_parsed=False):
         notes = parse_notes_field(soup, d[Fields.DECEASED][-1])
         if notes:
             d[Fields.NOTES] = notes
-        else:
-            parsing_errors.append("could not retrieve the notes information")
+    if not d.get(Fields.NOTES):
+        parsing_errors.append("could not retrieve the notes information")
 
     return d, parsing_errors
 

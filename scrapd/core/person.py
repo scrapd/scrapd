@@ -22,10 +22,11 @@ def parse_people(people, birth_date=None, collision_date=None):
     :rtype: generator
     :returns: generator of one or more dicts representing people
     """
-    yield parse_person(people[0], birth_date=birth_date, collision_date=collision_date)
-    if len(people) > 1:
-        for person in people[1:]:
-            yield parse_person(person, collision_date=collision_date)
+    if people:
+        yield parse_person(people[0], birth_date=birth_date, collision_date=collision_date)
+        if len(people) > 1:
+            for person in people[1:]:
+                yield parse_person(person, collision_date=collision_date)
 
 
 def parse_person(deceased, birth_date=None, collision_date=None):

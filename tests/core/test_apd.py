@@ -137,14 +137,19 @@ parse_page_scenarios = {
         **parse_page_content_scenarios['traffic-fatality-2-3'],
         **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
     },
+        'traffic-fatality-71-2': {
+        **parse_page_content_scenarios['traffic-fatality-71-2'],
+        **parse_twitter_fields_scenarios['traffic-fatality-71-2'],
+    },
+        'traffic-fatality-72-1': {
+        **parse_page_content_scenarios['traffic-fatality-72-1'],
+        **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
+    },
     'traffic-fatality-73-2': {
         **parse_page_content_scenarios['traffic-fatality-73-2'],
         **parse_twitter_fields_scenarios['traffic-fatality-73-2'],
     },
-    'traffic-fatality-72-1': {
-        **parse_page_content_scenarios['traffic-fatality-72-1'],
-        **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
-    },
+
 }
 
 
@@ -560,6 +565,9 @@ parse_location_scenarios = {
     'traffic-fatality-50-3': '4500 FM 2222/Mount Bonnell Road',
 }
 
+def test_parse_page_with_errors():
+    records = parsing.parse_page("Case:    19-1234567", fake.uri())
+    assert next(records) == {}
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_location_scenarios.items()])
 def test_parse_page_get_location(filename, expected):
