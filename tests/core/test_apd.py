@@ -819,6 +819,10 @@ def test_extract_twitter_description_meta_00(input_, expected):
         '<p>	<strong>Deceased 2:&nbsp; </strong>Aamna Najam | Asian female | 01/26/1992</p>',
         ['Cedric Benson | Black male | 12/28/1982', 'Aamna Najam | Asian female | 01/26/1992'],
         id='double deceased',
+    )), (pytest.param(
+        '<p> <strong>Deceased:   </strong>Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) </p>',
+        ['Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977)'],
+        id='colon after DOB'
     ))))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
