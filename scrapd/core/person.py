@@ -52,7 +52,7 @@ def parse_person(deceased, birth_date=None, collision_date=None):
             parsing_errors.append(str(e))
 
     # Compute the victim's age.
-    birth_date = birth_date or d[Fields.DOB]
+    birth_date = birth_date or d.get(Fields.DOB)
     if collision_date and birth_date:
         d[Fields.AGE] = date_utils.compute_age(collision_date, birth_date)
 

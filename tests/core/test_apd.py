@@ -102,6 +102,16 @@ parse_page_content_scenarios = {
         Fields.LOCATION: '1400 E. Highway 71 eastbound',
         Fields.TIME: datetime.time(2, 24),
     },
+    'traffic-fatality-20-4': {
+        Fields.CASE: '19-1080319',
+        Fields.DATE: datetime.date(2019, 4, 18),
+        Fields.CRASHES: '20',
+        Fields.LOCATION: '8000 block of West U.S. 290',
+        Fields.TIME: datetime.time(6, 53),
+        Fields.ETHNICITY: 'Hispanic',
+        Fields.GENDER: 'male',
+        Fields.AGE: 19,
+    },
     'traffic-fatality-72-1': {
         **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
         Fields.AGE: 22,
@@ -119,7 +129,7 @@ parse_page_content_scenarios = {
         Fields.ETHNICITY: 'Other',
         Fields.GENDER: 'male',
         Fields.AGE: 54,
-    }
+    },
 }
 
 parse_page_scenarios = {
