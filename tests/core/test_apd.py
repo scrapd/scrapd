@@ -44,15 +44,10 @@ parse_twitter_fields_scenarios = {
         Fields.CRASHES: '2',
     },
     'traffic-fatality-73-2': {
-        Fields.AGE: 38,
         Fields.CASE: '18-3640187',
         Fields.CRASHES: '73',
-        Fields.DOB: datetime.date(1980, 2, 9),
         Fields.DATE: datetime.date(2018, 12, 30),
-        Fields.ETHNICITY: 'White',
-        Fields.FIRST_NAME: 'Corbin',
-        Fields.GENDER: 'male',
-        Fields.LAST_NAME: 'Sabillon-Garcia',
+        Fields.DOB: datetime.date(1980, 2, 9),
         Fields.LOCATION: '1400 E. Highway 71 eastbound',
         Fields.NOTES: 'The preliminary investigation shows that a 2003 Ford F150 was '
         'traveling northbound on the US Highway 183 northbound ramp to E. '
@@ -104,6 +99,16 @@ parse_page_content_scenarios = {
         Fields.LOCATION: '1400 E. Highway 71 eastbound',
         Fields.TIME: datetime.time(2, 24),
     },
+    'traffic-fatality-20-4': {
+        Fields.CASE: '19-1080319',
+        Fields.DATE: datetime.date(2019, 4, 18),
+        Fields.CRASHES: '20',
+        Fields.LOCATION: '8000 block of West U.S. 290',
+        Fields.TIME: datetime.time(6, 53),
+        Fields.ETHNICITY: 'Hispanic',
+        Fields.GENDER: 'male',
+        Fields.AGE: 19,
+    },
     'traffic-fatality-72-1': {
         **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
         Fields.AGE: 22,
@@ -121,7 +126,7 @@ parse_page_content_scenarios = {
         Fields.ETHNICITY: 'Other',
         Fields.GENDER: 'male',
         Fields.AGE: 54,
-    }
+    },
 }
 
 parse_page_scenarios = {
@@ -129,13 +134,17 @@ parse_page_scenarios = {
         **parse_page_content_scenarios['traffic-fatality-2-3'],
         **parse_twitter_fields_scenarios['traffic-fatality-2-3'],
     },
-    'traffic-fatality-73-2': {
-        **parse_page_content_scenarios['traffic-fatality-73-2'],
-        **parse_twitter_fields_scenarios['traffic-fatality-73-2'],
+    'traffic-fatality-71-2': {
+        **parse_page_content_scenarios['traffic-fatality-71-2'],
+        **parse_twitter_fields_scenarios['traffic-fatality-71-2'],
     },
     'traffic-fatality-72-1': {
         **parse_page_content_scenarios['traffic-fatality-72-1'],
         **parse_twitter_fields_scenarios['traffic-fatality-72-1'],
+    },
+    'traffic-fatality-73-2': {
+        **parse_page_content_scenarios['traffic-fatality-73-2'],
+        **parse_twitter_fields_scenarios['traffic-fatality-73-2'],
     },
 }
 
@@ -161,18 +170,14 @@ def test_parse_twitter_title_00(input_, expected):
         {
             'Case': '18-3640187',
             'Date': datetime.date(2018, 12, 30),
+            'DOB': datetime.date(1980, 2, 9),
             'Time': datetime.time(2, 24),
             'Location': '1400 E. Highway 71 eastbound',
-            'DOB': datetime.date(1980, 2, 9),
             'Notes': 'The preliminary investigation shows that a 2003 Ford F150 was '
             'traveling northbound on the US Highway 183 northbound ramp to E. Highway 71, eastbound. '
             'The truck went across the E. Highway 71 and US Highway 183 ramp, rolled '
             'and came to a stop north of the roadway.',
-            'Gender': 'male',
-            'Ethnicity': 'White',
-            'Last Name': 'Sabillon-Garcia',
-            'First Name': 'Corbin',
-            'Age': 38,
+            'Deceased': ['Corbin Sabillon-Garcia, White male,']
         },
     ),
     (None, {}),
@@ -180,8 +185,6 @@ def test_parse_twitter_title_00(input_, expected):
 def test_parse_twitter_description_00(input_, expected):
     """Ensure the Twitter description gets parsed correctly."""
     actual = apd.parse_twitter_description(input_)
-    if 'Deceased' in actual:
-        del actual['Deceased']
     assert actual == expected
 
 
@@ -198,7 +201,6 @@ def test_parse_twitter_description_02():
     """Ensure a DOB recognized as a field can be parsed."""
     actual = apd.parse_twitter_description(mock_data.twitter_description_02)
     expected = {
-        'Age': 57,
         'Case': '18-160882',
         'DOB': datetime.date(1961, 1, 22),
         'Date': datetime.date(2018, 1, 16),
@@ -217,16 +219,78 @@ def test_parse_twitter_description_03():
     assert actual == expected
 
 
+@pytest.mark.parametrize('input_,expected', (
+    ("traffic-fatality-50-3", 2),
+    ("traffic-fatality-73-2", 1),
+))
+def test_parse_twitter_description_number_deceased(input_, expected):
+    """
+    Test that the parser finds the right number of deceased people.
+    """
+    page_text = load_test_page(input_)
+    twitter_description = apd.match_twitter_description_meta(page_text)
+    d = apd.parse_twitter_description(twitter_description)
+    actual = len(d["Deceased"])
+    assert actual == expected
+
+
 @pytest.mark.parametrize('page,start,end',
                          scenario_inputs(mock_data.note_fields_scenarios),
                          ids=scenario_ids(mock_data.note_fields_scenarios))
-def test_parse_notes_field(page, start, end):
+def test_parse_notes(page, start, end):
     """Ensure Notes field are parsed correctly."""
     soup = apd.to_soup(page)
-    deceased_tag_p, deceased_field_str = apd.parse_deceased_field(soup)
-    notes = apd.notes_from_element(deceased_tag_p, deceased_field_str)
+    deceased_field_list = apd.parse_deceased_field(soup)
+    notes = apd.parse_notes_field(soup, deceased_field_list[-1])
     assert notes.startswith(start)
     assert notes.endswith(end)
+
+
+@pytest.mark.parametrize('page,start,end', (
+    ('traffic-fatality-2-3', 'The preliminary investigation shows that the grey',
+     'No charges are expected to be filed.'),
+    ('traffic-fatality-4-6', 'The preliminary investigation shows that a black, Ford', 'scene at 01:48 a.m.'),
+    ('traffic-fatality-15-4', 'The preliminary investigation indicated that Garrett',
+     'seatbelts. No charges are expected to be filed.'),
+    ('traffic-fatality-16-4', 'The preliminary investigation revealed that the 2017', 'injuries on April 4, 2019.'),
+    ('traffic-fatality-17-4', 'The preliminary investigation revealed that the 2010', 'at the time of the crash.'),
+    ('traffic-fatality-20-4', 'The preliminary investigation revealed that a 2016',
+     'pronounced deceased at the scene.'),
+    ('traffic-fatality-25-4', 'Suspect Vehicle:  dark colored', 'damage to its right, front end.'),
+    ('traffic-fatality-71-2', 'The preliminary investigation shows that a 2004 Honda sedan',
+     'at the scene at 8:50 p.m.'),
+    ('traffic-fatality-72-1', 'The preliminary investigation shows that the 2016 Indian',
+     'whether charges will be filed.'),
+    ('traffic-fatality-73-2', 'The preliminary investigation shows that a 2003 Ford F150',
+     'St. David’s South Austin Hospital.'),
+))
+def test_parse_notes_field(page, start, end):
+    page_text = load_test_page(page)
+    parsed_content, r = apd.parse_page_content(page_text)
+    notes = parsed_content[Fields.NOTES]
+    assert notes.startswith(start)
+    assert notes.endswith(end)
+
+
+@pytest.mark.parametrize('page,start,end', (('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'), ))
+def test_extract_deceased_field_twitter(page, start, end):
+    page_text = load_test_page(page)
+    parsed_content = apd.parse_twitter_fields(page_text)
+    deceased = parsed_content[Fields.DECEASED]
+    assert deceased[0].startswith(start)
+    assert deceased[-1].endswith(end)
+
+
+@pytest.mark.parametrize('page,start,end', (
+    ('traffic-fatality-15-4', 'Garre', '13/1991'),
+    ('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'),
+))
+def test_extract_deceased_field_from_page(page, start, end):
+    page_text = load_test_page(page)
+    parsed_content, _ = apd.parse_page_content(page_text)
+    deceased = parsed_content[Fields.DECEASED]
+    assert deceased[0].startswith(start)
+    assert deceased[-1].endswith(end)
 
 
 def test_extract_traffic_fatalities_page_details_link_00(news_page):
@@ -385,6 +449,11 @@ def test_parse_name(name, expected):
     assert parsed.get("last") == expected["last"]
 
 
+def test_parse_person_errors():
+    result, errors = apd.parse_person("text that can't be parsed")
+    assert len(errors) == 2
+
+
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""
     news_page = """
@@ -439,7 +508,7 @@ def test_parse_page_content_00(filename, expected):
            Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual, err = apd.parse_page_content(page)
+    actual = next(apd.parse_page(page, 'fake_url'))
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     if 'Deceased' in actual and 'Deceased' not in expected:
@@ -487,15 +556,36 @@ def test_parse_page_00(filename, expected):
        Don't compare notes if parsed from details page."""
     page_fd = TEST_DATA_DIR / filename
     page = page_fd.read_text()
-    actual = apd.parse_page(page, fake.uri())
+    actual = next(apd.parse_page(page, fake.uri()))
     if 'Notes' in actual and 'Notes' not in expected:
         del actual['Notes']
     assert actual == expected
 
 
+parse_location_scenarios = {
+    'traffic-fatality-50-3': '4500 FM 2222/Mount Bonnell Road',
+}
+
+
+def test_parse_page_with_missing_data():
+    records = apd.parse_page("Case:    19-1234567", fake.uri())
+    with pytest.raises(StopIteration):
+        next(records)
+
+
+@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_location_scenarios.items()])
+def test_parse_page_get_location(filename, expected):
+    """Ensure location information is properly extracted from the page."""
+    page_fd = TEST_DATA_DIR / filename
+    page = page_fd.read_text()
+    actual = apd.parse_page(page, fake.uri())
+    assert next(actual)['Location'] == expected
+
+
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_page_scenarios.items()])
 def test_parse_page_01(mocker, filename, expected):
-    """Ensuring ."""
+    """Ensuri
+    ng ."""
     data = {}
     parsing_errors = ['one error']
     page_fd = TEST_DATA_DIR / filename
@@ -539,6 +629,18 @@ async def test_date_filtering_02(fake_details, fake_news):
     assert isinstance(data, list)
     assert len(data) == 1
     assert page_count == 2
+
+
+@asynctest.patch("scrapd.core.apd.fetch_news_page",
+                 side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", side_effect=[load_test_page('traffic-fatality-50-3')] * 15)
+@pytest.mark.asyncio
+async def test_both_fatalities_from_one_incident(fake_details, fake_news):
+    data, page_count = await apd.async_retrieve(pages=-1, from_="2019-08-16", to="2019-08-18", attempts=1, backoff=1)
+    assert isinstance(data, list)
+    assert len(data) == 2
+    assert data[0]["Age"] == 36
+    assert data[1]["Age"] == 27
 
 
 @pytest.mark.asyncio
@@ -587,7 +689,7 @@ async def test_async_retrieve_00(fake_news):
 ))
 def test_parse_case_field_00(input_, expected):
     """Ensure a case field gets parsed correctly."""
-    actual = apd.parse_case_field(input_)
+    actual = apd.match_case_field(input_)
     assert actual == expected
 
 
@@ -596,7 +698,7 @@ def test_parse_case_field_00(input_, expected):
     (('<span property="dc:title" content="Traffic Fatality #12" class="rdf-meta element-hidden"></span>', '12'), ))
 def test_parse_crashes_field_00(input_, expected):
     """Ensure the crashes field gets parsed correctly."""
-    actual = apd.parse_crashes_field(input_)
+    actual = apd.match_crashes_field(input_)
     assert actual == expected
 
 
@@ -650,7 +752,7 @@ async def test_fetch_detail_page_00(fetch_text):
                          (('<meta name="twitter:title" content="Traffic Fatality #2" />', 'Traffic Fatality #2'), ))
 def test_extract_twitter_tittle_meta_00(input_, expected):
     """Ensure we can extract the twitter tittle from the meta tag."""
-    actual = apd.extract_twitter_tittle_meta(input_)
+    actual = apd.match_twitter_title_meta(input_)
     assert actual == expected
 
 
@@ -663,61 +765,22 @@ def test_extract_twitter_tittle_meta_00(input_, expected):
 ))
 def test_extract_twitter_description_meta_00(input_, expected):
     """Ensure we can extract the twitter tittle from the meta tag."""
-    actual = apd.extract_twitter_description_meta(input_)
-    assert actual == expected
+    actual = apd.match_twitter_description_meta(input_)
 
-
-@pytest.mark.parametrize('input_,expected', (
-    ('Time: </span>   Approximately 01:14a.m.', datetime.time(1, 14)),
-    ('<tag>Time:     08:35 pm<br />', datetime.time(20, 35)),
-    ('Time:  8:47  P.M.', datetime.time(20, 47)),
-    ('Time:12:47 p.M.', datetime.time(12, 47)),
-    ('Time: 5:16', datetime.time(5, 16)),
-    ('Time: 05:16 ', datetime.time(5, 16)),
-    ('Time: 18:26', datetime.time(18, 26)),
-    ('Time: 22:56', datetime.time(22, 56)),
-    ('Time: 54:34', None),
-    ('Time: 28:24', None),
-    ('Time: 4:66 pm', None),
-    ('Time: 18:46 pm', datetime.time(18, 46)),
-    ('Time: 00:24 a.m.', datetime.time(0, 24)),
-    ('<p>	<strong>Time:</strong>       8 p.m.</p>', datetime.time(20, 0)),
-))
-def test_parse_time_field_00(input_, expected):
-    """Ensure a time field gets parsed correctly."""
-    actual = apd.parse_time_field(input_)
-    assert actual == expected
-
-
-@pytest.mark.parametrize('input_,expected', (
-    ('<strong>Date:   </strong>April 18, 2019</p>', datetime.date(2019, 4, 18)),
-    ('>Date:   </strong> Night of May 22 2019</p>', datetime.date(2019, 5, 22)),
-    ('>Date:</span></strong>   Wednesday, Oct. 3, 2018</p>', datetime.date(2018, 10, 3)),
-    ('>Date:  night Apr 1-2012</p>', datetime.date(2012, 4, 1)),
-    ('>Date:  feb. 2 2018</p>', datetime.date(2018, 2, 2)),
-    ('>Date:  10-1-17</p>', datetime.date(2017, 10, 1)),
-    ('>Date:  Morning of 2,2,19 </p>', datetime.date(2019, 2, 2)),
-    ('>Date:  3/3/19</p>', datetime.date(2019, 3, 3)),
-    ('', None),
-    ('>Date: Afternoon</p>', None),
-))
-def test_parse_date_field_00(input_, expected):
-    """Ensure a date field gets parsed correctly."""
-    actual = apd.parse_date_field(input_)
     assert actual == expected
 
 
 @pytest.mark.parametrize('input_,expected', (
     (pytest.param('<p>	<strong>Deceased: </strong> Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994</p>',
-                  'Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994',
+                  ['Luis Fernando Martinez-Vertiz | Hispanic male | 04/03/1994'],
                   id="p, strong, pipes")),
     (pytest.param('<p>	<strong>Deceased: </strong> Cecil Wade Walker, White male, D.O.B. 3-7-70</p>',
-                  'Cecil Wade Walker, White male, D.O.B. 3-7-70',
+                  ['Cecil Wade Walker, White male, D.O.B. 3-7-70'],
                   id="p, strong, commas")), (pytest.param(
                       '<p style="margin-left:.25in;">'
                       '<strong>Deceased:&nbsp;</strong> Halbert Glen Hendricks | Black male | 9-24-78</p>',
-                      'Halbert Glen Hendricks | Black male | 9-24-78',
-                      id="p with style, strong, pipes")), (pytest.param('', '', id="Deceased tag not found")),
+                      ['Halbert Glen Hendricks | Black male | 9-24-78'],
+                      id="p with style, strong, pipes")), (pytest.param('', [], id="Deceased tag not found")),
     (pytest.param(
         '<p>	<strong>Deceased:&nbsp; </strong>Hispanic male, 19 years of age<br>'
         '&nbsp;<br>'
@@ -734,7 +797,7 @@ def test_parse_date_field_00(input_, expected):
         '<a href="https://austintexas.us5.list-manage.com/track/click?u=1861810ce1dca1a4c1673747c&amp;'
         'id=26ced4f341&amp;e=bcdeacc118">iPhone</a> and <a href="https://austintexas.us5.list-manage.com/track/click'
         '?u=1861810ce1dca1a4c1673747c&amp;id=3abaf7d912&amp;e=bcdeacc118">Android</a>.&nbsp;</p>',
-        'Hispanic male, 19 years of age',
+        ['Hispanic male, 19 years of age'],
         id='XX years of age of age format + included in notes paragraph')),
     (pytest.param(
         '<p>	<strong><span style="font-family: &quot;Verdana&quot;,sans-serif;">Deceased:</span></strong>&nbsp; '
@@ -761,23 +824,46 @@ def test_parse_date_field_00(input_, expected):
         '&nbsp;<br><strong><i><span style="font-family: &quot;Verdana&quot;,sans-serif;">These statements are based '
         'on the initial assessment of the fatal crash and investigation is still pending. Fatality information may '
         'change.</span></i></strong></p>',
-        'Ann Bottenfield-Seago, White female, DOB 02/15/1960',
+        ['Ann Bottenfield-Seago, White female, DOB 02/15/1960'],
         id='included in notes paragraph',
     )), (pytest.param(
         '<p>	<strong>Deceased:   </strong>David John Medrano,<strong> </strong>Hispanic male, D.O.B. 6-9-70</p>',
-        'David John Medrano, Hispanic male, D.O.B. 6-9-70',
+        ['David John Medrano, Hispanic male, D.O.B. 6-9-70'],
         id='stray strong in the middle',
     )), (pytest.param(
         '<p>	<strong>Deceased 1:&nbsp; </strong>Cedric Benson | Black male | 12/28/1982</p>'
         '<p>	<strong>Deceased 2:&nbsp; </strong>Aamna Najam | Asian female | 01/26/1992</p>',
-        'Cedric Benson | Black male | 12/28/1982',
+        ['Cedric Benson | Black male | 12/28/1982', 'Aamna Najam | Asian female | 01/26/1992'],
         id='double deceased',
-    ))))
+    )), (pytest.param('<p> <strong>Deceased:   </strong>Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) </p>',
+                      ['Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977)'],
+                      id='colon after DOB'))))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     field = apd.to_soup(input_)
-    _, deceased_str = apd.parse_deceased_field(field)
+    deceased_str = apd.parse_deceased_field(field)
     assert deceased_str == expected
+
+
+parse_multiple_scenarios = {
+    'traffic-fatality-50-3': {
+        Fields.GENDER: "female",
+        Fields.DOB: datetime.date(1992, 1, 26)
+    },
+    'traffic-fatality-15-4': {
+        Fields.DOB: datetime.date(1991, 11, 13)
+    }
+}
+
+
+@pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_multiple_scenarios.items()])
+def test_multiple_deceased(filename, expected):
+    page_text = load_test_page(filename)
+    content_parser = apd.parse_page(page_text, 'fake_url')
+    _ = next(content_parser)
+    second = next(content_parser)
+    for key in expected:
+        assert second[key] == expected[key]
 
 
 @pytest.mark.parametrize('input_,expected', (
@@ -832,5 +918,5 @@ def test_sanitize_fatality_entity(input_, expected):
 ))
 def test_parse_location_field_00(input_, expected):
     """Ensure."""
-    actual = apd.parse_location_field(input_)
+    actual = apd.match_location_field(input_)
     assert actual == expected

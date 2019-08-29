@@ -84,7 +84,20 @@ def parse_date(date, default=None, settings=None):
     except Exception:
         if default:
             return default
-        raise Exception
+        raise ValueError(f'No default value for unparseable date: {date}')
+
+
+def parse_time(time):
+    """
+    Parse the time from a human readable format.
+
+    :param str time: time
+    :return: a time object representing the time.
+    :rtype: datetime.time
+    """
+
+    dt = dateparser.parse(time)
+    return None if not dt else dt.time()
 
 
 def is_between(date, from_=None, to=None):

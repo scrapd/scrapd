@@ -80,7 +80,7 @@ note_fields_scenarios = [
             'still pending. Fatality information may change.</strong></em><br>'
             '&nbsp;</p>'
             '</div>',
-            'Keaton',
+            'The preliminary investigation indicated that Garrett',
             'No charges are expected to be filed.',
         ),
         'Two deaths',
@@ -100,5 +100,14 @@ note_fields_scenarios = [
             'scene at 01:48 a.m.',
         ),
         'Two paragraphs',
+    ),
+    (
+        ('<p>	<strong>Time:</strong>            2:50 a.m.  <br />'
+         '<br /><strong>Location:</strong>      700 W. Stassney Ln.<br />'
+         '<br /><strong>Deceased:</strong>    Deceased Person Name, White female (D.O.B. 1-1-99)<br />'
+         '<br />'
+         'The preliminary investigation shows that a blue, 2004 Nissan Maxima</p>', 'The preliminary investigation',
+         'Maxima'),
+        'No p tag for Deceased field',
     ),
 ]

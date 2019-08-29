@@ -25,7 +25,6 @@ PAGE_DETAILS_URL = 'http://austintexas.gov/'
 async def fetch_text(session, url, params=None):
     """
     Fetch the data from a URL as text.
-
     :param aiohttp.ClientSession session: aiohttp session
     :param str url: request URL
     :param dict params: request paramemters, defaults to None
@@ -48,9 +47,7 @@ async def fetch_text(session, url, params=None):
 async def fetch_news_page(session, page=1):
     """
     Fetch the content of a specific news page from the APD website.
-
     The page number starts at 1.
-
     :param aiohttp.ClientSession session: aiohttp session
     :param int page: page number to fetch, defaults to 1
     :return: the page content.
@@ -65,7 +62,6 @@ async def fetch_news_page(session, page=1):
 async def fetch_detail_page(session, url):
     """
     Fetch the content of a detail page.
-
     :param aiohttp.ClientSession session: aiohttp session
     :param str url: request URL
     :return: the page content.
@@ -77,7 +73,6 @@ async def fetch_detail_page(session, url):
 def extract_traffic_fatalities_page_details_link(news_page):
     """
     Extract the fatality detail page links from the news page.
-
     :param str news_page: html content of the new pages
     :return: a list of links.
     :rtype: list or `None`
@@ -128,15 +123,21 @@ def has_next(news_page):
 
 def parse_twitter_title(twitter_title):
     """
-    Parse the Twitter tittle metadata.
-
-    :param str twitter_title: Twitter tittle embedded in the fatality details page
+    Parse the Twitter title metadata.
+    :param str twitter_title: Twitter title embedded in the fatality details page
     :return: A dictionary containing the 'Fatal crashes this year' field.
     :rtype: dict
     """
     d = {}
     if not twitter_title:
         return d
+
+    # Extract the fatality number from the title.
+    match = match_crashes_field(twitter_title)
+    if match:
+        d[Fields.CRASHES] = match
+
+    return d
 
     # Extract the fatality number from the title.
     match = parse_crashes_field(twitter_title)
@@ -146,13 +147,9 @@ def parse_twitter_title(twitter_title):
     return d
 
 
-def parse_twitter_description(twitter_description):
+def twitter_description_to_dict(twitter_description):
     """
-    Parse the Twitter description metadata.
-
-    The Twitter description contains all the information that we need, and even though it is still unstructured data,
-    it is easier to parse than the data from the detail page.
-
+    Convert text of twitter_description field to a dict with string values.
     :param str twitter_description: Twitter description embedded in the fatality details page
     :return: A dictionary containing the details information about the fatality.
     :rtype: dict
@@ -164,21 +161,49 @@ def parse_twitter_description(twitter_description):
     # Split the description to be able to parse it.
     current_field = None
     description_words = twitter_description.split()
+    expected_headings = {"Age", "Case", "Date", "Deceased", "DOB", "D.O.B.", "Location", "Time", "Notes"}
     for word in description_words:
-        # A word ending with a colon (':') is considered a field.
-        if word.endswith(':'):
-            current_field = word.replace(':', '')
+        if word.strip(":") in expected_headings:
+            current_field = word.strip(":")
+            expected_headings.remove(word.strip(":"))
             continue
+        if word == 'preliminary':
+            current_field = 'Notes'
+            word = 'The preliminary'
         if not current_field:
             continue
-        d.setdefault(current_field, []).append(word)
+        if word.endswith(":"):
+            continue
+        if d.get(current_field):
+            d[current_field] = d[current_field] + f" {word}"
+        else:
+            d[current_field] = word
+
+    if d.get("Deceased"):
+        if "Deceased" in d["Deceased"]:
+            d["Deceased"] = d["Deceased"].split("Deceased")
+        else:
+            d["Deceased"] = [d["Deceased"]]
+
+    return d
+
+
+def parse_twitter_description(twitter_description):
+    """
+    Convert text of twitter_description field to a dict with list and datetime values.
+    The Twitter description sometimes contains all the information that we need,
+    but sometimes doesn't have the deceased person's name.
+    Even though it is still unstructured data, it sometimes is easier
+    to parse than the data from the detail page.
+    :param str twitter_description: Twitter description embedded in the fatality details page
+    :return: A dictionary containing the details information about the fatality.
+    :rtype: dict
+    """
+    d = twitter_description_to_dict(twitter_description)
 
     # Parse the `Date` field.
     fatality_date = d.get(Fields.DATE)
     if fatality_date:
-        # Ensure it is a string.
-        if isinstance(fatality_date, list):
-            fatality_date = ' '.join(fatality_date)
 
         # Turn it into a date object.
         d[Fields.DATE] = date_utils.parse_date(fatality_date)
@@ -186,19 +211,14 @@ def parse_twitter_description(twitter_description):
     # Convert the time to a time object.
     fatality_time = d.get(Fields.TIME)
     if fatality_time:
-        # Ensure it is a string.
-        if isinstance(fatality_time, list):
-            fatality_time = ' '.join(fatality_time)
-        dt = dateparser.parse(fatality_time)
-        d[Fields.TIME] = dt.time() if dt else None
+        d[Fields.TIME] = date_utils.parse_time(fatality_time)
 
     # Handle special case where Date of birth is a token `DOB:`.
     tmp_dob = d.get(Fields.DOB)
-    if tmp_dob and isinstance(tmp_dob, list):
-        d[Fields.DOB] = date_utils.parse_date(tmp_dob[0])
+    if tmp_dob:
+        d[Fields.DOB] = date_utils.parse_date(tmp_dob.split()[0])
 
-    r, _ = common_fatality_parsing(d)
-    return r
+    return d
 
 
 def common_fatality_parsing(d):
@@ -234,7 +254,6 @@ def common_fatality_parsing(d):
 def sanitize_fatality_entity(d):
     """
     Clean up a fatality entity.
-
     :return: A dictionary containing the details information about the fatality with sanitized entries.
     :rtype: dict
     """
@@ -284,7 +303,6 @@ def parse_name(name):
 def dob_search(split_deceased_field):
     """
     Search for the DOB in a deceased field.
-
     :param list split_deceased_field: a list representing the deceased field
     :return: the DOB index within the split deceased field.
     :rtype: int
@@ -303,42 +321,53 @@ def dob_search(split_deceased_field):
     return dob_index
 
 
+def parse_deceased_field(soup):
+    """
+    Extract content from deceased field on the fatality page.
+    :param bs4.BeautifulSoup soup: the content of the bulletin page
+    :return:
+        the Deceased field as a string
+    :rtype: str
+    """
+    deceased_tag_p = get_deceased_tag(soup)
+
+    deceased_fields = [parse_deceased_tag(tag) for tag in deceased_tag_p]
+    flattened_list = [deceased for entry in deceased_fields for deceased in split_on_dates(entry)]
+    return flattened_list
+
+
 def process_deceased_field(deceased_field):
     """
     Parse the deceased field.
-
     At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
     Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.
-
     :param str deceased_field: the deceased field from the fatality report
     :return: a dictionary representing a deceased field.
     :rtype: dict
     """
-    if isinstance(deceased_field, list):
-        deceased_field = ' '.join(deceased_field)
 
     # Try to parse the deceased fields when the fields are comma separated.
     try:
         return parse_comma_delimited_deceased_field(deceased_field)
-    except Exception:
+    except ValueError:
         pass
 
     # Try to parse the deceased fields when the fields are pipe separated.
     try:
         return parse_pipe_delimited_deceased_field(deceased_field)
-    except Exception:
+    except IndexError:
         pass
 
     # Try to parse the deceased fields when the fields are space separated.
     try:
         return parse_space_delimited_deceased_field(deceased_field)
-    except Exception:
+    except ValueError:
         pass
 
     # Try to parse the deceased fields assuming it contains an age.
     try:
         return parse_age_deceased_field(deceased_field)
-    except Exception:
+    except ValueError:
         pass
 
     raise ValueError(f'cannot parse {Fields.DECEASED}: {deceased_field}')
@@ -347,25 +376,25 @@ def process_deceased_field(deceased_field):
 def parse_age_deceased_field(deceased_field):
     """
     Parse deceased field assuming it contains an age.
-
     :param str deceased_field: the deceased field
     :return: a dictionary representing the deceased field.
     :rtype: dict
     """
     age_pattern = re.compile(r'([0-9]+) years')
 
-    # Raises AttributeError upon failure.
-    age = re.search(age_pattern, deceased_field).group(1)
+    age = re.search(age_pattern, deceased_field)
+    if age is None:
+        raise ValueError("age not found in Deceased field")
     split_deceased_field = age_pattern.split(deceased_field)
     d = parse_fleg(split_deceased_field[0].split())
-    d[Fields.AGE] = int(age)
+    d[Fields.AGE] = int(age.group(1))
+
     return d
 
 
 def parse_comma_delimited_deceased_field(deceased_field):
     """
     Parse deceased fields seperated with commas.
-
     :param str deceased_field: a list representing the deceased field
     :return: a dictionary representing the deceased field.
     :rtype: dict
@@ -395,7 +424,6 @@ def parse_comma_delimited_deceased_field(deceased_field):
 def parse_pipe_delimited_deceased_field(deceased_field):
     """
     Parse deceased fields separated with pipes.
-
     :param str deceased_field: the deceased field as a string.
     :return: a dictionary representing the deceased field.
     :rtype: dict
@@ -408,7 +436,6 @@ def parse_pipe_delimited_deceased_field(deceased_field):
 def parse_space_delimited_deceased_field(deceased_field):
     """
     Parse deceased fields separated with spaces.
-
     :param str deceased_field: the deceased field as a string.
     :return: a dictionary representing the deceased field.
     :rtype: dict
@@ -421,7 +448,6 @@ def parse_space_delimited_deceased_field(deceased_field):
 def parse_deceased_field_common(split_deceased_field, fleg):
     """
     Parse the deceased field.
-
     :param list split_deceased_field: [description]
     :param dict fleg: a dictionary containing First, Last, Ethnicity, Gender fields
     :return: a dictionary representing the deceased field.
@@ -441,7 +467,6 @@ def parse_deceased_field_common(split_deceased_field, fleg):
 def parse_fleg(fleg):
     """
     Parse FLEG. `fleg` stands for First, Last, Ethnicity, Gender.
-
     :param list fleg: values representing the fleg.
     :return: a dictionary containing First, Last, Ethnicity, Gender fields
     :rtype: dict
@@ -473,17 +498,17 @@ def parse_fleg(fleg):
     return d
 
 
-def notes_from_element(deceased, deceased_field_str):
+def parse_notes_field(soup, deceased_field_str):
     """
     Get Notes from deceased field's BeautifulSoup element.
-
-    :param deceased bs4.Beautifulsoup.element.Tag:
-        the first <p> tag of the Deceased field of the APD bulletin
-    :param deceased_field_str:
-        the string corresponding to the Deceased field
+    :param soup bs4.Beautifulsoup:
+        the content of the bulletin page
+    :param str deceased_field_str:
+        the Deceased field, other than the Notes section, as a string
     :return: notes from the Deceased field of the APD bulletin
     :rtype: str
     """
+    deceased = get_deceased_tag(soup)[-1]
     text = deceased.text
     for sibling in deceased.next_siblings:
         if isinstance(sibling, bs4.NavigableString):
@@ -501,7 +526,6 @@ def notes_from_element(deceased, deceased_field_str):
 def parse_page_content(detail_page, notes_parsed=False):
     """
     Parse the detail page to extract fatality information.
-
     :param str news_page: the content of the fatality page
     :return: a dictionary representing a fatality and a list of errors.
     :rtype: dict, list
@@ -509,57 +533,61 @@ def parse_page_content(detail_page, notes_parsed=False):
     d = {}
     parsing_errors = []
     normalized_detail_page = unicodedata.normalize("NFKD", detail_page)
-    soup = to_soup(normalized_detail_page)
+    soup = to_soup(normalized_detail_page.replace("<br>", "</br>"))
 
     # Parse the `Case` field.
-    d[Fields.CASE] = parse_case_field(normalized_detail_page)
+    d[Fields.CASE] = match_case_field(normalized_detail_page)
     if not d.get(Fields.CASE):
         raise ValueError('A case number is mandatory.')
 
     # Parse the `Crashes` field.
-    crash_str = parse_crashes_field(normalized_detail_page)
+    crash_str = match_crashes_field(normalized_detail_page)
     if crash_str:
         d[Fields.CRASHES] = crash_str
     else:
         parsing_errors.append("could not retrieve the crash number")
 
     # Parse the `Date` field.
-    date_field = parse_date_field(normalized_detail_page)
+    date_field = match_date_field(normalized_detail_page)
     if date_field:
         d[Fields.DATE] = date_field
     else:
         parsing_errors.append("could not retrieve the crash date")
 
-    # Parse the `Deceased` field.
-    deceased_tag_p, deceased_field_str = parse_deceased_field(soup)
-    if deceased_field_str:
-        d[Fields.DECEASED] = deceased_field_str
-    else:
-        parsing_errors.append("could not retrieve the deceased information")
-
     # Parse the `Time` field.
-    time_str = parse_time_field(normalized_detail_page)
-    if time_str:
-        d[Fields.TIME] = time_str
+    time_str = match_time_field(normalized_detail_page)
+    time = date_utils.parse_time(time_str)
+    if time:
+        d[Fields.TIME] = time
     else:
         parsing_errors.append("could not retrieve the crash time")
 
     # Parse the location field.
-    location_str = parse_location_field(normalized_detail_page)
+    location_str = match_location_field(normalized_detail_page)
     if location_str:
         d[Fields.LOCATION] = location_str
     else:
         parsing_errors.append("could not retrieve the location")
 
+    # Parse the `Deceased` field.
+    deceased_field_list = parse_deceased_field(soup)
+    if deceased_field_list:
+        d[Fields.DECEASED] = deceased_field_list
+    else:
+        parsing_errors.append("could not retrieve the deceased information")
+
     # Fill in Notes from Details page if not in twitter description.
-    if deceased_field_str and not notes_parsed:
-        d[Fields.NOTES] = notes_from_element(deceased_tag_p, deceased_field_str)
+    if deceased_field_list and not notes_parsed:
+        notes = parse_notes_field(soup, d[Fields.DECEASED][-1])
+        if notes:
+            d[Fields.NOTES] = notes
+    if not d.get(Fields.NOTES):
+        parsing_errors.append("could not retrieve the notes information")
 
-    r, err = common_fatality_parsing(d)
-    return r, parsing_errors + err
+    return d, parsing_errors
 
 
-def parse_case_field(page):
+def match_case_field(page):
     """
     Extract the case number from the content of the fatality page.
 
@@ -578,7 +606,7 @@ def parse_case_field(page):
     return match_pattern(page, case_pattern)
 
 
-def parse_crashes_field(page):
+def match_crashes_field(page):
     """
     Extract the crash number from the content of the fatality page.
 
@@ -590,7 +618,7 @@ def parse_crashes_field(page):
     return match_pattern(page, crashes_pattern)
 
 
-def parse_date_field(page):
+def match_date_field(page):
     """
     Extract the date from the content of the fatality page.
 
@@ -613,39 +641,29 @@ def parse_date_field(page):
     return date[0][1].date() if date else None
 
 
-def parse_deceased_field(soup):
+def get_deceased_tag(soup):
     """
-    Extract content from deceased field on the fatality page.
-
-    :param bs4.BeautifulSoup soup: the content of the fatality page
+    Get the tag with information about one or more deceased people.
+    :param bs4.BeautifulSoup soup: the content of the bulletin page
     :return:
-        a tuple containing the tag for the Deceased paragraph
-        and the Deceased field as a string
-    :rtype: tuple
+        the tag labeled "Deceased" in the bulletin
     """
 
     def starts_with_deceased(tag):
         return tag.get_text().strip().startswith("Deceased")
 
-    deceased_tag_p = soup.find(starts_with_deceased)
-    try:
-        deceased_text = deceased_tag_p.get_text()
-        if len(deceased_text) < 100 and "preliminary" not in deceased_text:
-            return deceased_tag_p, deceased_text.split(":")[1].strip()
-    except AttributeError:
-        pass
-
-    try:
-        deceased_field_str = deceased_tag_p.find("strong").next_sibling.string.strip()
-    except AttributeError:
-        deceased_field_str = ''
-    return deceased_tag_p, deceased_field_str
+    answers = []
+    first = soup.find(starts_with_deceased)
+    if first:
+        answers = [first]
+        for next_tag in first.find_next_siblings(starts_with_deceased):
+            answers.append(next_tag)
+    return answers
 
 
-def parse_time_field(page):
+def match_time_field(page):
     """
     Extract the time from the content of the fatality page.
-
     :param str page: the content of the fatality page
     :return: a string representing the time.
     :rtype: str
@@ -665,12 +683,10 @@ def parse_time_field(page):
         ''',
         re.VERBOSE,
     )
-    time = match_pattern(page, time_pattern)
-    dt = dateparser.parse(time)
-    return dt.time() if time else None
+    return match_pattern(page, time_pattern)
 
 
-def parse_location_field(page):
+def match_location_field(page):
     """
     Extract the location information from the content of the fatality page.
 
@@ -706,7 +722,7 @@ def match_pattern(text, pattern, group_number=0):
     return match.groups()[group_number] if match else ''
 
 
-def extract_twitter_tittle_meta(page):
+def match_twitter_title_meta(page):
     """
     Extract the twitter title from the metadata fields.
 
@@ -729,7 +745,7 @@ def extract_twitter_tittle_meta(page):
     return match_pattern(page, pattern)
 
 
-def extract_twitter_description_meta(page):
+def match_twitter_description_meta(page):
     """
     Extract the twitter description from the metadata fields.
 
@@ -755,13 +771,12 @@ def extract_twitter_description_meta(page):
 def parse_twitter_fields(page):
     """
     Parse the Twitter fields on a detail page.
-
     :param str page: the content of the fatality page
     :return: a dictionary representing a fatality.
     :rtype: dict
     """
-    twitter_title = extract_twitter_tittle_meta(page)
-    twitter_description = extract_twitter_description_meta(page)
+    twitter_title = match_twitter_title_meta(page)
+    twitter_description = match_twitter_description_meta(page)
 
     # Parse the elements.
     title_d = parse_twitter_title(twitter_title)
@@ -770,11 +785,81 @@ def parse_twitter_fields(page):
     return d
 
 
+def parse_people(people, birth_date=None, collision_date=None):
+    """
+    Parse Deceased field that may be about more than one person who died in a collision.
+    :param list people:
+        list of strings each corresponding to an unparsed Deceased field
+    :param datetime.date birth_date:
+        a DOB that may have been discovered in a Deceased field
+    :param datetime.date collision_date:
+        the text of a Date field
+    :rtype: generator
+    :returns: generator of one or more dicts representing people
+    """
+    if people:
+        yield parse_person(people[0], birth_date=birth_date, collision_date=collision_date)
+        if len(people) > 1:
+            for person in people[1:]:
+                yield parse_person(person, collision_date=collision_date)
+
+
+def parse_person(deceased, birth_date=None, collision_date=None):
+    """
+    Perform parsing about a person who died in a collision.
+    :param str deceased: the text describing the deceased person
+    :param datetime.date birth_date: the date of the person's birth
+    :param datetime.date collision_date:
+        the date of the fatal collision (even if the person died later)
+    :return: A dictionary containing the details information about the fatality.
+    :rtype: dict, list
+    """
+    d = {}
+    parsing_errors = []
+
+    # Extracting other fields from 'Deceased' field.
+    if deceased:
+        deceased = deceased.lstrip(" :1234567890")
+        try:
+            d.update(process_deceased_field(deceased))
+        except ValueError as e:
+            parsing_errors.append(str(e))
+
+    # Compute the victim's age.
+    birth_date = birth_date or d.get(Fields.DOB)
+    if collision_date and birth_date:
+        d[Fields.AGE] = date_utils.compute_age(collision_date, birth_date)
+
+    if d.get(Fields.AGE, -1) < 0:
+        parsing_errors.append(f'age is invalid: {d.get(Fields.AGE)}')
+
+    return d, parsing_errors
+
+
+def parse_name(name):
+    """
+    Parse the victim's name.
+    :param list name: a list reprenting the deceased person's full name split on space characters
+    :return: a dictionary representing just the victim's first and last name
+    :rtype: dict
+    """
+    GENERATIONAL_TITLES = ['jr', 'jr.', 'sr', 'sr.']
+    d = {}
+    try:
+        for i in range(1, len(name)):
+            d["last"] = name[-i].replace(',', '')
+            if d["last"].lower() not in GENERATIONAL_TITLES:
+                break
+        d["first"] = name[0].replace(',', '')
+    except (IndexError, TypeError):
+        pass
+    return d
+
+
 def parse_page(page, url):
     """
     Parse the page using all parsing methods available.
-
-    :param str  page: the content of the fatality page
+    :param str page: the content of the fatality page
     :param str url: detail page URL
     :return: a dictionary representing a fatality.
     :rtype: dict
@@ -782,25 +867,77 @@ def parse_page(page, url):
     # Parse the page.
     twitter_d = parse_twitter_fields(page)
     page_d, err = parse_page_content(page, bool(twitter_d.get(Fields.NOTES)))
-    if err:
-        logger.debug(f'Fatality report {url} was not parsed correctly:\n\t * ' + '\n\t * '.join(err))
 
-    # Merge the results, from right to left.
-    # (i.e. the rightmost object will override the object just before it, etc.)
-    d = {**page_d, **twitter_d}
+    deceased_people = parse_people(people=page_d.get(Fields.DECEASED) or twitter_d.get(Fields.DECEASED),
+                                   birth_date=twitter_d.get(Fields.DOB) or page_d.get(Fields.DOB),
+                                   collision_date=twitter_d.get(Fields.DATE) or page_d.get(Fields.DATE))
 
-    # We needed the deceased field to be in the return value of parse_page_content for testing.
-    # But now we can delete it.
-    if d.get('Deceased'):
-        del d['Deceased']
+    for person_d, parsing_errors in deceased_people:
+        # Merge the results, from right to left.
+        # (i.e. the rightmost object will override the object just before it, etc.)
+        d = {**page_d, **twitter_d, **person_d}
+        err = err + parsing_errors
+        if err:
+            logger.debug(f'Fatality report {url} was not parsed correctly:\n\t * ' + '\n\t * '.join(err))
 
-    return d
+        # We needed the deceased field to be in the return value of parse_page_content for testing.
+        # But now we can delete it.
+        if d.get('Deceased'):
+            del d['Deceased']
+
+        d = sanitize_fatality_entity(d)
+        yield d
+
+
+def split_on_dates(entry):
+    """
+    Use dates to determine if a Deceased field refers to multiple people.
+    If more than one date appears, the entry is split into multiple
+    Deceased fields, each ending with a date, which is presumably the
+    date of birth.
+    :param entry:
+        a candidate Deceased field
+    :return: one or more Deceased fields
+    :rtype list:
+    """
+    date_regex = r'\d\/\d{1,2}\/\d{4}'
+    date_split_regex = r'(?<=\d\/\d{2}\/\d{4})\s'
+
+    date_occurences = len(re.findall(date_regex, entry))
+    if date_occurences > 1:
+        return re.split(date_split_regex, entry)[:date_occurences]
+    return [entry]
+
+
+def parse_deceased_tag(deceased_tag_p):
+    """
+    Find the part of the relevant HTML tag with the text of a Deceased record.
+    :param bs4.tag deceased_tag_p: HTML tag starting with "Deceased"
+    :return: the part of the tag's text with Name, Ethnicity, and DOB.
+    :rtype str:
+    """
+
+    deceased_text = deceased_tag_p.get_text()
+    if 20 < len(deceased_text) < 100 and "preliminary" not in deceased_text:
+        return re.split(r'Deceased(?: \d)?:', deceased_text, maxsplit=1)[1].strip()
+
+    deceased_field_str = ''
+    starting_tag = deceased_tag_p.find("strong")
+    if not starting_tag:
+        starting_tag = deceased_tag_p
+    for passage in starting_tag.next_siblings:
+        if not passage.string:
+            continue
+        if "preliminary" in passage:
+            break
+        deceased_field_str += passage.string
+
+    return deceased_field_str.strip()
 
 
 def to_soup(html):
     """
     Create a beautiful soup object from a HTML string.
-
     :param string html: represents a HTML document
     :return: A BeautifulSoup object.
     :rtype: bs4.BeautifulSoup
@@ -813,7 +950,6 @@ def to_soup(html):
 async def fetch_and_parse(session, url):
     """
     Parse a fatality page from a URL.
-
     :param aiohttp.ClientSession session: aiohttp session
     :param str url: detail page URL
     :return: a dictionary representing a fatality.
@@ -825,21 +961,27 @@ async def fetch_and_parse(session, url):
         raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
-    d = parse_page(page, url)
-    if not d:
+    deceased_people = parse_page(page, url)
+    entries = []
+
+    person_index = 0
+    for d in deceased_people:
+        # Add the link.
+        d[Fields.LINK] = url
+        # Add a unique ID
+        d[Fields.ID] = f"{d[Fields.CASE]}-{person_index}"
+        person_index += 1
+        entries.append(d)
+
+    if not entries:
         raise ValueError(f'No data could be extracted from the page {url}.')
 
-    # Add the link.
-    d[Fields.LINK] = url
-
-    # Return the result.
-    return d
+    return entries
 
 
 async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
     """
     Retrieve fatality data.
-
     :param str pages: number of pages to retrieve or -1 for all
     :param str from_: the start date
     :param str to: the end date
@@ -881,8 +1023,9 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
             ]
             page_res = await asyncio.gather(*tasks)
 
-            # If the page contains fatalities, ensure all of them happened within the specified time range.
             if page_res:
+                page_res = [person for item in page_res for person in item]
+                # If the page contains fatalities, ensure all of them happened within the specified time range.
                 entries_in_time_range = [
                     entry for entry in page_res if date_utils.is_between(entry[Fields.DATE], from_date, to_date)
                 ]
@@ -909,11 +1052,10 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
                     logger.debug(f'There are no data within the specified time range on page {page}.')
                     break
 
-                # Store the results if the case number is new.
-                res.update({
-                    entry.get(Fields.CASE): entry
-                    for entry in entries_in_time_range if entry.get(Fields.CASE) not in res
-                })
+                # Store the results if the ID number is new.
+                res.update(
+                    {entry.get(Fields.ID): entry
+                     for entry in entries_in_time_range if entry.get(Fields.ID) not in res})
 
             # Stop if there is no further pages.
             if not has_next(news_page) or page >= pages > 0:
