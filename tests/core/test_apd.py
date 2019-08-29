@@ -452,6 +452,11 @@ def test_parse_name(name, expected):
     assert parsed.get("last") == expected["last"]
 
 
+def test_parse_person_errors():
+    result, errors = person.parse_person("text that can't be parsed")
+    assert len(errors) == 2
+
+
 def test_extract_traffic_fatalities_page_details_link_01():
     """Ensure page detail links are extracted from news page."""
     news_page = """
@@ -628,11 +633,10 @@ async def test_date_filtering_02(fake_details, fake_news):
     assert len(data) == 1
     assert page_count == 2
 
+
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
                  side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
-@asynctest.patch(
-    "scrapd.core.apd.fetch_detail_page",
-    side_effect=[load_test_page('traffic-fatality-50-3')] * 15)
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", side_effect=[load_test_page('traffic-fatality-50-3')] * 15)
 @pytest.mark.asyncio
 async def test_both_fatalities_from_one_incident(fake_details, fake_news):
     data, page_count = await apd.async_retrieve(pages=-1, from_="2019-08-16", to="2019-08-18", attempts=1, backoff=1)
@@ -834,10 +838,9 @@ def test_extract_twitter_description_meta_00(input_, expected):
         '<p>	<strong>Deceased 2:&nbsp; </strong>Aamna Najam | Asian female | 01/26/1992</p>',
         ['Cedric Benson | Black male | 12/28/1982', 'Aamna Najam | Asian female | 01/26/1992'],
         id='double deceased',
-    )), (pytest.param(
-        '<p> <strong>Deceased:   </strong>Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) </p>',
-        ['Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977)'],
-        id='colon after DOB'
+    )), (pytest.param('<p> <strong>Deceased:   </strong>Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) </p>',
+                      ['Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977)'],
+                      id='colon after DOB'
     ))))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
