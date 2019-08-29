@@ -840,8 +840,7 @@ def test_extract_twitter_description_meta_00(input_, expected):
         id='double deceased',
     )), (pytest.param('<p> <strong>Deceased:   </strong>Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977) </p>',
                       ['Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977)'],
-                      id='colon after DOB'
-    ))))
+                      id='colon after DOB'))))
 def test_parse_deceased_field_00(input_, expected):
     """Ensure the deceased field gets parsed correctly."""
     field = parsing.to_soup(input_)
