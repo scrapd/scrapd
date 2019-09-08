@@ -237,6 +237,19 @@ def test_parse_twitter_description_number_deceased(input_, expected):
     assert actual == expected
 
 
+def test_parse_twitter_description_without_notes():
+    """
+    Test that the parser finds the right number of deceased people.
+    """
+    twitter_description = (
+        "'Case:         19-1321936 Date:          May 12, 2019 "
+        "Time:         11:34 p.m. Location:   12100 N. IH-35 NB Service road "
+        "Deceased:  First Middle Last, Black male, D.O.B. August 30, 1966'"
+    )
+    d = parsing.parse_twitter_description(twitter_description)
+    assert not d.get("D.O.B.")
+    assert d["DOB"] == datetime.date(1966, 8, 30)
+
 @pytest.mark.parametrize('page,start,end',
                          scenario_inputs(mock_data.note_fields_scenarios),
                          ids=scenario_ids(mock_data.note_fields_scenarios))
@@ -274,6 +287,15 @@ def test_parse_notes_field(page, start, end):
     assert notes.startswith(start)
     assert notes.endswith(end)
 
+def test_no_DOB_field_when_DOB_not_provided():
+    """
+    Test that "Hispanic male, 19 years of age" does not
+    generate a DOB field.
+    """
+    page_fd = TEST_DATA_DIR / 'traffic-fatality-20-4'
+    page = page_fd.read_text()
+    parsed_content = next(parsing.parse_page(page, 'fake_url'))
+    assert not parsed_content.get(Fields.DOB)
 
 @pytest.mark.parametrize('page,start,end', (('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'), ))
 def test_extract_deceased_field_twitter(page, start, end):

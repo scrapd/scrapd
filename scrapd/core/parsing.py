@@ -279,6 +279,8 @@ def twitter_description_to_dict(twitter_description):
         else:
             d["Deceased"] = [d["Deceased"]]
 
+    if d.get("D.O.B."):
+        d["DOB"] = d.pop("D.O.B.")
     return d
 
 
@@ -312,7 +314,10 @@ def parse_twitter_description(twitter_description):
     # Handle special case where Date of birth is a token `DOB:`.
     tmp_dob = d.get(Fields.DOB)
     if tmp_dob:
-        d[Fields.DOB] = date_utils.parse_date(tmp_dob.split()[0])
+        try:
+            d[Fields.DOB] = date_utils.parse_date(tmp_dob)
+        except ValueError:
+            d[Fields.DOB] = date_utils.parse_date(tmp_dob.split()[0])
 
     return d
 
