@@ -240,6 +240,27 @@ def parse_page_content(detail_page, notes_parsed=False):
     return d, parsing_errors
 
 
+def twitter_deceased_field_to_list(deceased_field):
+    """
+    Convert a string Deceased field to a list of items about deceased people.
+
+    Relies on the field containing "Deceased 1", "Deceased 2", etc. between
+    the mentions of individuals.
+
+    :param deceased_field:
+        a string representing the Deceased field from a Twitter summary of an
+        APD traffit fatality bulletin
+
+    :return:
+        a list of strings describing individuals from the Deceased field
+
+    :rtype: list
+    """
+    if "Deceased" in deceased_field:
+        return deceased_field.split("Deceased")
+    return [deceased_field]
+
+
 def twitter_description_to_dict(twitter_description):
     """
     Convert text of twitter_description field to a dict with string values.
@@ -264,9 +285,7 @@ def twitter_description_to_dict(twitter_description):
         if word == 'preliminary':
             current_field = 'Notes'
             word = 'The preliminary'
-        if not current_field:
-            continue
-        if word.endswith(":"):
+        if word.endswith(":") or not current_field:
             continue
         if d.get(current_field):
             d[current_field] = d[current_field] + f" {word}"
@@ -274,10 +293,7 @@ def twitter_description_to_dict(twitter_description):
             d[current_field] = word
 
     if d.get("Deceased"):
-        if "Deceased" in d["Deceased"]:
-            d["Deceased"] = d["Deceased"].split("Deceased")
-        else:
-            d["Deceased"] = [d["Deceased"]]
+        d["Deceased"] = twitter_deceased_field_to_list(d["Deceased"])
 
     if d.get("D.O.B."):
         d["DOB"] = d.pop("D.O.B.")
