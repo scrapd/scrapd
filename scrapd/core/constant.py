@@ -13,6 +13,7 @@ class Fields():
     ETHNICITY = 'Ethnicity'
     FIRST_NAME = 'First Name'
     GENDER = 'Gender'
+    ID = 'ID'
     LAST_NAME = 'Last Name'
     LINK = 'Link'
     LOCATION = 'Location'

@@ -63,6 +63,7 @@ in `json`::
       "Fatal crashes this year": "2",
       "First Name": "Ann",
       "Gender": "female",
+      "ID": "19-0161105-0",
       "Last Name": "Bottenfield-Seago",
       "Link": "http://austintexas.gov/news/traffic-fatality-2-3",
       "Location": "West William Cannon Drive and Ridge Oak Road",
@@ -78,6 +79,7 @@ in `json`::
       "Fatal crashes this year": "1",
       "First Name": "Hilburn",
       "Gender": "male",
+      "ID": "19-0150158-0",
       "Last Name": "Sell",
       "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
       "Location": "10500 block of N IH 35 SB",
@@ -116,6 +118,7 @@ of the process::
       "Fatal crashes this year": "3",
       "First Name": "Jesus",
       "Gender": "male",
+      "ID": "19-0081623-0",
       "Last Name": "Servantez",
       "Link": "http://austintexas.gov/news/traffic-fatality-3-4",
       "Location": "3600 block of South Capital of Texas Highway SB",
@@ -131,6 +134,7 @@ of the process::
       "Fatal crashes this year": "2",
       "First Name": "Ann",
       "Gender": "female",
+      "ID": "19-0161105-0",
       "Last Name": "Bottenfield-Seago",
       "Link": "http://austintexas.gov/news/traffic-fatality-2-3",
       "Location": "West William Cannon Drive and Ridge Oak Road",
@@ -146,6 +150,7 @@ of the process::
       "Fatal crashes this year": "1",
       "First Name": "Hilburn",
       "Gender": "male",
+      "ID": "19-0150158-0",
       "Last Name": "Sell",
       "Link": "http://austintexas.gov/news/traffic-fatality-1-4",
       "Location": "10500 block of N IH 35 SB",
@@ -153,6 +158,8 @@ of the process::
       "Time": "6:20 a.m."
     }
   ]
+
+The "Case" field is assigned by the Austin Police Department, while the "ID" field is a key assigned by ScrAPD to label a separate record for each deceased person.
 
 Speed and accuracy
 ------------------
