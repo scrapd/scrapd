@@ -12,15 +12,18 @@ import pprint
 import sys
 
 from scrapd.core.constant import Fields
+from scrapd.core import model
 
 CSVFIELDS = [
-    Fields.CRASHES,
+    Fields.CRASH,
     Fields.CASE,
     Fields.DATE,
     Fields.TIME,
     Fields.LOCATION,
     Fields.FIRST_NAME,
+    Fields.MIDDLE_NAME,
     Fields.LAST_NAME,
+    Fields.GENERATION,
     Fields.ETHNICITY,
     Fields.GENDER,
     Fields.DOB,
@@ -28,6 +31,26 @@ CSVFIELDS = [
     Fields.LINK,
     Fields.NOTES,
 ]
+
+
+def json_serializers(obj):
+    """
+    Convert custom objects to string for serialization.
+
+    :rtype: str
+    """
+    json_encoders = {
+        datetime.date: lambda x: x.strftime("%m/%d/%Y"),
+        datetime.time: lambda x: x.strftime("%I:%M %p"),
+        model.Ethnicity: lambda x: x.value,
+        model.Fatality: lambda x: x.dict(),
+        model.Gender: lambda x: x.value,
+        model.Report: lambda x: x.dict(),
+    }
+    try:
+        return json_encoders[type(obj)](obj)
+    except KeyError:
+        raise TypeError("Type %s not serializable" % type(obj))
 
 
 class Formatter():
@@ -60,22 +83,10 @@ class Formatter():
         :param list(dict) results: the results to display.
         """
         # Coverage is disabled for this function as the fact that we set output to sys.stdout early messes up
-        # with capsys in pytest, and prevent it to capture the out correctly.
+        # with capsys in pytest, and prevents it to capture the out correctly.
         # https://github.com/pytest-dev/pytest/issues/1132
         formatter = self._get_formatter()
         formatter.printer(results, **kwargs)
-
-    def date_serialize(self, obj):
-        """
-        Convert date objects to string for serialization.
-
-        :rtype: str
-        """
-        if isinstance(obj, (datetime.date)):
-            return obj.strftime("%m/%d/%Y")
-        if isinstance(obj, (datetime.time)):
-            return obj.strftime("%I:%M %p")
-        raise TypeError("Type %s not serializable" % type(obj))
 
     # pylint: disable=unused-argument
     def printer(self, results, **kwargs):
@@ -94,7 +105,7 @@ class Formatter():
 
         :rtype: str
         """
-        return json.dumps(results, sort_keys=True, indent=2, default=self.date_serialize)
+        return json.dumps(results, sort_keys=True, indent=2, default=json_serializers)
 
 
 class PythonFormatter(Formatter):
@@ -135,11 +146,29 @@ class CSVFormatter(Formatter):
     __format_name__ = 'csv'
 
     def printer(self, results, **kwargs):  # noqa: D102
-        results = self.to_json_string(results)
-        results = json.loads(results)
+        rows = []
+        for entry in results:
+            for fatality in entry.fatalities:
+                rows.append({
+                    Fields.CRASH: entry.crash,
+                    Fields.CASE: entry.case,
+                    Fields.DATE: entry.date,
+                    Fields.TIME: entry.time,
+                    Fields.LOCATION: entry.location,
+                    Fields.FIRST_NAME: fatality.first,
+                    Fields.MIDDLE_NAME: fatality.middle,
+                    Fields.LAST_NAME: fatality.last,
+                    Fields.GENERATION: fatality.generation,
+                    Fields.ETHNICITY: fatality.ethnicity.value,
+                    Fields.GENDER: fatality.gender.value,
+                    Fields.DOB: fatality.dob,
+                    Fields.AGE: fatality.age,
+                    Fields.LINK: entry.link,
+                    Fields.NOTES: entry.notes,
+                })
         writer = csv.DictWriter(self.output, fieldnames=CSVFIELDS, extrasaction='ignore')
         writer.writeheader()
-        writer.writerows(results)
+        writer.writerows(rows)
 
 
 class CountFormatter(Formatter):

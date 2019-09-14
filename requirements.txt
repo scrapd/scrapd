@@ -4,4 +4,5 @@ click==7.0
 dateparser==0.7.1
 loguru==0.2.5
 pbr>=5.2.0
+pydantic==0.32.2
 tenacity==5.0.4

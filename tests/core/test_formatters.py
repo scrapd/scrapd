@@ -11,6 +11,7 @@ from scrapd.core.formatter import (
     JSONFormatter,
     PythonFormatter,
 )
+from scrapd.core import model
 
 
 class TestFormatter:
@@ -35,14 +36,14 @@ class TestFormatter:
         f = CSVFormatter(output=sys.stdout)
         f.printer(RESULTS)
         out, _ = capsys.readouterr()
-        assert "12/05/2005" in out
+        assert '19-2540190' in out
 
     def test_formatter_json_date_style(self, capsys):
         """Check that dates are stored in month-first format."""
         f = JSONFormatter(output=sys.stdout)
         f.printer(RESULTS)
         out, _ = capsys.readouterr()
-        assert '"DOB": "12/05/2005"' in out
+        assert '"dob": "06/19/1978"' in out
 
     def test_formatter_typeerror(self):
         """Ensure some correct text is in the output."""
@@ -62,24 +63,35 @@ class TestFormatter:
         f = Formatter(format_='default', output=sys.stdout)
         f.printer(RESULTS)
         out, _ = capsys.readouterr()
-        assert "'Case': '19-0400694'" in out
+        assert "case='19-2540190'" in out
 
 
 RESULTS = [
-    {
-        'Age': 13,
-        'Case': '19-0400694',
-        'DOB': datetime.date(2005, 12, 5),
-        'Date': 'February 9, 2019',
-        'Ethnicity': 'Black',
-        'Fatal crashes this year': '7',
-        'First Name': 'Zion',
-        'Gender': 'male',
-        'Last Name': 'Mouton',
-        'Link': 'http://austintexas.gov/news/traffic-fatality-7-4',
-        'Location': '6000 block of Springdale Road',
-        'Time': datetime.time(12, 48),
-    },
+    model.Report(
+        case='19-2540190',
+        crash=58,
+        date=datetime.date(2019, 9, 11),
+        fatalities=[
+            model.Fatality(
+                age=41,
+                dob=datetime.date(1978, 6, 19),
+                ethnicity=model.Ethnicity.white,
+                gender=model.Gender.male,
+                first='Joe',
+                last='Ogg',
+                middle='H',
+            ),
+        ],
+        link='http://austintexas.gov/news/traffic-fatality-58-4',
+        latitude=0.0,
+        location='Hwy 290 WB at the 183 SB Flyover',
+        longitude=0.0,
+        notes='The preliminary investigation shows Joe H. Ogg was driving a red, 2001 Harley Davidson Motorcycle '
+        'westbound on Hwy 290 to the southbound 183 flyover when he failed to negotiate the curve and struck a '
+        'wall with the bike. Joe Ogg went over the wall, falling into the westbound lanes of 290 below. He was '
+        'pronounced deceased on scene.',
+        time=datetime.time(4, 37),
+    )
 ]
 
 RESULTS_BAD_TYPE = [

@@ -5,52 +5,6 @@ import re
 from dateparser.search import search_dates
 
 
-def match_twitter_title_meta(page):
-    """
-    Extract the twitter title from the metadata fields.
-
-    :param str page: the content of the fatality page
-    :return: a string representing the twitter tittle.
-    :rtype: str
-    """
-    pattern = re.compile(
-        r'''
-        <meta
-        \s+
-        name=\"twitter:title\"
-        \s+
-        content=\"(.*)\"
-        \s+
-        />
-        ''',
-        re.VERBOSE,
-    )
-    return match_pattern(page, pattern)
-
-
-def match_twitter_description_meta(page):
-    """
-    Extract the twitter description from the metadata fields.
-
-    :param str page: the content of the fatality page
-    :return: a string representing the twitter description.
-    :rtype: str
-    """
-    pattern = re.compile(
-        r'''
-        <meta
-        \s+
-        name=\"twitter:description\"
-        \s+
-        content=\"(.*)\"
-        \s+
-        />
-        ''',
-        re.VERBOSE,
-    )
-    return match_pattern(page, pattern)
-
-
 def match_location_field(page):
     """
     Extract the location information from the content of the fatality page.
@@ -132,7 +86,7 @@ def match_case_field(page):
     return match_pattern(page, case_pattern)
 
 
-def match_crashes_field(page):
+def match_crash_field(page):
     """
     Extract the crash number from the content of the fatality page.
 

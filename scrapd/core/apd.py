@@ -9,9 +9,10 @@ from tenacity import retry
 from tenacity import stop_after_attempt
 from tenacity import wait_exponential
 
-from scrapd.core.constant import Fields
-from scrapd.core import parsing
 from scrapd.core import date_utils
+from scrapd.core import article
+from scrapd.core import model
+from scrapd.core import twitter
 from scrapd.core.regex import match_pattern
 
 APD_URL = 'http://austintexas.gov/department/news/296'
@@ -123,6 +124,32 @@ def has_next(news_page):
     return bool(element)
 
 
+def parse_page(page, url):
+    """
+    Parse the page using all parsing methods available.
+
+    :param str page: the content of the fatality page
+    :param str url: detail page URL
+    :return: a dictionary representing a fatality.
+    :rtype: dict
+    """
+    report = model.Report(case='0')
+
+    # Parse the twitter fields.
+    twitter_report, twitter_err = twitter.parse(page)
+    report.update(twitter_report)
+
+    # Parse the page.
+    article_report, artricle_err = article.parse_content(page)
+    report.update(article_report)
+    if twitter_err or artricle_err:  # pragma: no cover
+        twitter_err_str = f'\nTwitter fields:\n\t * ' + "\n\t * ".join(twitter_err) if twitter_err else ''
+        article_err_str = f'\nArticle fields:\n\t * ' + "\n\t * ".join(artricle_err) if artricle_err else ''
+        logger.debug(f'Errors while parsing {url}:{twitter_err_str}{article_err_str}')
+
+    return report
+
+
 @retry()
 async def fetch_and_parse(session, url):
     """
@@ -139,22 +166,14 @@ async def fetch_and_parse(session, url):
         raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
-    deceased_people = parsing.parse_page(page, url)
-    entries = []
-
-    person_index = 0
-    for d in deceased_people:
-        # Add the link.
-        d[Fields.LINK] = url
-        # Add a unique ID
-        d[Fields.ID] = f"{d[Fields.CASE]}-{person_index}"
-        person_index += 1
-        entries.append(d)
-
-    if not entries:
+    report = parse_page(page, url)
+    if not report:
         raise ValueError(f'No data could be extracted from the page {url}.')
 
-    return entries
+    # Add the report link.
+    report.link = url
+
+    return report
 
 
 async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
@@ -203,10 +222,9 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
             page_res = await asyncio.gather(*tasks)
 
             if page_res:
-                page_res = [person for item in page_res for person in item]
                 # If the page contains fatalities, ensure all of them happened within the specified time range.
                 entries_in_time_range = [
-                    entry for entry in page_res if date_utils.is_between(entry[Fields.DATE], from_date, to_date)
+                    entry for entry in page_res if date_utils.is_between(entry.date, from_date, to_date)
                 ]
 
                 # If 2 pages in a row:
@@ -214,7 +232,7 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
                 #   2) but none of them contain dates within the time range
                 #   3) and we did not collect any valid entries
                 # Then we can stop the operation.
-                past_entries = all([date_utils.is_before(entry[Fields.DATE], from_date) for entry in page_res])
+                past_entries = all([date_utils.is_before(entry.date, from_date) for entry in page_res])
                 if from_ and past_entries and not has_entries:
                     no_date_within_range_count += 1
                 if no_date_within_range_count > 1:
@@ -232,9 +250,7 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
                     break
 
                 # Store the results if the ID number is new.
-                res.update(
-                    {entry.get(Fields.ID): entry
-                     for entry in entries_in_time_range if entry.get(Fields.ID) not in res})
+                res.update({entry.case: entry for entry in entries_in_time_range if entry.case not in res})
 
             # Stop if there is no further pages.
             if not has_next(news_page) or page >= pages > 0:
