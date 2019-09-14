@@ -12,12 +12,7 @@ from tenacity import RetryError
 from tenacity import stop_after_attempt
 
 from scrapd.core import apd
-# from scrapd.core import person
-# from scrapd.core.constant import Fields
-# from tests import mock_data
 from tests.test_common import TEST_DATA_DIR
-# from tests.test_common import scenario_ids
-# from tests.test_common import scenario_inputs
 
 # Disable logging for the tests.
 logger.remove()

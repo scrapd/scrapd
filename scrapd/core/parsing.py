@@ -16,7 +16,8 @@ def get_deceased_tag(soup):
     """
     Get the tag with information about one or more deceased people.
 
-    :param bs4.BeautifulSoup soup: the content of the bulletin page
+    :param bs4.BeautifulSoup soup:
+        the content of the bulletin page
 
     :return:
         the tag labeled "Deceased" in the bulletin
@@ -38,12 +39,8 @@ def parse_notes_field(soup, deceased_field_str):
     """
     Get Notes from deceased field's BeautifulSoup element.
 
-    :param soup bs4.Beautifulsoup:
-        the content of the bulletin page
-
-    :param str deceased_field_str:
-        the Deceased field, other than the Notes section, as a string
-
+    :param soup bs4.Beautifulsoup: the content of the bulletin page
+    :param str deceased_field_str: the Deceased field, other than the Notes section, as a string
     :return: notes from the Deceased field of the APD bulletin
     :rtype: str
     """
@@ -164,8 +161,7 @@ def parse_deceased_field(soup):
     Extract content from deceased field on the fatality page.
 
     :param bs4.BeautifulSoup soup: the content of the bulletin page
-    :return:
-        the Deceased field as a string
+    :return: the Deceased field as a string
     :rtype: str
     """
     deceased_tag_p = get_deceased_tag(soup)
