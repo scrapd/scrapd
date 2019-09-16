@@ -271,13 +271,19 @@ def test_no_DOB_field_when_DOB_not_provided():
     assert not parsed_content.get(Fields.DOB)
 
 
-@pytest.mark.parametrize('page,start,end', (('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'), ))
-def test_extract_deceased_field_twitter(page, start, end):
+@pytest.mark.parametrize('page,before,after', (('traffic-fatality-50-3', '1982', 'Aa'), ))
+def test_extract_deceased_field_twitter(page, before, after):
+    """
+    Ensure that parsing of the Twitter fields results in two different
+    records about deceased people, and that one ends and the next begins
+    in the right place.
+    """
     page_text = load_test_page(page)
     parsed_content = parsing.parse_twitter_fields(page_text)
     deceased = parsed_content[Fields.DECEASED]
-    assert deceased[0].startswith(start)
-    assert deceased[-1].endswith(end)
+    assert deceased[0].strip().endswith(before)
+    assert deceased[-1].strip().startswith(after)
+
 
 
 @pytest.mark.parametrize('page,start,end', (
@@ -472,12 +478,16 @@ def test_parse_deceased_field_00(input_, expected):
 
 @pytest.mark.parametrize('filename,expected', [(k, v) for k, v in parse_multiple_scenarios.items()])
 def test_multiple_deceased(filename, expected):
+    """
+    Ensure that the second record yielded by parsing.parse_page
+    is the second deceased person from a collision.
+    """
     page_text = load_test_page(filename)
     content_parser = parsing.parse_page(page_text, 'fake_url')
     _ = next(content_parser)
-    second = next(content_parser)
+    second_person = next(content_parser)
     for key in expected:
-        assert second[key] == expected[key]
+        assert second_person[key] == expected[key]
 
 
 @pytest.mark.parametrize('input_,expected', (
