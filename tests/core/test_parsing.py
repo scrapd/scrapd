@@ -285,7 +285,6 @@ def test_extract_deceased_field_twitter(page, before, after):
     assert deceased[-1].strip().startswith(after)
 
 
-
 @pytest.mark.parametrize('page,start,end', (
     ('traffic-fatality-15-4', 'Garre', '13/1991'),
     ('traffic-fatality-50-3', 'Cedric', '| 01/26/1992'),
