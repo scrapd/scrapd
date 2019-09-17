@@ -281,8 +281,21 @@ def test_extract_deceased_field_twitter(page, before, after):
     page_text = load_test_page(page)
     parsed_content = parsing.parse_twitter_fields(page_text)
     deceased = parsed_content[Fields.DECEASED]
-    assert deceased[0].strip().endswith(before)
-    assert deceased[-1].strip().startswith(after)
+    assert deceased[0].endswith(before)
+    assert deceased[-1].startswith(after)
+
+
+@pytest.mark.parametrize(
+    'text_field,before,after',
+    (('Sam Driver | Black female | 01/02/1982 Deceased Lee Passenger | Hispanic female | 02/01/1928', '1982', 'Lee'), ))
+def test_twitter_deceased_field_to_list(text_field, before, after):
+    """
+    Test that if the Deceased field contains some text, the word "Deceased", and
+    some more text, it gets broken up into multiple records about multiple deceased people.
+    """
+    multiple_deceased = parsing.twitter_deceased_field_to_list(text_field)
+    assert multiple_deceased[0].endswith(before)
+    assert multiple_deceased[-1].startswith(after)
 
 
 @pytest.mark.parametrize('page,start,end', (

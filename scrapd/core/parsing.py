@@ -257,7 +257,7 @@ def twitter_deceased_field_to_list(deceased_field):
     :rtype: list
     """
     if "Deceased" in deceased_field:
-        return deceased_field.split("Deceased")
+        return [item.strip() for item in deceased_field.split("Deceased")]
     return [deceased_field]
 
 
