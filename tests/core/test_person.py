@@ -104,6 +104,16 @@ from scrapd.core.constant import Fields
             Fields.DOB: datetime.date(1999, 1, 1)
         },
     ),
+    (
+        'John Doe, Hispanic male, born 9-10-80',
+        {
+            Fields.FIRST_NAME: "John",
+            Fields.LAST_NAME: "Doe",
+            Fields.ETHNICITY: "Hispanic",
+            Fields.GENDER: "male",
+            Fields.DOB: datetime.date(1980, 9, 10)
+        },
+    )
 ))
 def test_process_deceased_field_00(deceased, expected):
     """Ensure a deceased field is parsed correctly."""

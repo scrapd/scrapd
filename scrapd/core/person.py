@@ -152,7 +152,7 @@ def dob_search(split_deceased_field):
     :rtype: int
     """
     dob_index = -1
-    dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:']
+    dob_tokens = [Fields.DOB, '(D.O.B', '(D.O.B.', '(D.O.B:', '(DOB', '(DOB:', 'D.O.B.', 'DOB:', 'born', 'Born']
     while dob_index < 0 and dob_tokens:
         dob_token = dob_tokens.pop()
         try:
