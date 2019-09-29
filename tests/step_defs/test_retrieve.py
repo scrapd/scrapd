@@ -5,6 +5,7 @@ from pytest_bdd import scenario
 from pytest_bdd import then
 
 from scrapd.core import apd
+from scrapd.core import model
 from scrapd.core.formatter import Formatter
 from tests.test_common import TEST_ROOT_DIR
 
@@ -44,7 +45,7 @@ def ensure_results(mocker, event_loop, output_format, time_range, entry_count):
     assert len(results) == entry_count
     assert isinstance(results, list)
     if results:
-        assert isinstance(results[0], dict)
+        assert isinstance(results[0], model.Report)
 
     # Get the format and print the results.
     format_ = output_format['format'].lower()

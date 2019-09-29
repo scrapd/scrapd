@@ -1,5 +1,4 @@
 """Test the APD module."""
-# import datetime
 from unittest import mock
 
 import aiohttp
@@ -12,24 +11,14 @@ from tenacity import RetryError
 from tenacity import stop_after_attempt
 
 from scrapd.core import apd
-# from scrapd.core import person
-# from scrapd.core.constant import Fields
-# from tests import mock_data
+from tests.test_common import load_test_page
 from tests.test_common import TEST_DATA_DIR
-# from tests.test_common import scenario_ids
-# from tests.test_common import scenario_inputs
 
 # Disable logging for the tests.
 logger.remove()
 
 # Set faker object.
 fake = Faker()
-
-
-def load_test_page(page):
-    """Load a test page."""
-    page_fd = TEST_DATA_DIR / page
-    return page_fd.read_text()
 
 
 @pytest.fixture
@@ -142,11 +131,12 @@ async def test_date_filtering_02(fake_details, fake_news):
 @asynctest.patch("scrapd.core.apd.fetch_detail_page", side_effect=[load_test_page('traffic-fatality-50-3')] * 15)
 @pytest.mark.asyncio
 async def test_both_fatalities_from_one_incident(fake_details, fake_news):
-    data, page_count = await apd.async_retrieve(pages=-1, from_="2019-08-16", to="2019-08-18", attempts=1, backoff=1)
+    data, _ = await apd.async_retrieve(pages=-1, from_="2019-08-16", to="2019-08-18", attempts=1, backoff=1)
     assert isinstance(data, list)
-    assert len(data) == 2
-    assert data[0]["Age"] == 36
-    assert data[1]["Age"] == 27
+    assert len(data) == 1
+    assert len(data[0].fatalities) == 2
+    assert data[0].fatalities[0].age == 36
+    assert data[0].fatalities[1].age == 27
 
 
 @pytest.mark.asyncio
@@ -216,3 +206,20 @@ async def test_fetch_detail_page_00(fetch_text):
         except Exception:
             pass
     fetch_text.assert_called_once_with(session, url)
+
+
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value='Not empty page')
+@pytest.mark.asyncio
+async def test_fetch_and_parse_01(page, mocker):
+    """Ensure a page that cannot be parsed returns an exception."""
+    mocker.patch("scrapd.core.apd.parse_page", return_value={})
+    with pytest.raises(RetryError):
+        apd.fetch_and_parse.retry.stop = stop_after_attempt(1)
+        await apd.fetch_and_parse(None, 'url')
+
+
+# This is an invalid deceased field due to the "born" keyword:
+#   "Deceased:    Felipe Ramirez, Hispanic male, born 9-16-93"
+def test_parse_page_00():
+    """."""
+    pass
