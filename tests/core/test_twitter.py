@@ -69,7 +69,7 @@ twitter_scenarios = [
         'errors': None,
     },
     {
-        'id': 'no notes',
+        'id': 'no-notes',
         'page': None,
         'description': """
         Case:            18-160882 Date:             Tuesday, January 16, 2018  Time:             5:14 p.m.
@@ -106,7 +106,7 @@ twitter_scenarios = [
         'errors': 1,
     },
     {
-        'id': 'multiple fatalities',
+        'id': 'multiple-fatalities',
         'page': 'traffic-fatality-50-3',
         'description': """
         Case:          19-2291933 Date:           Saturday, August 17, 2019 Time:          10:20 p.m.
@@ -146,6 +146,31 @@ twitter_scenarios = [
         'description': '',
         'expected': model.Report(case='0'),
         'errors': 1,
+    },
+    {
+        'id': 'with-arrested',
+        'page': None,
+        'description': 'Case:           19-2661710 Date:            Monday, September 23, 2019 '
+        'Time:            8:23 p.m. Location:      9000 block of S. Congress Avenue '
+        'Deceased:    Christian Livingston | White male | 01/09/1993  '
+        'Arrested:      Debrah Callison | White female | 69 years of age',
+        'expected': model.Report(
+            case='19-2661710',
+            date=datetime.date(2019, 9, 23),
+            fatalities=[
+                model.Fatality(
+                    age=26,
+                    dob=datetime.date(1993, 1, 9),
+                    ethnicity=model.Ethnicity.white,
+                    first='Christian',
+                    gender=model.Gender.male,
+                    last='Livingston',
+                ),
+            ],
+            location='9000 block of S. Congress Avenue',
+            time=datetime.time(20, 23),
+        ),
+        'errors': 0,
     },
 ]
 
@@ -230,10 +255,9 @@ class TestParseTwitter:
                 id='normalize-dob',
             ),
             pytest.param(
-                {'Deceased': 'Eva Marie Gonzales? W/F> DOB< 01-22-1961'},
+                {'Deceased': 'Unidentified person'},
                 {
-                    'Deceased': 'Eva Marie Gonzales? W/F> DOB< 01-22-1961',
-                    'fatalities': []
+                    'Deceased': 'Unidentified person',
                 },
                 id='with-fatality-error',
             ),
