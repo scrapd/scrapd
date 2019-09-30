@@ -248,6 +248,17 @@ deceased_scenarios = [
         ),
         'id': 'no-names-shorts',
     },
+    {
+        'input_': 'Felipe Ramirez, Hispanic male, born 9-16-93',
+        'expected': model.Fatality(
+            dob=datetime.date(1993, 9, 16),
+            ethnicity=model.Ethnicity.hispanic,
+            first='Felipe',
+            gender=model.Gender.male,
+            last='Ramirez',
+        ),
+        'id': 'born-instead-of-dob',
+    },
 ]
 
 
