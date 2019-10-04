@@ -69,26 +69,26 @@ def tokenize_description(twitter_description):
 
     # Split the description to be able to parse it.
     current_field = None
-    description_words = twitter_description.split()
-    expected_headings = {"Case", "Date", "Deceased", "DOB", "D.O.B.", "Location", "Time"}
+
+    # Look for deceased fields followed by a space and a digit and remove the space.
+    p = re.compile(r"Deceased (\d):")
+    description = p.sub(r"Deceased\1:", twitter_description)
+
+    # Process the description.
+    description_words = description.split()
     for word in description_words:
-        if word.strip(":") in expected_headings:
-            current_field = word.strip(":")
-            expected_headings.remove(word.strip(":"))
+        # A word ending with a colon (':') is considered a field.
+        if word.endswith(':'):
+            current_field = word.replace(':', '')
             continue
-
-        if word.endswith(":") or not current_field:
+        if not current_field:
             continue
+        d.setdefault(current_field, []).append(word)
 
-        if d.get(current_field):
-            # DOB must only contain one word.
-            if current_field in ['DOB', 'D.O.B.']:
-                continue
-
-            # Otherwise, just append the word.
-            d[current_field] += f" {word}"
-        else:
-            d[current_field] = word
+    # Turn all the lists into strings.
+    for key in d:
+        if isinstance(d[key], list):
+            d[key] = " ".join(d[key])
 
     return d
 
@@ -109,23 +109,23 @@ def normalize_tokens(d):
     if d.get("D.O.B."):
         d["DOB"] = d.pop("D.O.B.")
 
-    # Split the deceaased fields of turn it into a list.
-    if d.get("Deceased"):
-        d['fatalities'] = []
-        dob_marker = f'DOB: {d["DOB"]}' if d.get('DOB') else ''
-        tmp_fatalities = d['Deceased'].split('Deceased') if 'Deceased' in d['Deceased'] else [
-            f"{d['Deceased']} {dob_marker}"
-        ]
+    # Group all the falaities in a list.
+    tmp_fatalities = [d[k] for k in d if k.startswith("Deceased")]
 
-        for fatality in tmp_fatalities:
-            try:
-                f, errors = deceased.process_deceased_field(fatality)
-            except ValueError as e:
-                err.append(str(e))
-                continue
-            else:
-                d['fatalities'].append(f)
-                err.extend(errors)
+    # If there is only one fatality we must ensure there is a DOB marker in the deceased field.
+    if len(tmp_fatalities) == 1 and d.get('DOB'):
+        tmp_fatalities = [f"{tmp_fatalities[0]} DOB {d.get('DOB')}"]
+
+    # Process each fatality.
+    for fatality in tmp_fatalities:
+        try:
+            f, errors = deceased.process_deceased_field(fatality)
+        except ValueError as e:
+            err.append(str(e))
+            continue
+        else:
+            d.setdefault('fatalities', []).append(f)
+            err.extend(errors)
 
     # Parse the `Date` field.
     fatality_date = d.get('Date')
