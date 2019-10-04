@@ -15,7 +15,7 @@ def match_location_field(page):
     location_pattern = re.compile(
         r'''
         >Location:      # The name of the desired field.
-        \s*             # Any whitespace (at least 2)
+        \s*             # Any whitespace
         (?:</span>)?    # Non capture closing span tag
         (?:</strong>)?  # Non capture closing strong tag
         \s{2,}          # Any whitespace (at least 2)
@@ -109,7 +109,8 @@ def match_date_field(page):
     date_pattern = re.compile(
         r'''
         >Date:          # The name of the desired field.
-        .*\s{2,}        # Any character and whitespace.
+        \s*             # # Any whitespace
+        (?:</span>)?    # Non capture closing span tag
         (?:</strong>)?  # Non-capture (literal match).
         ([^<]*)         # Capture any character except '<'.
         <               # Non-capture (literal match)

@@ -133,23 +133,19 @@ class TestPageParseContent:
 
     @pytest.mark.parametrize('page,expected,errors', [
         pytest.param(
-            '<p><strong>Case:</strong>18-1591949</p>',
-            model.Report(case=18 - 1591949),
-            5,
-            id='case-field-only',
-        ),
-        pytest.param(
-            '<p><strong>Case:</strong>18-1591949</p>'
+            '<p><strong>Case: </strong>19-2291933</p>'
+            '<p><strong>Date: </strong>Saturday, August 17, 2019</p>'
             '<p><strong>Deceased 1:&nbsp; </strong>Cedric Benson | Black male | 12/28/1982</p>',
-            model.Report(case=18 - 1591949),
-            5,
+            model.Report(case="19-2291933", date=datetime.date(2019, 8, 17)),
+            4,
             id='case-deceased-no-notes',
         ),
         pytest.param(
-            '<meta name="twitter:description" content="Case: 18-3551763 Date: December 21, 2018 ',
-            model.Report(case=18 - 1591949),
-            5,
-            id='invalid-twitter-description',
+            '<p><strong>Case: </strong>19-2291933</p>'
+            '<p><strong>Date: </strong>Saturday, August 17, 2019</p>',
+            model.Report(case="19-2291933", date=datetime.date(2019, 8, 17)),
+            4,
+            id='no-deceased',
         ),
     ])
     def test_parse_page_content_02(self, page, expected, errors):
@@ -159,6 +155,19 @@ class TestPageParseContent:
             assert errors == len(err)
         else:
             assert actual == expected
+
+    @pytest.mark.parametrize('page,expected,errors', [
+        pytest.param(
+            '<p><strong>Case:</strong>18-1591949</p>',
+            model.Report(case="18-1591949", date=datetime.datetime.now().date()),
+            4,
+            id='case-field-only',
+        ),
+    ])
+    def test_parse_page_content_03(self, page, expected, errors):
+        """Ensure special cases are handled."""
+        with pytest.raises(ValueError, match='a date is mandatory'):
+            actual, err = article.parse_content(page)
 
     @pytest.mark.parametrize(
         'input_,expected',

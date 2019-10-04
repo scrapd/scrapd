@@ -32,11 +32,8 @@ twitter_scenarios = [
         'id': 'case-number-only',
         'page': 'traffic-fatality-2-3',
         'description': "Case:           19-0161105",
-        'expected': model.Report(
-            case='19-0161105',
-            crash=2,
-        ),
-        'errors': None,
+        'expected': None,
+        'errors': 1,
     },
     {
         'id': 'regular',
@@ -95,7 +92,7 @@ twitter_scenarios = [
         'errors': None,
     },
     {
-        'id': 'invalid - no case number',
+        'id': 'invalid-no-case-number',
         'page': None,
         'description': """
         APD is asking any businesses in the area of East Cesar Chavez and Adam L. Chapa Sr. streets
@@ -103,7 +100,7 @@ twitter_scenarios = [
         See video of suspect vehicle here --&gt; https://youtu.be/ezxaRW79PnI
         """,
         'expected': None,
-        'errors': 1,
+        'errors': 2,
     },
     {
         'id': 'multiple-fatalities',
@@ -144,8 +141,8 @@ twitter_scenarios = [
         'id': 'empty-description',
         'page': None,
         'description': '',
-        'expected': model.Report(case='0'),
-        'errors': 1,
+        'expected': model.Report(case='19-123456', date=datetime.datetime.now().date()),
+        'errors': 2,
     },
     {
         'id': 'with-arrested',

@@ -116,7 +116,12 @@ def parse_content(page):
     # Parse the `Case` field.
     d[Fields.CASE] = regex.match_case_field(normalized_detail_page)
     if not d.get(Fields.CASE):
-        raise ValueError('A case number is mandatory.')
+        raise ValueError('a case number is mandatory')
+
+    # Parse the `Date` field.
+    d[Fields.DATE] = regex.match_date_field(normalized_detail_page)
+    if not d.get(Fields.DATE):
+        raise ValueError('a date is mandatory')
 
     # Parse the `Crashes` field.
     crash_str = regex.match_crash_field(normalized_detail_page)
@@ -124,13 +129,6 @@ def parse_content(page):
         d[Fields.CRASH] = crash_str
     else:
         parsing_errors.append("could not retrieve the crash number")
-
-    # Parse the `Date` field.
-    date_field = regex.match_date_field(normalized_detail_page)
-    if date_field:
-        d[Fields.DATE] = date_field
-    else:
-        parsing_errors.append("could not retrieve the crash date")
 
     # Parse the `Time` field.
     time_str = regex.match_time_field(normalized_detail_page)
