@@ -8,6 +8,7 @@ from pydantic import Extra
 from pydantic import validator
 
 from scrapd.core import date_utils
+from scrapd.core import regex
 
 
 class ModelConfig:
@@ -67,7 +68,7 @@ class Report(BaseModel):
 
     case: str
     crash: int = 0
-    date: datetime.date = None
+    date: datetime.date
     fatalities: List[Fatality] = []
     link: str = ''
     latitude: float = 0.0
@@ -81,10 +82,6 @@ class Report(BaseModel):
 
     def compute_fatalities_age(self):
         """Compute the ages of all fatalities in a report."""
-        # A crash date is required to compute fatality's ages.
-        if not self.date:
-            return
-
         for f in self.fatalities:
             # Skip if the fatality already has an age, or if there is no dob.
             if f.age or not f.dob:
@@ -100,9 +97,24 @@ class Report(BaseModel):
 
         attrs = ['case', 'crash', 'date', 'fatalities', 'link', 'latitude', 'location', 'longitude', 'notes', 'time']
         for attr in attrs:
-            # Case is a special case.
-            if attr == 'case':
+            # Only the required values can be overridden.
+            if attr in ('case', 'date'):
                 setattr(self, attr, getattr(other, attr))
                 continue
             if not getattr(self, attr):
                 setattr(self, attr, getattr(other, attr))
+
+    @validator('case')
+    def valid_case_number(cls, v):  # pylint: disable=no-self-argument
+        """Ensure a case number is valid."""
+        pattern = r"(\d{2}-\d{5,7})"
+        if not regex.match_pattern(v, pattern):
+            raise ValueError('invalid format: "{v}"')
+        return v
+
+    @validator('date')
+    def valid_date(cls, v):  # pylint: disable=no-self-argument
+        """Ensure a case number is valid."""
+        if v.year < 2000:
+            raise ValueError(f'invalid date: "{v}"')
+        return v

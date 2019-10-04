@@ -6,6 +6,7 @@ from faker import Faker
 import pytest
 
 from scrapd.core import model
+from scrapd.core.constant import Fields
 
 # Set faker object.
 fake = Faker()
@@ -13,7 +14,7 @@ fake = Faker()
 compute_age_scenarios = [
     {
         'input_': model.Report(
-            case='case',
+            case='19-123456',
             date=datetime.date(2019, 1, 16),
             fatalities=[
                 model.Fatality(dob=datetime.date(1960, 2, 15)),
@@ -24,7 +25,7 @@ compute_age_scenarios = [
     },
     {
         'input_': model.Report(
-            case='case',
+            case='19-123456',
             date=datetime.date(2019, 1, 16),
             fatalities=[
                 model.Fatality(age=100),
@@ -35,7 +36,7 @@ compute_age_scenarios = [
     },
     {
         'input_': model.Report(
-            case='case',
+            case='19-123456',
             date=datetime.date(2019, 1, 16),
             fatalities=[
                 model.Fatality(),
@@ -48,21 +49,21 @@ compute_age_scenarios = [
 
 update_model_scenarios = [
     {
-        'input_': model.Report(case=0),
-        'other': model.Report(case=0),
-        'expected': model.Report(case=0),
+        'input_': model.Report(case='19-123456', date=datetime.datetime.now().date()),
+        'other': model.Report(case='19-123456', date=datetime.datetime.now().date()),
+        'expected': model.Report(case='19-123456', date=datetime.datetime.now().date()),
         'id': 'simple',
     },
     {
-        'input_': model.Report(case=0, link='link'),
+        'input_': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='link'),
         'other': None,
-        'expected': model.Report(case=0, link='link'),
+        'expected': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='link'),
         'id': 'None',
     },
     {
-        'input_': model.Report(case=0, link='link'),
-        'other': model.Report(case=0, link='other link', crash=1),
-        'expected': model.Report(case=0, link='link', crash=1),
+        'input_': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='link'),
+        'other': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='other link', crash=1),
+        'expected': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='link', crash=1),
         'id': 'complex',
     },
 ]
@@ -109,15 +110,17 @@ class TestReportModel:
 
     def test_report_model_00(self):
         """Ensure an empty model works."""
-        m = model.Report(case='')
+        m = model.Report(case='19-123456', date=datetime.datetime.now().date())
         assert m is not None
         for k, v in m.dict().items():
-            assert isinstance(v, Enum) or not v
+            if k == Fields.CASE:
+                continue
+            assert isinstance(v, (Enum, datetime.date)) or not v
 
     def test_report_model_01(self):
         """Ensure a full model works."""
         m = model.Report(
-            case=fake.pystr(),
+            case='19-123456',
             date=datetime.datetime.now().date(),
             crash=1,
             latitude=30.222337,
@@ -153,7 +156,17 @@ class TestReportModel:
 
     def test_update_01(self):
         """Ensure the case field gets updated."""
-        actual = model.Report(case='0')
-        other = model.Report(case='1')
+        actual = model.Report(case='19-123456', date=datetime.datetime.now().date())
+        other = model.Report(case='19-123456', date=datetime.datetime.now().date())
         actual.update(other)
         assert actual == other
+
+    def test_invalid_case_number(self):
+        """Ensure the case number has a valid format."""
+        with pytest.raises(ValueError):
+            model.Report(case='123456', date=datetime.datetime.now().date())
+
+    def test_invalid_date(self):
+        """Ensure the report date is valid."""
+        with pytest.raises(ValueError):
+            model.Report(case='19-123456', date=datetime.date.min)

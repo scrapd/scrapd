@@ -1,5 +1,6 @@
 """Define the module containing the function used to scrap data from the APD website."""
 import asyncio
+import datetime
 import re
 from urllib.parse import urljoin
 
@@ -133,7 +134,7 @@ def parse_page(page, url):
     :return: a dictionary representing a fatality.
     :rtype: dict
     """
-    report = model.Report(case='0')
+    report = model.Report(case='19-123456', date=datetime.datetime.now().date())
 
     # Parse the twitter fields.
     twitter_report, twitter_err = twitter.parse(page)
