@@ -40,8 +40,8 @@ def json_serializers(obj):
     :rtype: str
     """
     json_encoders = {
-        datetime.date: lambda x: x.strftime("%m/%d/%Y"),
-        datetime.time: lambda x: x.strftime("%I:%M %p"),
+        datetime.date: lambda x: x.strftime("%Y-%m-%d"),
+        datetime.time: lambda x: x.strftime("%H:%M:%S"),
         model.Ethnicity: lambda x: x.value,
         model.Fatality: lambda x: x.dict(),
         model.Gender: lambda x: x.value,

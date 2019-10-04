@@ -43,7 +43,7 @@ class TestFormatter:
         f = JSONFormatter(output=sys.stdout)
         f.printer(RESULTS)
         out, _ = capsys.readouterr()
-        assert '"dob": "06/19/1978"' in out
+        assert '"dob": "1978-06-19"' in out
 
     def test_formatter_typeerror(self):
         """Ensure some correct text is in the output."""
