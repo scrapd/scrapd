@@ -53,6 +53,17 @@ def json_serializers(obj):
         raise TypeError("Type %s not serializable" % type(obj))
 
 
+def to_json(results):
+    """
+    Convert dict of parsed fields to JSON string.
+
+    :param results dict: results of scraping APD news site
+
+    :rtype: str
+    """
+    return json.dumps(results, sort_keys=True, indent=2, default=json_serializers)
+
+
 class Formatter():
     """
     Define the Formatter base class.
@@ -63,9 +74,9 @@ class Formatter():
     formatters = {}
     __format_name__ = 'default'
 
-    def __init__(self, format_='json', output=sys.stdout):  # noqa: D107
+    def __init__(self, format_='json', output=None):  # noqa: D107
         self.format = format_
-        self.output = output
+        self.output = output or sys.stdout
 
     def __init_subclass__(cls, **kwargs):  # noqa: D105
         super().__init_subclass__(**kwargs)
@@ -97,16 +108,6 @@ class Formatter():
         """
         print(results, file=self.output)
 
-    def to_json_string(self, results):
-        """
-        Convert dict of parsed fields to JSON string.
-
-        :param results dict: results of scraping APD news site
-
-        :rtype: str
-        """
-        return json.dumps(results, sort_keys=True, indent=2, default=json_serializers)
-
 
 class PythonFormatter(Formatter):
     """
@@ -132,7 +133,7 @@ class JSONFormatter(Formatter):
     __format_name__ = 'json'
 
     def printer(self, results, **kwargs):  # noqa: D102
-        json_string = self.to_json_string(results)
+        json_string = to_json(results)
         print(json_string, file=self.output)
 
 
