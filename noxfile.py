@@ -161,7 +161,7 @@ def run_pytest(session, *posargs):
 
 
 def run_pytest_units(session):
-    run_pytest(session, '-m', 'not integrations')
+    run_pytest(session, '-m', 'not integrations and not dump')
 
 
 def run_pytest_integrations(session):

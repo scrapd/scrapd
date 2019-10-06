@@ -13,6 +13,7 @@
 .cache
 .coverage
 .coverage.*
+.dump/
 .eggs/
 .idea/
 .installed.cfg

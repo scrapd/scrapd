@@ -1,6 +1,7 @@
 """Define the module containing the function used to scrap data from the APD website."""
 import asyncio
 import datetime
+from pathlib import Path
 import re
 from urllib.parse import urljoin
 
@@ -10,8 +11,9 @@ from tenacity import retry
 from tenacity import stop_after_attempt
 from tenacity import wait_exponential
 
-from scrapd.core import date_utils
 from scrapd.core import article
+from scrapd.core import constant
+from scrapd.core import date_utils
 from scrapd.core import model
 from scrapd.core import twitter
 from scrapd.core.regex import match_pattern
@@ -125,7 +127,7 @@ def has_next(news_page):
     return bool(element)
 
 
-def parse_page(page, url):
+def parse_page(page, url, dump=False):
     """
     Parse the page using all parsing methods available.
 
@@ -148,11 +150,19 @@ def parse_page(page, url):
         article_err_str = f'\nArticle fields:\n\t * ' + "\n\t * ".join(artricle_err) if artricle_err else ''
         logger.debug(f'Errors while parsing {url}:{twitter_err_str}{article_err_str}')
 
+        # Dump the file.
+        if dump:
+            dumpr_dir = Path(constant.DUMP_DIR)
+            dumpr_dir.mkdir(parents=True, exist_ok=True)
+            dump_file_name = url.split('/')[-1]
+            dump_file = dumpr_dir / dump_file_name
+            dump_file.write_text(page)
+
     return report
 
 
 @retry()
-async def fetch_and_parse(session, url):
+async def fetch_and_parse(session, url, dump=False):
     """
     Parse a fatality page from a URL.
 
@@ -167,7 +177,7 @@ async def fetch_and_parse(session, url):
         raise ValueError(f'The URL {url} returned a 0-length content.')
 
     # Parse it.
-    report = parse_page(page, url)
+    report = parse_page(page, url, dump)
     if not report:
         raise ValueError(f'No data could be extracted from the page {url}.')
 
@@ -177,13 +187,16 @@ async def fetch_and_parse(session, url):
     return report
 
 
-async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
+async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1, dump=False):
     """
     Retrieve fatality data.
 
     :param str pages: number of pages to retrieve or -1 for all
     :param str from_: the start date
     :param str to: the end date
+    :param int attempts: number of attempts per report
+    :param int backoff: initial backoff time (second)
+    :param bool dump: dump reports with parsing issues
     :return: the list of fatalities and the number of pages that were read.
     :rtype: tuple
     """
@@ -218,7 +231,7 @@ async def async_retrieve(pages=-1, from_=None, to=None, attempts=1, backoff=1):
                     stop=stop_after_attempt(attempts),
                     wait=wait_exponential(multiplier=backoff),
                     reraise=True,
-                )(session, link) for link in links
+                )(session, link, dump) for link in links
             ]
             page_res = await asyncio.gather(*tasks)
 
