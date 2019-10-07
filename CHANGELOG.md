@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add CLI flag to dump reports with parsing errors on disk. This also adds helper functions and tests to simplify the
+  debuging of the dumps. [#214]
+
+### Changed
+
+- The internal format was updated to allow automated data validation, prevent invalid values to injected in the data
+  and handle multiple fatalities in one crash. New fields were added such as `middle name` or `generation`. [#199]
+
+### Fixed
+
+- Fixed parsing issues:
+  - Fix parsing of `Location` field where its content ws merged with the next field.[#203]
+  - Handle reports containing an `Arrested` field.[#204]
+  - Handle `born` as a marker to extract the deceased date of birth. [#208]
+  - Fix `Date` parsing regex. [#210]
+
 ## [[2.1.1]] - 2019-08-22
 
 ### Fixed
@@ -191,3 +209,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#171]: https://github.com/scrapd/scrapd/pull/171
 [#172]: https://github.com/scrapd/scrapd/pull/172
 [#178]: https://github.com/scrapd/scrapd/pull/178
+[#203]: https://github.com/scrapd/scrapd/issues/203
+[#204]: https://github.com/scrapd/scrapd/issues/204
+[#208]: https://github.com/scrapd/scrapd/pull/208
+[#210]: https://github.com/scrapd/scrapd/pull/210
