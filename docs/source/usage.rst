@@ -53,6 +53,9 @@ The log level can be adjusted by adding/removing `-v` flags:
 
 For 2 `-v` and more, the log format also changes from compact to verbose.
 
+The `dump` option is intended to be used by developpers only. If the parser encounters an error, it will dump the
+content of the HTML page on disk, into a `.dump` directory. See the :ref:`contributing-dumping` for more information.
+
 docker
 ------
 

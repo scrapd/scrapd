@@ -11,6 +11,9 @@ from tenacity import RetryError
 from tenacity import stop_after_attempt
 
 from scrapd.core import apd
+from scrapd.core import article
+from scrapd.core import twitter
+from tests.test_common import load_dumped_page
 from tests.test_common import load_test_page
 from tests.test_common import TEST_DATA_DIR
 
@@ -218,8 +221,22 @@ async def test_fetch_and_parse_01(page, mocker):
         await apd.fetch_and_parse(None, 'url')
 
 
-# This is an invalid deceased field due to the "born" keyword:
-#   "Deceased:    Felipe Ramirez, Hispanic male, born 9-16-93"
-def test_parse_page_00():
-    """."""
-    pass
+@pytest.mark.parametrize('page_dump', [
+    pytest.param('traffic-fatality-1-2', id='dumped'),
+])
+@pytest.mark.dump
+def test_dumped_page(page_dump):
+    """
+    Helper test to allow debugging offline.
+
+    Run the following command: `pytest -s -n0 -x -vvv -m dump`
+    """
+    try:
+        page = load_dumped_page(page_dump)
+    except FileNotFoundError:
+        raise FileNotFoundError(f'Dump file "{page_dump}" not found: run "scrapd --dump" first.')
+    else:
+        twitter_report, twitter_err = twitter.parse(page)
+        assert not twitter_err
+        article_report, artricle_err = article.parse_content(page)
+        assert not artricle_err

@@ -24,6 +24,7 @@ __version__ = detect_from_metadata(APP_NAME)
 @click.command()
 @click.option('-a', '--attempts', type=click.INT, default=3, help='number of attempts per report', show_default=True)
 @click.option('-b', '--backoff', type=click.INT, default=3, help='initial backoff time (second)', show_default=True)
+@click.option('--dump', is_flag=True, help='dump reports with parsing issues', show_default=True)
 @click.option(
     '-f',
     '--format',
@@ -38,7 +39,7 @@ __version__ = detect_from_metadata(APP_NAME)
 @click.option('--to', help='end date')
 @click.option('-v', '--verbose', count=True, help='adjust the log level')
 @click.pass_context
-def cli(ctx, attempts, backoff, format_, from_, pages, to, verbose):  # noqa: D403
+def cli(ctx, attempts, backoff, dump, format_, from_, pages, to, verbose):  # noqa: D403
     """Retrieve APD's traffic fatality reports."""
     ctx.obj = {**ctx.params}
     ctx.auto_envvar_prefix = 'VZ'
@@ -82,6 +83,7 @@ class Retrieve(AbstractCommand):
                 self.args['to'],
                 self.args['attempts'],
                 self.args['backoff'],
+                self.args['dump'],
             ))
         result_count = len(results)
         logger.info(f'Total: {result_count}')

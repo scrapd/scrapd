@@ -23,3 +23,6 @@ class Fields():
     MIDDLE_NAME = 'middle'
     NOTES = 'notes'
     TIME = 'time'
+
+
+DUMP_DIR = '.dump'
