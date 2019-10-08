@@ -32,8 +32,8 @@ twitter_scenarios = [
         'id': 'case-number-only',
         'page': 'traffic-fatality-2-3',
         'description': "Case:           19-0161105",
-        'expected': None,
-        'errors': 1,
+        'expected': model.Report(case="19-0161105", crash=2),
+        'errors': 0,
     },
     {
         'id': 'regular',
@@ -100,7 +100,7 @@ twitter_scenarios = [
         See video of suspect vehicle here --&gt; https://youtu.be/ezxaRW79PnI
         """,
         'expected': None,
-        'errors': 2,
+        'errors': 1,
     },
     {
         'id': 'multiple-fatalities',
@@ -142,7 +142,7 @@ twitter_scenarios = [
         'page': None,
         'description': '',
         'expected': model.Report(case='19-123456', date=datetime.datetime.now().date()),
-        'errors': 2,
+        'errors': 1,
     },
     {
         'id': 'with-arrested',
