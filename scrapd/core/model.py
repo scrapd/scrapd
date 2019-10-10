@@ -68,7 +68,7 @@ class Report(BaseModel):
 
     case: str
     crash: int = 0
-    date: datetime.date
+    date: datetime.date = None
     fatalities: List[Fatality] = []
     link: str = ''
     latitude: float = 0.0
@@ -90,18 +90,41 @@ class Report(BaseModel):
             # Compute the age.
             f.age = date_utils.compute_age(self.date, f.dob)
 
-    def update(self, other):
-        """Update a model with values from another one."""
+    def update(self, other, strict=False):
+        """
+        Update a model in place with values from another one.
+
+        Updates only the empty values of the `self` instance with the non-empty values of the `other` instance.
+
+        :param Report other: report to update with
+        :param bool strict: strict mode
+        """
+        # Do nothing if there is no other instance to update from.
         if not other:
             return
 
-        attrs = ['case', 'crash', 'date', 'fatalities', 'link', 'latitude', 'location', 'longitude', 'notes', 'time']
-        for attr in attrs:
-            # Only the required values can be overridden.
-            if attr in ('case', 'date'):
+        # Ensure other instance has the right type.
+        if not isinstance(other, Report):
+            raise TypeError(f'other instance is not of type "Report": {type(other)}')
+
+        # Define the list of attrs.
+        required_attrs = ['case']
+        attrs = ['crash', 'date', 'fatalities', 'link', 'latitude', 'location', 'longitude', 'notes', 'time']
+
+        # When strict...
+        if strict:
+            # The case number and date must be identical.
+            if not all([getattr(self, attr) == getattr(other, attr) for attr in required_attrs]):
+                raise ValueError(
+                    f'in strict mode the required attributes "({", ".join(required_attrs)})" must be identical')
+        else:
+            # Otherwise they are overridden.
+            for attr in required_attrs:
                 setattr(self, attr, getattr(other, attr))
-                continue
-            if not getattr(self, attr):
+
+        # Set the non-empty attributes of `other` into the empty attributes of the current instance.
+        for attr in attrs:
+            if not getattr(self, attr) and getattr(other, attr):
                 setattr(self, attr, getattr(other, attr))
 
     @validator('case')

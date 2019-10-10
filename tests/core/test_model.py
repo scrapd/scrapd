@@ -47,23 +47,34 @@ compute_age_scenarios = [
     },
 ]
 
+now = datetime.datetime.now()
 update_model_scenarios = [
     {
-        'input_': model.Report(case='19-123456', date=datetime.datetime.now().date()),
-        'other': model.Report(case='19-123456', date=datetime.datetime.now().date()),
-        'expected': model.Report(case='19-123456', date=datetime.datetime.now().date()),
-        'id': 'simple',
+        'input_': model.Report(case='19-123456', date=now.date()),
+        'other': model.Report(case='19-123456', date=now.date()),
+        'expected': model.Report(case='19-123456', date=now.date()),
+        'strict': False,
+        'id': 'identical-nonstrict',
     },
     {
-        'input_': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='link'),
+        'input_': model.Report(case='19-123456', date=now.date()),
+        'other': model.Report(case='19-123456', date=now.date()),
+        'expected': model.Report(case='19-123456', date=now.date()),
+        'strict': True,
+        'id': 'identical-strict',
+    },
+    {
+        'input_': model.Report(case='19-123456', date=now.date(), link='link'),
         'other': None,
-        'expected': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='link'),
+        'expected': model.Report(case='19-123456', date=now.date(), link='link'),
+        'strict': False,
         'id': 'None',
     },
     {
-        'input_': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='link'),
-        'other': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='other link', crash=1),
-        'expected': model.Report(case='19-123456', date=datetime.datetime.now().date(), link='link', crash=1),
+        'input_': model.Report(case='19-123456', date=now.date(), link='link'),
+        'other': model.Report(case='19-123456', date=now.date(), link='other link', crash=1),
+        'expected': model.Report(case='19-123456', date=now.date(), link='link', crash=1),
+        'strict': False,
         'id': 'complex',
     },
 ]
@@ -145,21 +156,28 @@ class TestReportModel:
         assert [f.age for f in input_.fatalities] == expected
 
     @pytest.mark.parametrize(
-        'input_,other,expected',
-        [pytest.param(s['input_'], s['other'], s['expected'], id=s['id']) for s in update_model_scenarios],
+        'input_,other,strict,expected',
+        [pytest.param(s['input_'], s['other'], s['strict'], s['expected'], id=s['id']) for s in update_model_scenarios],
     )
-    def test_update_00(self, input_, other, expected):
+    def test_update_00(self, input_, other, strict, expected):
         """Ensure models can be updated."""
         actual = input_.copy(deep=True)
-        actual.update(other)
+        actual.update(other, strict)
         assert actual == expected
 
     def test_update_01(self):
-        """Ensure the case field gets updated."""
-        actual = model.Report(case='19-123456', date=datetime.datetime.now().date())
-        other = model.Report(case='19-123456', date=datetime.datetime.now().date())
-        actual.update(other)
-        assert actual == other
+        """Ensure required fields are identical in strict mode."""
+        actual = model.Report(case='19-123456', date=now.date())
+        other = model.Report(case='19-654321', date=now.date())
+        with pytest.raises(ValueError):
+            actual.update(other, True)
+
+    def test_update_02(self):
+        """Ensure both instances are of type Report."""
+        actual = model.Report(case='19-123456', date=now.date())
+        other = dict(case='19-654321', date=now.date())
+        with pytest.raises(TypeError):
+            actual.update(other)
 
     def test_invalid_case_number(self):
         """Ensure the case number has a valid format."""
