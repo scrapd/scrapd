@@ -9,7 +9,7 @@ results by specifying simple options.
 
 Available formats are:
 
-* `Count`: is a special format which simply counts the number of fatalities within the time range.
+* `Count`: is a special format which simply counts the number of crashes within the time range.
 * `CSV`: is a delimited text file that uses a comma to separate values.
 * `JSON`: is an open-standard file format that uses human-readable text to transmit data
   objects consisting of attribute–value pairs and array data types.
@@ -54,7 +54,7 @@ The log level can be adjusted by adding/removing `-v` flags:
 For 2 `-v` and more, the log format also changes from compact to verbose.
 
 The `dump` option is intended to be used by developpers only. If the parser encounters an error, it will dump the
-content of the HTML page on disk, into a `.dump` directory. See the :ref:`contributing-dumping` for more information.
+content of the HTML page on disk, into a `.dump` directory. See the :ref:`contributing-dumping` section for more information.
 
 docker
 ------
