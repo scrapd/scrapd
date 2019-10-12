@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>scrapd.core package &#8212; scrapd 2.1.1 documentation</title>
+    <title>scrapd.core package &#8212; scrapd 3.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -39,7 +39,7 @@
 <p>Define the module containing the function used to scrap data from the APD website.</p>
 <dl class="function">
 <dt id="scrapd.core.apd.async_retrieve">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">async_retrieve</code><span class="sig-paren">(</span><em>pages=-1</em>, <em>from_=None</em>, <em>to=None</em>, <em>attempts=1</em>, <em>backoff=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#async_retrieve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.async_retrieve" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">async_retrieve</code><span class="sig-paren">(</span><em class="sig-param">pages=-1</em>, <em class="sig-param">from_=None</em>, <em class="sig-param">to=None</em>, <em class="sig-param">attempts=1</em>, <em class="sig-param">backoff=1</em>, <em class="sig-param">dump=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#async_retrieve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.async_retrieve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve fatality data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -47,6 +47,9 @@
 <li><p><strong>pages</strong> (<em>str</em>) – number of pages to retrieve or -1 for all</p></li>
 <li><p><strong>from</strong> (<em>str</em>) – the start date</p></li>
 <li><p><strong>to</strong> (<em>str</em>) – the end date</p></li>
+<li><p><strong>attempts</strong> (<em>int</em>) – number of attempts per report</p></li>
+<li><p><strong>backoff</strong> (<em>int</em>) – initial backoff time (second)</p></li>
+<li><p><strong>dump</strong> (<em>bool</em>) – dump reports with parsing issues</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -59,44 +62,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="scrapd.core.apd.common_fatality_parsing">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">common_fatality_parsing</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#common_fatality_parsing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.common_fatality_parsing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform parsing common to Twitter descriptions and page content.</p>
-<p>Ensures that the values are all strings and removes the ‘Deceased’ field which does not contain
-relevant information anymore.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>d</strong> (<em>dict</em>) – the fatality to finish parsing</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dictionary containing the details information about the fatality with sanitized entries.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict, list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.dob_search">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">dob_search</code><span class="sig-paren">(</span><em>split_deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#dob_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.dob_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search for the DOB in a deceased field.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>split_deceased_field</strong> (<em>list</em>) – a list representing the deceased field</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the DOB index within the split deceased field.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="scrapd.core.apd.extract_traffic_fatalities_page_details_link">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">extract_traffic_fatalities_page_details_link</code><span class="sig-paren">(</span><em>news_page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#extract_traffic_fatalities_page_details_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.extract_traffic_fatalities_page_details_link" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">extract_traffic_fatalities_page_details_link</code><span class="sig-paren">(</span><em class="sig-param">news_page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#extract_traffic_fatalities_page_details_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.extract_traffic_fatalities_page_details_link" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract the fatality detail page links from the news page.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -112,42 +79,8 @@ relevant information anymore.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="scrapd.core.apd.extract_twitter_description_meta">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">extract_twitter_description_meta</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#extract_twitter_description_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.extract_twitter_description_meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the twitter description from the metadata fields.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a string representing the twitter description.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.extract_twitter_tittle_meta">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">extract_twitter_tittle_meta</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#extract_twitter_tittle_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.extract_twitter_tittle_meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the twitter title from the metadata fields.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a string representing the twitter tittle.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="scrapd.core.apd.fetch_and_parse">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">fetch_and_parse</code><span class="sig-paren">(</span><em>session</em>, <em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#fetch_and_parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.fetch_and_parse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">fetch_and_parse</code><span class="sig-paren">(</span><em class="sig-param">session</em>, <em class="sig-param">url</em>, <em class="sig-param">dump=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#fetch_and_parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.fetch_and_parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a fatality page from a URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -167,7 +100,7 @@ relevant information anymore.</p>
 
 <dl class="function">
 <dt id="scrapd.core.apd.fetch_detail_page">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">fetch_detail_page</code><span class="sig-paren">(</span><em>session</em>, <em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#fetch_detail_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.fetch_detail_page" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">fetch_detail_page</code><span class="sig-paren">(</span><em class="sig-param">session</em>, <em class="sig-param">url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#fetch_detail_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.fetch_detail_page" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the content of a detail page.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -187,7 +120,7 @@ relevant information anymore.</p>
 
 <dl class="function">
 <dt id="scrapd.core.apd.fetch_news_page">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">fetch_news_page</code><span class="sig-paren">(</span><em>session</em>, <em>page=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#fetch_news_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.fetch_news_page" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">fetch_news_page</code><span class="sig-paren">(</span><em class="sig-param">session</em>, <em class="sig-param">page=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#fetch_news_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.fetch_news_page" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the content of a specific news page from the APD website.</p>
 <p>The page number starts at 1.</p>
 <dl class="field-list simple">
@@ -208,7 +141,7 @@ relevant information anymore.</p>
 
 <dl class="function">
 <dt id="scrapd.core.apd.fetch_text">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">fetch_text</code><span class="sig-paren">(</span><em>session</em>, <em>url</em>, <em>params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#fetch_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.fetch_text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">fetch_text</code><span class="sig-paren">(</span><em class="sig-param">session</em>, <em class="sig-param">url</em>, <em class="sig-param">params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#fetch_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.fetch_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetch the data from a URL as text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -229,7 +162,7 @@ relevant information anymore.</p>
 
 <dl class="function">
 <dt id="scrapd.core.apd.generate_detail_page_urls">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">generate_detail_page_urls</code><span class="sig-paren">(</span><em>titles</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#generate_detail_page_urls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.generate_detail_page_urls" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">generate_detail_page_urls</code><span class="sig-paren">(</span><em class="sig-param">titles</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#generate_detail_page_urls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.generate_detail_page_urls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate the full URLs of the fatality detail pages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -246,7 +179,7 @@ relevant information anymore.</p>
 
 <dl class="function">
 <dt id="scrapd.core.apd.has_next">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">has_next</code><span class="sig-paren">(</span><em>news_page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#has_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.has_next" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">has_next</code><span class="sig-paren">(</span><em class="sig-param">news_page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#has_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.has_next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <cite>True</cite> if there is another news page available.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -262,217 +195,8 @@ relevant information anymore.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="scrapd.core.apd.match_pattern">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">match_pattern</code><span class="sig-paren">(</span><em>text</em>, <em>pattern</em>, <em>group_number=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#match_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.match_pattern" title="Permalink to this definition">¶</a></dt>
-<dd><p>Match a pattern.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>text</strong> (<em>str</em>) – the text to match the pattern against</p></li>
-<li><p><strong>regex pattern</strong> (<em>compiled</em>) – the pattern to look for</p></li>
-<li><p><strong>group_number</strong> (<em>int</em>) – the capturing group number</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a string representing the captured group.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.notes_from_element">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">notes_from_element</code><span class="sig-paren">(</span><em>deceased</em>, <em>deceased_field_str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#notes_from_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.notes_from_element" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get Notes from deceased field’s BeautifulSoup element.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>bs4.Beautifulsoup.element.Tag</strong> (<em>deceased</em>) – the first &lt;p&gt; tag of the Deceased field of the APD bulletin</p></li>
-<li><p><strong>deceased_field_str</strong> – the string corresponding to the Deceased field</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>notes from the Deceased field of the APD bulletin</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_age_deceased_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_age_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_age_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_age_deceased_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse deceased field assuming it contains an age.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>deceased_field</strong> (<em>str</em>) – the deceased field</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing the deceased field.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_case_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_case_field</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_case_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_case_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the case number from the content of the fatality page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a string representing the case number.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_comma_delimited_deceased_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_comma_delimited_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_comma_delimited_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_comma_delimited_deceased_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse deceased fields seperated with commas.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>deceased_field</strong> (<em>str</em>) – a list representing the deceased field</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing the deceased field.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_crashes_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_crashes_field</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_crashes_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_crashes_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the crash number from the content of the fatality page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a string representing the crash number.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_date_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_date_field</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_date_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_date_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the date from the content of the fatality page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a string representing the date.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_deceased_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_deceased_field</code><span class="sig-paren">(</span><em>soup</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_deceased_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract content from deceased field on the fatality page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>soup</strong> (<em>bs4.BeautifulSoup</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a tuple containing the tag for the Deceased paragraph
-and the Deceased field as a string</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_deceased_field_common">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_deceased_field_common</code><span class="sig-paren">(</span><em>split_deceased_field</em>, <em>fleg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_deceased_field_common"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_deceased_field_common" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse the deceased field.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>split_deceased_field</strong> (<em>list</em>) – [description]</p></li>
-<li><p><strong>fleg</strong> (<em>dict</em>) – a dictionary containing First, Last, Ethnicity, Gender fields</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing the deceased field.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_fleg">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_fleg</code><span class="sig-paren">(</span><em>fleg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_fleg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_fleg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse FLEG. <cite>fleg</cite> stands for First, Last, Ethnicity, Gender.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>fleg</strong> (<em>list</em>) – values representing the fleg.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary containing First, Last, Ethnicity, Gender fields</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_location_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_location_field</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_location_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_location_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the location information from the content of the fatality page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_name">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse the victim’s name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>list</em>) – a list reprenting the deceased person’s full name split on space characters</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing just the victim’s first and last name</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="scrapd.core.apd.parse_page">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_page</code><span class="sig-paren">(</span><em>page</em>, <em>url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_page" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.apd.</code><code class="sig-name descname">parse_page</code><span class="sig-paren">(</span><em class="sig-param">page</em>, <em class="sig-param">url</em>, <em class="sig-param">dump=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_page" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the page using all parsing methods available.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -490,254 +214,108 @@ and the Deceased field as a string</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="scrapd.core.apd.parse_page_content">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_page_content</code><span class="sig-paren">(</span><em>detail_page</em>, <em>notes_parsed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_page_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_page_content" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse the detail page to extract fatality information.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>news_page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing a fatality and a list of errors.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict, list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_pipe_delimited_deceased_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_pipe_delimited_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_pipe_delimited_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_pipe_delimited_deceased_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse deceased fields separated with pipes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>deceased_field</strong> (<em>str</em>) – the deceased field as a string.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing the deceased field.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_space_delimited_deceased_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_space_delimited_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_space_delimited_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_space_delimited_deceased_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse deceased fields separated with spaces.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>deceased_field</strong> (<em>str</em>) – the deceased field as a string.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing the deceased field.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_time_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_time_field</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_time_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_time_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract the time from the content of the fatality page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a string representing the time.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_twitter_description">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_twitter_description</code><span class="sig-paren">(</span><em>twitter_description</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_twitter_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_twitter_description" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse the Twitter description metadata.</p>
-<p>The Twitter description contains all the information that we need, and even though it is still unstructured data,
-it is easier to parse than the data from the detail page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>twitter_description</strong> (<em>str</em>) – Twitter description embedded in the fatality details page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dictionary containing the details information about the fatality.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_twitter_fields">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_twitter_fields</code><span class="sig-paren">(</span><em>page</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_twitter_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_twitter_fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse the Twitter fields on a detail page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>page</strong> (<em>str</em>) – the content of the fatality page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing a fatality.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.parse_twitter_title">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">parse_twitter_title</code><span class="sig-paren">(</span><em>twitter_title</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#parse_twitter_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.parse_twitter_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse the Twitter tittle metadata.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>twitter_title</strong> (<em>str</em>) – Twitter tittle embedded in the fatality details page</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dictionary containing the ‘Fatal crashes this year’ field.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.process_deceased_field">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">process_deceased_field</code><span class="sig-paren">(</span><em>deceased_field</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#process_deceased_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.process_deceased_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse the deceased field.</p>
-<p>At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,
-Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>deceased_field</strong> (<em>str</em>) – the deceased field from the fatality report</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a dictionary representing a deceased field.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.sanitize_fatality_entity">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">sanitize_fatality_entity</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#sanitize_fatality_entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.sanitize_fatality_entity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clean up a fatality entity.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A dictionary containing the details information about the fatality with sanitized entries.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="scrapd.core.apd.to_soup">
-<code class="descclassname">scrapd.core.apd.</code><code class="descname">to_soup</code><span class="sig-paren">(</span><em>html</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/apd.html#to_soup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.apd.to_soup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a beautiful soup object from a HTML string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>html</strong> (<em>string</em>) – represents a HTML document</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A BeautifulSoup object.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bs4.BeautifulSoup</p>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 <div class="section" id="module-scrapd.core.constant">
 <span id="scrapd-core-constant-module"></span><h2>scrapd.core.constant module<a class="headerlink" href="#module-scrapd.core.constant" title="Permalink to this headline">¶</a></h2>
 <p>Define the scrapd constants.</p>
 <dl class="class">
 <dt id="scrapd.core.constant.Fields">
-<em class="property">class </em><code class="descclassname">scrapd.core.constant.</code><code class="descname">Fields</code><a class="reference internal" href="../_modules/scrapd/core/constant.html#Fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.constant.Fields" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">scrapd.core.constant.</code><code class="sig-name descname">Fields</code><a class="reference internal" href="../_modules/scrapd/core/constant.html#Fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.constant.Fields" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Define the resource constants.</p>
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.AGE">
-<code class="descname">AGE</code><em class="property"> = 'Age'</em><a class="headerlink" href="#scrapd.core.constant.Fields.AGE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">AGE</code><em class="property"> = 'age'</em><a class="headerlink" href="#scrapd.core.constant.Fields.AGE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.CASE">
-<code class="descname">CASE</code><em class="property"> = 'Case'</em><a class="headerlink" href="#scrapd.core.constant.Fields.CASE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">CASE</code><em class="property"> = 'case'</em><a class="headerlink" href="#scrapd.core.constant.Fields.CASE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="scrapd.core.constant.Fields.CRASHES">
-<code class="descname">CRASHES</code><em class="property"> = 'Fatal crashes this year'</em><a class="headerlink" href="#scrapd.core.constant.Fields.CRASHES" title="Permalink to this definition">¶</a></dt>
+<dt id="scrapd.core.constant.Fields.CRASH">
+<code class="sig-name descname">CRASH</code><em class="property"> = 'crash'</em><a class="headerlink" href="#scrapd.core.constant.Fields.CRASH" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.DATE">
-<code class="descname">DATE</code><em class="property"> = 'Date'</em><a class="headerlink" href="#scrapd.core.constant.Fields.DATE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DATE</code><em class="property"> = 'date'</em><a class="headerlink" href="#scrapd.core.constant.Fields.DATE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.DECEASED">
-<code class="descname">DECEASED</code><em class="property"> = 'Deceased'</em><a class="headerlink" href="#scrapd.core.constant.Fields.DECEASED" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DECEASED</code><em class="property"> = 'deceased'</em><a class="headerlink" href="#scrapd.core.constant.Fields.DECEASED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.DOB">
-<code class="descname">DOB</code><em class="property"> = 'DOB'</em><a class="headerlink" href="#scrapd.core.constant.Fields.DOB" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DOB</code><em class="property"> = 'dob'</em><a class="headerlink" href="#scrapd.core.constant.Fields.DOB" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.ETHNICITY">
-<code class="descname">ETHNICITY</code><em class="property"> = 'Ethnicity'</em><a class="headerlink" href="#scrapd.core.constant.Fields.ETHNICITY" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ETHNICITY</code><em class="property"> = 'ethnicity'</em><a class="headerlink" href="#scrapd.core.constant.Fields.ETHNICITY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="scrapd.core.constant.Fields.FATALITIES">
+<code class="sig-name descname">FATALITIES</code><em class="property"> = 'fatalities'</em><a class="headerlink" href="#scrapd.core.constant.Fields.FATALITIES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.FIRST_NAME">
-<code class="descname">FIRST_NAME</code><em class="property"> = 'First Name'</em><a class="headerlink" href="#scrapd.core.constant.Fields.FIRST_NAME" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">FIRST_NAME</code><em class="property"> = 'first'</em><a class="headerlink" href="#scrapd.core.constant.Fields.FIRST_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.GENDER">
-<code class="descname">GENDER</code><em class="property"> = 'Gender'</em><a class="headerlink" href="#scrapd.core.constant.Fields.GENDER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">GENDER</code><em class="property"> = 'gender'</em><a class="headerlink" href="#scrapd.core.constant.Fields.GENDER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="scrapd.core.constant.Fields.GENERATION">
+<code class="sig-name descname">GENERATION</code><em class="property"> = 'generation'</em><a class="headerlink" href="#scrapd.core.constant.Fields.GENERATION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.LAST_NAME">
-<code class="descname">LAST_NAME</code><em class="property"> = 'Last Name'</em><a class="headerlink" href="#scrapd.core.constant.Fields.LAST_NAME" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">LAST_NAME</code><em class="property"> = 'last'</em><a class="headerlink" href="#scrapd.core.constant.Fields.LAST_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="scrapd.core.constant.Fields.LATITUDE">
+<code class="sig-name descname">LATITUDE</code><em class="property"> = 'latitude'</em><a class="headerlink" href="#scrapd.core.constant.Fields.LATITUDE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.LINK">
-<code class="descname">LINK</code><em class="property"> = 'Link'</em><a class="headerlink" href="#scrapd.core.constant.Fields.LINK" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">LINK</code><em class="property"> = 'link'</em><a class="headerlink" href="#scrapd.core.constant.Fields.LINK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.LOCATION">
-<code class="descname">LOCATION</code><em class="property"> = 'Location'</em><a class="headerlink" href="#scrapd.core.constant.Fields.LOCATION" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">LOCATION</code><em class="property"> = 'location'</em><a class="headerlink" href="#scrapd.core.constant.Fields.LOCATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="scrapd.core.constant.Fields.LONGITUDE">
+<code class="sig-name descname">LONGITUDE</code><em class="property"> = 'longitude'</em><a class="headerlink" href="#scrapd.core.constant.Fields.LONGITUDE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="scrapd.core.constant.Fields.MIDDLE_NAME">
+<code class="sig-name descname">MIDDLE_NAME</code><em class="property"> = 'middle'</em><a class="headerlink" href="#scrapd.core.constant.Fields.MIDDLE_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.NOTES">
-<code class="descname">NOTES</code><em class="property"> = 'Notes'</em><a class="headerlink" href="#scrapd.core.constant.Fields.NOTES" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">NOTES</code><em class="property"> = 'notes'</em><a class="headerlink" href="#scrapd.core.constant.Fields.NOTES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="scrapd.core.constant.Fields.TIME">
-<code class="descname">TIME</code><em class="property"> = 'Time'</em><a class="headerlink" href="#scrapd.core.constant.Fields.TIME" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">TIME</code><em class="property"> = 'time'</em><a class="headerlink" href="#scrapd.core.constant.Fields.TIME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -748,7 +326,7 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 <p>Define a module to manipulate dates.</p>
 <dl class="function">
 <dt id="scrapd.core.date_utils.check_dob">
-<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">check_dob</code><span class="sig-paren">(</span><em>dob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#check_dob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.check_dob" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.date_utils.</code><code class="sig-name descname">check_dob</code><span class="sig-paren">(</span><em class="sig-param">dob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#check_dob"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.check_dob" title="Permalink to this definition">¶</a></dt>
 <dd><p>In case that a date only contains 2 digits, determine century.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -765,7 +343,7 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 
 <dl class="function">
 <dt id="scrapd.core.date_utils.compute_age">
-<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">compute_age</code><span class="sig-paren">(</span><em>date</em>, <em>dob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#compute_age"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.compute_age" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.date_utils.</code><code class="sig-name descname">compute_age</code><span class="sig-paren">(</span><em class="sig-param">date</em>, <em class="sig-param">dob</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#compute_age"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.compute_age" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute a victim’s age.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -785,7 +363,7 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 
 <dl class="function">
 <dt id="scrapd.core.date_utils.from_date">
-<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">from_date</code><span class="sig-paren">(</span><em>date</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#from_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.from_date" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.date_utils.</code><code class="sig-name descname">from_date</code><span class="sig-paren">(</span><em class="sig-param">date</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#from_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.from_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the date from a human readable format, with options for the from date.</p>
 <ul class="simple">
 <li><p>If the date cannot be parsed, <cite>datetime.date.min</cite> is returned.</p></li>
@@ -806,7 +384,7 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 
 <dl class="function">
 <dt id="scrapd.core.date_utils.is_before">
-<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">is_before</code><span class="sig-paren">(</span><em>d1</em>, <em>d2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#is_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.is_before" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.date_utils.</code><code class="sig-name descname">is_before</code><span class="sig-paren">(</span><em class="sig-param">d1</em>, <em class="sig-param">d2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#is_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.is_before" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if d1 is strictly before d2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -826,7 +404,7 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 
 <dl class="function">
 <dt id="scrapd.core.date_utils.is_between">
-<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">is_between</code><span class="sig-paren">(</span><em>date</em>, <em>from_=None</em>, <em>to=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#is_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.is_between" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.date_utils.</code><code class="sig-name descname">is_between</code><span class="sig-paren">(</span><em class="sig-param">date</em>, <em class="sig-param">from_=None</em>, <em class="sig-param">to=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#is_between"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.is_between" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a date is comprised between 2 others.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -847,7 +425,7 @@ Gender, D.O.B. and Notes. We need to explode this data into the appropriate fiel
 
 <dl class="function">
 <dt id="scrapd.core.date_utils.parse_date">
-<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">parse_date</code><span class="sig-paren">(</span><em>date</em>, <em>default=None</em>, <em>settings=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#parse_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.parse_date" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.date_utils.</code><code class="sig-name descname">parse_date</code><span class="sig-paren">(</span><em class="sig-param">date</em>, <em class="sig-param">default=None</em>, <em class="sig-param">settings=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#parse_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.parse_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the date from a human readable format.</p>
 <p>If no default value is specified and there is an error, an exception is raised. Otherwise the default value is
 returned.</p>
@@ -870,8 +448,25 @@ returned.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="scrapd.core.date_utils.parse_time">
+<code class="sig-prename descclassname">scrapd.core.date_utils.</code><code class="sig-name descname">parse_time</code><span class="sig-paren">(</span><em class="sig-param">time</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#parse_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.parse_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the time from a human readable format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time</strong> (<em>str</em>) – time</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a time object representing the time.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>datetime.time</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="scrapd.core.date_utils.to_date">
-<code class="descclassname">scrapd.core.date_utils.</code><code class="descname">to_date</code><span class="sig-paren">(</span><em>date</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#to_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.to_date" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.date_utils.</code><code class="sig-name descname">to_date</code><span class="sig-paren">(</span><em class="sig-param">date</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/date_utils.html#to_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.date_utils.to_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the date from a human readable format, with options for the to date.</p>
 <ul class="simple">
 <li><p>If the date cannot be parsed, <cite>datetime.date.max</cite> is returned.</p></li>
@@ -899,13 +494,13 @@ formatter used to print the results and can be sdtout, sdterr, a file or even a 
 it.</p>
 <dl class="class">
 <dt id="scrapd.core.formatter.CSVFormatter">
-<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">CSVFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CSVFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CSVFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">scrapd.core.formatter.</code><code class="sig-name descname">CSVFormatter</code><span class="sig-paren">(</span><em class="sig-param">format_='json'</em>, <em class="sig-param">output=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CSVFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CSVFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
 <p>Define the CSV formatter.</p>
 <p>Displays the results as a CSV.</p>
 <dl class="method">
 <dt id="scrapd.core.formatter.CSVFormatter.printer">
-<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CSVFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CSVFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">printer</code><span class="sig-paren">(</span><em class="sig-param">results</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CSVFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CSVFormatter.printer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the printer method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -918,13 +513,13 @@ it.</p>
 
 <dl class="class">
 <dt id="scrapd.core.formatter.CountFormatter">
-<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">CountFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CountFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CountFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">scrapd.core.formatter.</code><code class="sig-name descname">CountFormatter</code><span class="sig-paren">(</span><em class="sig-param">format_='json'</em>, <em class="sig-param">output=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CountFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CountFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
 <p>Define the Count formatter.</p>
 <p>Simply displays the number of results matching the search criterias.</p>
 <dl class="method">
 <dt id="scrapd.core.formatter.CountFormatter.printer">
-<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CountFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CountFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">printer</code><span class="sig-paren">(</span><em class="sig-param">results</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#CountFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.CountFormatter.printer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the printer method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -937,29 +532,18 @@ it.</p>
 
 <dl class="class">
 <dt id="scrapd.core.formatter.Formatter">
-<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">Formatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">scrapd.core.formatter.</code><code class="sig-name descname">Formatter</code><span class="sig-paren">(</span><em class="sig-param">format_='json'</em>, <em class="sig-param">output=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Define the Formatter base class.</p>
 <p>The default printer method simply uses the <cite>print()</cite> function.</p>
-<dl class="method">
-<dt id="scrapd.core.formatter.Formatter.date_serialize">
-<code class="descname">date_serialize</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter.date_serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter.date_serialize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert date objects to string for serialization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="scrapd.core.formatter.Formatter.formatters">
-<code class="descname">formatters</code><em class="property"> = {'count': &lt;class 'scrapd.core.formatter.CountFormatter'&gt;, 'csv': &lt;class 'scrapd.core.formatter.CSVFormatter'&gt;, 'json': &lt;class 'scrapd.core.formatter.JSONFormatter'&gt;, 'python': &lt;class 'scrapd.core.formatter.PythonFormatter'&gt;}</em><a class="headerlink" href="#scrapd.core.formatter.Formatter.formatters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">formatters</code><em class="property"> = {'count': &lt;class 'scrapd.core.formatter.CountFormatter'&gt;, 'csv': &lt;class 'scrapd.core.formatter.CSVFormatter'&gt;, 'json': &lt;class 'scrapd.core.formatter.JSONFormatter'&gt;, 'python': &lt;class 'scrapd.core.formatter.PythonFormatter'&gt;}</em><a class="headerlink" href="#scrapd.core.formatter.Formatter.formatters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="scrapd.core.formatter.Formatter.print">
-<code class="descname">print</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter.print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param">results</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter.print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the results with the appropriate formatter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -970,7 +554,7 @@ it.</p>
 
 <dl class="method">
 <dt id="scrapd.core.formatter.Formatter.printer">
-<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter.printer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">printer</code><span class="sig-paren">(</span><em class="sig-param">results</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter.printer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the printer method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -979,31 +563,17 @@ it.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="scrapd.core.formatter.Formatter.to_json_string">
-<code class="descname">to_json_string</code><span class="sig-paren">(</span><em>results</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#Formatter.to_json_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.Formatter.to_json_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert dict of parsed fields to JSON string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dict</strong> (<em>results</em>) – results of scraping APD news site</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
 <dt id="scrapd.core.formatter.JSONFormatter">
-<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">JSONFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#JSONFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.JSONFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">scrapd.core.formatter.</code><code class="sig-name descname">JSONFormatter</code><span class="sig-paren">(</span><em class="sig-param">format_='json'</em>, <em class="sig-param">output=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#JSONFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.JSONFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
 <p>Define the JSON formatter.</p>
 <p>Displays the results as JSON. The keys are sorted and an indentation of 2 spaces is set.</p>
 <dl class="method">
 <dt id="scrapd.core.formatter.JSONFormatter.printer">
-<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#JSONFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.JSONFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">printer</code><span class="sig-paren">(</span><em class="sig-param">results</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#JSONFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.JSONFormatter.printer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the printer method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1016,13 +586,13 @@ it.</p>
 
 <dl class="class">
 <dt id="scrapd.core.formatter.PythonFormatter">
-<em class="property">class </em><code class="descclassname">scrapd.core.formatter.</code><code class="descname">PythonFormatter</code><span class="sig-paren">(</span><em>format_='json'</em>, <em>output=&lt;_io.TextIOWrapper name='&lt;stdout&gt;' mode='w' encoding='UTF-8'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#PythonFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.PythonFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">scrapd.core.formatter.</code><code class="sig-name descname">PythonFormatter</code><span class="sig-paren">(</span><em class="sig-param">format_='json'</em>, <em class="sig-param">output=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#PythonFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.PythonFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#scrapd.core.formatter.Formatter" title="scrapd.core.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">scrapd.core.formatter.Formatter</span></code></a></p>
 <p>Define the Python formatter.</p>
 <p>Displays the results using <cite>PrettyPrinter</cite> with an indentation of 2 spaces.</p>
 <dl class="method">
 <dt id="scrapd.core.formatter.PythonFormatter.printer">
-<code class="descname">printer</code><span class="sig-paren">(</span><em>results</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#PythonFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.PythonFormatter.printer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">printer</code><span class="sig-paren">(</span><em class="sig-param">results</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#PythonFormatter.printer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.PythonFormatter.printer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the printer method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1033,13 +603,38 @@ it.</p>
 
 </dd></dl>
 
+<dl class="function">
+<dt id="scrapd.core.formatter.json_serializers">
+<code class="sig-prename descclassname">scrapd.core.formatter.</code><code class="sig-name descname">json_serializers</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#json_serializers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.json_serializers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert custom objects to string for serialization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="scrapd.core.formatter.to_json">
+<code class="sig-prename descclassname">scrapd.core.formatter.</code><code class="sig-name descname">to_json</code><span class="sig-paren">(</span><em class="sig-param">results</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/formatter.html#to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.formatter.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert dict of parsed fields to JSON string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dict</strong> (<em>results</em>) – results of scraping APD news site</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-scrapd.core.version">
 <span id="scrapd-core-version-module"></span><h2>scrapd.core.version module<a class="headerlink" href="#module-scrapd.core.version" title="Permalink to this headline">¶</a></h2>
 <p>Define a set of utility functions for managing versions.</p>
 <dl class="function">
 <dt id="scrapd.core.version.detect_from_metadata">
-<code class="descclassname">scrapd.core.version.</code><code class="descname">detect_from_metadata</code><span class="sig-paren">(</span><em>package</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/version.html#detect_from_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.version.detect_from_metadata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">scrapd.core.version.</code><code class="sig-name descname">detect_from_metadata</code><span class="sig-paren">(</span><em class="sig-param">package</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scrapd/core/version.html#detect_from_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#scrapd.core.version.detect_from_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect a package version number from the metadata.</p>
 <p>If the version number cannot be detected, the function returns 0.</p>
 <dl class="field-list simple">
@@ -1100,10 +695,10 @@ it.</p>
 
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -1117,7 +712,7 @@ it.</p>
       &copy;2019, Rémy Greinhofer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
       
       |
       <a href="../_sources/api/scrapd.core.rst.txt"

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>ScrAPD &#8212; scrapd 2.1.1 documentation</title>
+    <title>ScrAPD &#8212; scrapd 3.0.0 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -76,34 +76,50 @@ in <cite>json</cite>:</p>
 
 <span class="p">[</span>
   <span class="p">{</span>
-    <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
-    <span class="s2">&quot;Case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0161105&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DOB&quot;</span><span class="p">:</span> <span class="s2">&quot;02/15/1960&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Date&quot;</span><span class="p">:</span> <span class="s2">&quot;01/16/2019&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Fatal crashes this year&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;First Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ann&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Last Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bottenfield-Seago&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-2-3&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Location&quot;</span><span class="p">:</span> <span class="s2">&quot;West William Cannon Drive and Ridge Oak Road&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD</span><span class="se">\u2019</span><span class="s2">s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD</span><span class="se">\u2019</span><span class="s2">s mobile app, Austin PD, for free on iPhone and Android. This is Austin</span><span class="se">\u2019</span><span class="s2">s second fatal traffic crash of 2018, resulting in two fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Time&quot;</span><span class="p">:</span> <span class="s2">&quot;3:42 p.m.&quot;</span>
+    <span class="s2">&quot;case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0161105&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;crash&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-01-16&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fatalities&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+        <span class="s2">&quot;dob&quot;</span><span class="p">:</span> <span class="s2">&quot;1960-02-15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;Ann&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;Female&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;generation&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;Bottenfield-Seago&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;middle&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-2-3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="s2">&quot;West William Cannon Drive and Ridge Oak Road&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;15:42:00&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
-    <span class="s2">&quot;Case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0150158&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DOB&quot;</span><span class="p">:</span> <span class="s2">&quot;07/09/1987&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Date&quot;</span><span class="p">:</span> <span class="s2">&quot;01/15/2019&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Fatal crashes this year&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;First Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Hilburn&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="s2">&quot;male&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Last Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Sell&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-1-4&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Location&quot;</span><span class="p">:</span> <span class="s2">&quot;10500 block of N IH 35 SB&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that a 2000 Peterbilt semi truck was travelling southbound in the center lane on IH 35 when it struck pedestrian David Sell. The driver stopped as soon as it was possible to do so and remained on scene. He reported not seeing the pedestrian prior to impact given that it was still dark at the time of the crash. Sell was pronounced deceased at the scene at 6:24 a.m. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD</span><span class="se">\u2019</span><span class="s2">s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD</span><span class="se">\u2019</span><span class="s2">s mobile app, Austin PD, for free on iPhone and Android. This is Austin</span><span class="se">\u2019</span><span class="s2">s first fatal traffic crash of 2018, resulting in one fatality this year. At this time in 2018, there was one fatal traffic crash and two traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Time&quot;</span><span class="p">:</span> <span class="s2">&quot;6:20 a.m.&quot;</span>
+    <span class="s2">&quot;case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0150158&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;crash&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-01-15&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fatalities&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
+        <span class="s2">&quot;dob&quot;</span><span class="p">:</span> <span class="s2">&quot;1987-07-09&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;David&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;Male&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;generation&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;Sell&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;middle&quot;</span><span class="p">:</span> <span class="s2">&quot;Hilburn&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-1-4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="s2">&quot;10500 block of N IH 35 SB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that a 2000 Peterbilt semi truck was travelling southbound in the center lane on IH 35 when it struck pedestrian David Sell. The driver stopped as soon as it was possible to do so and remained on scene. He reported not seeing the pedestrian prior to impact given that it was still dark at the time of the crash. Sell was pronounced deceased at the scene at 6:24 a.m. No charges are expected to be filed.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;06:20:00&quot;</span>
   <span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
@@ -112,9 +128,9 @@ in <cite>json</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scrapd</span> <span class="o">--</span><span class="kn">from</span> <span class="s2">&quot;Jan 15 2019&quot;</span> <span class="o">--</span><span class="n">to</span> <span class="s2">&quot;Jan 18 2019&quot;</span> <span class="o">--</span><span class="nb">format</span> <span class="n">csv</span>
 
 
-<span class="n">Fatal</span> <span class="n">crashes</span> <span class="n">this</span> <span class="n">year</span><span class="p">,</span><span class="n">Case</span><span class="p">,</span><span class="n">Date</span><span class="p">,</span><span class="n">Time</span><span class="p">,</span><span class="n">Location</span><span class="p">,</span><span class="n">First</span> <span class="n">Name</span><span class="p">,</span><span class="n">Last</span> <span class="n">Name</span><span class="p">,</span><span class="n">Ethnicity</span><span class="p">,</span><span class="n">Gender</span><span class="p">,</span><span class="n">DOB</span><span class="p">,</span><span class="n">Age</span><span class="p">,</span><span class="n">Link</span><span class="p">,</span><span class="n">Notes</span>
-<span class="mi">2</span><span class="p">,</span><span class="mi">19</span><span class="o">-</span><span class="mi">0161105</span><span class="p">,</span><span class="mi">01</span><span class="o">/</span><span class="mi">16</span><span class="o">/</span><span class="mi">2019</span><span class="p">,</span><span class="mi">3</span><span class="p">:</span><span class="mi">42</span> <span class="n">p</span><span class="o">.</span><span class="n">m</span><span class="o">.</span><span class="p">,</span><span class="n">West</span> <span class="n">William</span> <span class="n">Cannon</span> <span class="n">Drive</span> <span class="ow">and</span> <span class="n">Ridge</span> <span class="n">Oak</span> <span class="n">Road</span><span class="p">,</span><span class="n">Ann</span><span class="p">,</span><span class="n">Bottenfield</span><span class="o">-</span><span class="n">Seago</span><span class="p">,</span><span class="n">White</span><span class="p">,</span><span class="n">female</span><span class="p">,</span><span class="mi">02</span><span class="o">/</span><span class="mi">15</span><span class="o">/</span><span class="mi">1960</span><span class="p">,</span><span class="mi">58</span><span class="p">,</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">austintexas</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">news</span><span class="o">/</span><span class="n">traffic</span><span class="o">-</span><span class="n">fatality</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD’s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD’s mobile app, Austin PD, for free on iPhone and Android. This is Austin’s second fatal traffic crash of 2018, resulting in two fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.&quot;</span>
-<span class="mi">1</span><span class="p">,</span><span class="mi">19</span><span class="o">-</span><span class="mi">0150158</span><span class="p">,</span><span class="mi">01</span><span class="o">/</span><span class="mi">15</span><span class="o">/</span><span class="mi">2019</span><span class="p">,</span><span class="mi">6</span><span class="p">:</span><span class="mi">20</span> <span class="n">a</span><span class="o">.</span><span class="n">m</span><span class="o">.</span><span class="p">,</span><span class="mi">10500</span> <span class="n">block</span> <span class="n">of</span> <span class="n">N</span> <span class="n">IH</span> <span class="mi">35</span> <span class="n">SB</span><span class="p">,</span><span class="n">Hilburn</span><span class="p">,</span><span class="n">Sell</span><span class="p">,</span><span class="n">White</span><span class="p">,</span><span class="n">male</span><span class="p">,</span><span class="mi">07</span><span class="o">/</span><span class="mi">09</span><span class="o">/</span><span class="mi">1987</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">austintexas</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">news</span><span class="o">/</span><span class="n">traffic</span><span class="o">-</span><span class="n">fatality</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;The preliminary investigation shows that a 2000 Peterbilt semi truck was travelling southbound in the center lane on IH 35 when it struck pedestrian David Sell. The driver stopped as soon as it was possible to do so and remained on scene. He reported not seeing the pedestrian prior to impact given that it was still dark at the time of the crash. Sell was pronounced deceased at the scene at 6:24 a.m. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD’s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD’s mobile app, Austin PD, for free on iPhone and Android. This is Austin’s first fatal traffic crash of 2018, resulting in one fatality this year. At this time in 2018, there was one fatal traffic crash and two traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.&quot;</span>
+<span class="n">crash</span><span class="p">,</span><span class="n">case</span><span class="p">,</span><span class="n">date</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">location</span><span class="p">,</span><span class="n">first</span><span class="p">,</span><span class="n">middle</span><span class="p">,</span><span class="n">last</span><span class="p">,</span><span class="n">generation</span><span class="p">,</span><span class="n">ethnicity</span><span class="p">,</span><span class="n">gender</span><span class="p">,</span><span class="n">dob</span><span class="p">,</span><span class="n">age</span><span class="p">,</span><span class="n">link</span><span class="p">,</span><span class="n">notes</span>
+<span class="mi">2</span><span class="p">,</span><span class="mi">19</span><span class="o">-</span><span class="mi">0161105</span><span class="p">,</span><span class="mi">2019</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">16</span><span class="p">,</span><span class="mi">15</span><span class="p">:</span><span class="mi">42</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">West</span> <span class="n">William</span> <span class="n">Cannon</span> <span class="n">Drive</span> <span class="ow">and</span> <span class="n">Ridge</span> <span class="n">Oak</span> <span class="n">Road</span><span class="p">,</span><span class="n">Ann</span><span class="p">,,</span><span class="n">Bottenfield</span><span class="o">-</span><span class="n">Seago</span><span class="p">,,</span><span class="n">White</span><span class="p">,</span><span class="n">Female</span><span class="p">,</span><span class="mi">1960</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span><span class="mi">58</span><span class="p">,</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">austintexas</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">news</span><span class="o">/</span><span class="n">traffic</span><span class="o">-</span><span class="n">fatality</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed.&quot;</span>
+<span class="mi">1</span><span class="p">,</span><span class="mi">19</span><span class="o">-</span><span class="mi">0150158</span><span class="p">,</span><span class="mi">2019</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span><span class="mi">06</span><span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">10500</span> <span class="n">block</span> <span class="n">of</span> <span class="n">N</span> <span class="n">IH</span> <span class="mi">35</span> <span class="n">SB</span><span class="p">,</span><span class="n">David</span><span class="p">,</span><span class="n">Hilburn</span><span class="p">,</span><span class="n">Sell</span><span class="p">,,</span><span class="n">White</span><span class="p">,</span><span class="n">Male</span><span class="p">,</span><span class="mi">1987</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">09</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">austintexas</span><span class="o">.</span><span class="n">gov</span><span class="o">/</span><span class="n">news</span><span class="o">/</span><span class="n">traffic</span><span class="o">-</span><span class="n">fatality</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="n">The</span> <span class="n">preliminary</span> <span class="n">investigation</span> <span class="n">shows</span> <span class="n">that</span> <span class="n">a</span> <span class="mi">2000</span> <span class="n">Peterbilt</span> <span class="n">semi</span> <span class="n">truck</span> <span class="n">was</span> <span class="n">travelling</span> <span class="n">southbound</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">center</span> <span class="n">lane</span> <span class="n">on</span> <span class="n">IH</span> <span class="mi">35</span> <span class="n">when</span> <span class="n">it</span> <span class="n">struck</span> <span class="n">pedestrian</span> <span class="n">David</span> <span class="n">Sell</span><span class="o">.</span> <span class="n">The</span> <span class="n">driver</span> <span class="n">stopped</span> <span class="k">as</span> <span class="n">soon</span> <span class="k">as</span> <span class="n">it</span> <span class="n">was</span> <span class="n">possible</span> <span class="n">to</span> <span class="n">do</span> <span class="n">so</span> <span class="ow">and</span> <span class="n">remained</span> <span class="n">on</span> <span class="n">scene</span><span class="o">.</span> <span class="n">He</span> <span class="n">reported</span> <span class="ow">not</span> <span class="n">seeing</span> <span class="n">the</span> <span class="n">pedestrian</span> <span class="n">prior</span> <span class="n">to</span> <span class="n">impact</span> <span class="n">given</span> <span class="n">that</span> <span class="n">it</span> <span class="n">was</span> <span class="n">still</span> <span class="n">dark</span> <span class="n">at</span> <span class="n">the</span> <span class="n">time</span> <span class="n">of</span> <span class="n">the</span> <span class="n">crash</span><span class="o">.</span> <span class="n">Sell</span> <span class="n">was</span> <span class="n">pronounced</span> <span class="n">deceased</span> <span class="n">at</span> <span class="n">the</span> <span class="n">scene</span> <span class="n">at</span> <span class="mi">6</span><span class="p">:</span><span class="mi">24</span> <span class="n">a</span><span class="o">.</span><span class="n">m</span><span class="o">.</span> <span class="n">No</span> <span class="n">charges</span> <span class="n">are</span> <span class="n">expected</span> <span class="n">to</span> <span class="n">be</span> <span class="n">filed</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>Retrieve all the traffic fatalities from 2019 (<em>as of Jan 20th 2019</em>) in json, and enabling the logging to follow the progress
@@ -124,57 +140,89 @@ of the process:</p>
 <span class="n">Fetching</span> <span class="n">page</span> <span class="mf">1.</span><span class="o">..</span>
 <span class="n">Fetching</span> <span class="n">page</span> <span class="mf">2.</span><span class="o">..</span>
 <span class="n">Fetching</span> <span class="n">page</span> <span class="mf">3.</span><span class="o">..</span>
+<span class="n">Fetching</span> <span class="n">page</span> <span class="mf">4.</span><span class="o">..</span>
+<span class="n">Fetching</span> <span class="n">page</span> <span class="mf">5.</span><span class="o">..</span>
+<span class="n">Fetching</span> <span class="n">page</span> <span class="mf">6.</span><span class="o">..</span>
+<span class="n">Fetching</span> <span class="n">page</span> <span class="mf">7.</span><span class="o">..</span>
+<span class="n">Fetching</span> <span class="n">page</span> <span class="mf">8.</span><span class="o">..</span>
+<span class="n">Fetching</span> <span class="n">page</span> <span class="mf">9.</span><span class="o">..</span>
+<span class="n">Fetching</span> <span class="n">page</span> <span class="mf">10.</span><span class="o">..</span>
+<span class="n">Fetching</span> <span class="n">page</span> <span class="mf">11.</span><span class="o">..</span>
 <span class="n">Total</span><span class="p">:</span> <span class="mi">3</span>
-
 <span class="p">[</span>
   <span class="p">{</span>
-    <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-    <span class="s2">&quot;Case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0081623&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DOB&quot;</span><span class="p">:</span> <span class="s2">&quot;02/18/2003&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Date&quot;</span><span class="p">:</span> <span class="s2">&quot;01/08/2019&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;Hispanic&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Fatal crashes this year&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;First Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Jesus&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="s2">&quot;male&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Last Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Servantez&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-3-4&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Location&quot;</span><span class="p">:</span> <span class="s2">&quot;3600 block of South Capital of Texas Highway SB&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that the driver of a silver, 2018 KIA was traveling in the center lane of the 3600 block of South Capital of Texas Highway SB when the car collided with Jesus Servantez, a pedestrian in the roadway. The driver remained at the scene and told investigators that he did not see Servantez prior to the crash. Jesus Servantez was transported to Saint David</span><span class="se">\u2019</span><span class="s2">s South Austin Medical Center where he succumbed to his injuries on January 21, 2019. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD</span><span class="se">\u2019</span><span class="s2">s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD</span><span class="se">\u2019</span><span class="s2">s mobile app, Austin PD, for free on iPhone and Android. This is Austin</span><span class="se">\u2019</span><span class="s2">s third fatal traffic crash of 2018, resulting in three fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Time&quot;</span><span class="p">:</span> <span class="s2">&quot;9:37 p.m.&quot;</span>
+    <span class="s2">&quot;case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0081623&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;crash&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-01-08&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fatalities&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="s2">&quot;dob&quot;</span><span class="p">:</span> <span class="s2">&quot;2003-02-18&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;Hispanic&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;Jesus&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;Male&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;generation&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;Servantez&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;middle&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-3-4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="s2">&quot;3600 block of South Capital of Texas Highway SB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that the driver of a silver, 2018 KIA was traveling in the center lane of the 3600 block of South Capital of Texas Highway SB when the car collided with Jesus Servantez, a pedestrian in the roadway. The driver remained at the scene and told investigators that he did not see Servantez prior to the crash.</span><span class="se">\n\n\t</span><span class="s2">Jesus Servantez was transported to Saint David</span><span class="se">\u2019</span><span class="s2">s South Austin Medical Center where he succumbed to his injuries on January 21, 2019. No charges are expected to be filed.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;21:37:00&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
-    <span class="s2">&quot;Case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0161105&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DOB&quot;</span><span class="p">:</span> <span class="s2">&quot;02/15/1960&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Date&quot;</span><span class="p">:</span> <span class="s2">&quot;01/16/2019&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Fatal crashes this year&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;First Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ann&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="s2">&quot;female&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Last Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bottenfield-Seago&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-2-3&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Location&quot;</span><span class="p">:</span> <span class="s2">&quot;West William Cannon Drive and Ridge Oak Road&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD</span><span class="se">\u2019</span><span class="s2">s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD</span><span class="se">\u2019</span><span class="s2">s mobile app, Austin PD, for free on iPhone and Android. This is Austin</span><span class="se">\u2019</span><span class="s2">s second fatal traffic crash of 2018, resulting in two fatalities this year. At this time in 2018, there were two fatal traffic crashes and three traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Time&quot;</span><span class="p">:</span> <span class="s2">&quot;3:42 p.m.&quot;</span>
+    <span class="s2">&quot;case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0161105&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;crash&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-01-16&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fatalities&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+        <span class="s2">&quot;dob&quot;</span><span class="p">:</span> <span class="s2">&quot;1960-02-15&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;Ann&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;Female&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;generation&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;Bottenfield-Seago&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;middle&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-2-3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="s2">&quot;West William Cannon Drive and Ridge Oak Road&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that the grey, 2003 Volkwagen Jetta being driven by Ann Bottenfield-Seago failed to yield at a stop sign while attempting to turn westbound on to West William Cannon Drive from Ridge Oak Road. The Jetta collided with a black, 2017 Chevrolet truck that was eastbound in the inside lane of West William Cannon Drive. Bottenfield-Seago was pronounced deceased at the scene. The passenger in the Jetta and the driver of the truck were both transported to a local hospital with non-life threatening injuries. No charges are expected to be filed.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;15:42:00&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
-    <span class="s2">&quot;Case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0150158&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DOB&quot;</span><span class="p">:</span> <span class="s2">&quot;07/09/1987&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Date&quot;</span><span class="p">:</span> <span class="s2">&quot;01/15/2019&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Fatal crashes this year&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;First Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Hilburn&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="s2">&quot;male&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Last Name&quot;</span><span class="p">:</span> <span class="s2">&quot;Sell&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-1-4&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Location&quot;</span><span class="p">:</span> <span class="s2">&quot;10500 block of N IH 35 SB&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that a 2000 Peterbilt semi truck was travelling southbound in the center lane on IH 35 when it struck pedestrian David Sell. The driver stopped as soon as it was possible to do so and remained on scene. He reported not seeing the pedestrian prior to impact given that it was still dark at the time of the crash. Sell was pronounced deceased at the scene at 6:24 a.m. No charges are expected to be filed. APD is investigating this case. Anyone with information regarding this case should call APD</span><span class="se">\u2019</span><span class="s2">s Vehicular Homicide Unit Detectives at (512) 974-3761. You can also submit tips by downloading APD</span><span class="se">\u2019</span><span class="s2">s mobile app, Austin PD, for free on iPhone and Android. This is Austin</span><span class="se">\u2019</span><span class="s2">s first fatal traffic crash of 2018, resulting in one fatality this year. At this time in 2018, there was one fatal traffic crash and two traffic fatalities. These statements are based on the initial assessment of the fatal crash and investigation is still pending. Fatality information may change.&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Time&quot;</span><span class="p">:</span> <span class="s2">&quot;6:20 a.m.&quot;</span>
+    <span class="s2">&quot;case&quot;</span><span class="p">:</span> <span class="s2">&quot;19-0150158&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;crash&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="s2">&quot;2019-01-15&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fatalities&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
+        <span class="s2">&quot;dob&quot;</span><span class="p">:</span> <span class="s2">&quot;1987-07-09&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ethnicity&quot;</span><span class="p">:</span> <span class="s2">&quot;White&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;first&quot;</span><span class="p">:</span> <span class="s2">&quot;David&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;Male&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;generation&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;last&quot;</span><span class="p">:</span> <span class="s2">&quot;Sell&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;middle&quot;</span><span class="p">:</span> <span class="s2">&quot;Hilburn&quot;</span>
+      <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;latitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;link&quot;</span><span class="p">:</span> <span class="s2">&quot;http://austintexas.gov/news/traffic-fatality-1-4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="s2">&quot;10500 block of N IH 35 SB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;longitude&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="s2">&quot;The preliminary investigation shows that a 2000 Peterbilt semi truck was travelling southbound in the center lane on IH 35 when it struck pedestrian David Sell. The driver stopped as soon as it was possible to do so and remained on scene. He reported not seeing the pedestrian prior to impact given that it was still dark at the time of the crash. Sell was pronounced deceased at the scene at 6:24 a.m. No charges are expected to be filed.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;06:20:00&quot;</span>
   <span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
 </div>
+<p>The “Case” field is assigned by the Austin Police Department, while the “ID” field is a key assigned by ScrAPD to label a separate record for each deceased person.</p>
 </div>
 </div>
 <div class="section" id="speed-and-accuracy">
@@ -185,7 +233,7 @@ Combining these two methods provides a high degree of confidence in the parsing 
 <strong>95% of success rate</strong>.</p>
 <p>Some statistics:</p>
 <ul class="simple">
-<li><p><strong>100% of entries detected</strong></p></li>
+<li><p><strong>99% of entries detected</strong></p></li>
 <li><p>95% of entries correctly parsed</p>
 <ul>
 <li><p>5% of entries failed the parsing only <strong>partially</strong></p></li>
@@ -268,10 +316,10 @@ used ScrAPD to compile a detailed presentation of the status of the traffic deat
 
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -285,7 +333,7 @@ used ScrAPD to compile a detailed presentation of the status of the traffic deat
       &copy;2019, Rémy Greinhofer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
       
       |
       <a href="_sources/README.rst.txt"

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Detailed usage &#8212; scrapd 2.1.1 documentation</title>
+    <title>Detailed usage &#8212; scrapd 3.0.0 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -44,49 +44,60 @@
 <p class="rubric">Options</p>
 <dl class="option">
 <dt id="cmdoption-scrapd-a">
-<code class="descname">-a</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--attempts</code><code class="descclassname"> &lt;attempts&gt;</code><a class="headerlink" href="#cmdoption-scrapd-a" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">-a</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--attempts</code><code class="sig-prename descclassname"> &lt;attempts&gt;</code><a class="headerlink" href="#cmdoption-scrapd-a" title="Permalink to this definition">¶</a></dt>
 <dd><p>number of attempts per report  [default: 3]</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-scrapd-b">
-<code class="descname">-b</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--backoff</code><code class="descclassname"> &lt;backoff&gt;</code><a class="headerlink" href="#cmdoption-scrapd-b" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">-b</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--backoff</code><code class="sig-prename descclassname"> &lt;backoff&gt;</code><a class="headerlink" href="#cmdoption-scrapd-b" title="Permalink to this definition">¶</a></dt>
 <dd><p>initial backoff time (second)  [default: 3]</p>
 </dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-scrapd-dump">
+<code class="sig-name descname">--dump</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-scrapd-dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>dump reports with parsing issues  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
 <dt id="cmdoption-scrapd-f">
-<code class="descname">-f</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--format</code><code class="descclassname"> &lt;format_&gt;</code><a class="headerlink" href="#cmdoption-scrapd-f" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">-f</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--format</code><code class="sig-prename descclassname"> &lt;format_&gt;</code><a class="headerlink" href="#cmdoption-scrapd-f" title="Permalink to this definition">¶</a></dt>
 <dd><p>specify output format  [default: json]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p>count|csv|json|python</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-scrapd-from">
-<code class="descname">--from</code><code class="descclassname"> &lt;from_&gt;</code><a class="headerlink" href="#cmdoption-scrapd-from" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">--from</code><code class="sig-prename descclassname"> &lt;from_&gt;</code><a class="headerlink" href="#cmdoption-scrapd-from" title="Permalink to this definition">¶</a></dt>
 <dd><p>start date</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-scrapd-pages">
-<code class="descname">--pages</code><code class="descclassname"> &lt;pages&gt;</code><a class="headerlink" href="#cmdoption-scrapd-pages" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">--pages</code><code class="sig-prename descclassname"> &lt;pages&gt;</code><a class="headerlink" href="#cmdoption-scrapd-pages" title="Permalink to this definition">¶</a></dt>
 <dd><p>number pages to process</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-scrapd-to">
-<code class="descname">--to</code><code class="descclassname"> &lt;to&gt;</code><a class="headerlink" href="#cmdoption-scrapd-to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">--to</code><code class="sig-prename descclassname"> &lt;to&gt;</code><a class="headerlink" href="#cmdoption-scrapd-to" title="Permalink to this definition">¶</a></dt>
 <dd><p>end date</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-scrapd-v">
-<code class="descname">-v</code><code class="descclassname"></code><code class="descclassname">, </code><code class="descname">--verbose</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-scrapd-v" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">-v</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--verbose</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-scrapd-v" title="Permalink to this definition">¶</a></dt>
 <dd><p>adjust the log level</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-scrapd-version">
-<code class="descname">--version</code><code class="descclassname"></code><a class="headerlink" href="#cmdoption-scrapd-version" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">--version</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-scrapd-version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show the version and exit.</p>
 </dd></dl>
 
@@ -95,7 +106,7 @@
 results by specifying simple options.</p>
 <p>Available formats are:</p>
 <ul class="simple">
-<li><p><cite>Count</cite>: is a special format which simply counts the number of fatalities within the time range.</p></li>
+<li><p><cite>Count</cite>: is a special format which simply counts the number of crashes within the time range.</p></li>
 <li><p><cite>CSV</cite>: is a delimited text file that uses a comma to separate values.</p></li>
 <li><p><cite>JSON</cite>: is an open-standard file format that uses human-readable text to transmit data
 objects consisting of attribute–value pairs and array data types.</p></li>
@@ -156,6 +167,8 @@ bounderies will be included in the results. Now there are a few rules:</p>
 </ul>
 </div></blockquote>
 <p>For 2 <cite>-v</cite> and more, the log format also changes from compact to verbose.</p>
+<p>The <cite>dump</cite> option is intended to be used by developpers only. If the parser encounters an error, it will dump the
+content of the HTML page on disk, into a <cite>.dump</cite> directory. See the <a class="reference internal" href="CONTRIBUTING.html#contributing-dumping"><span class="std std-ref">Dumping</span></a> section for more information.</p>
 <div class="section" id="docker">
 <h2>docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
 <p>In addition to installing the Python package, you can also use the
@@ -216,10 +229,10 @@ bounderies will be included in the results. Now there are a few rules:</p>
 
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -233,7 +246,7 @@ bounderies will be included in the results. Now there are a few rules:</p>
       &copy;2019, Rémy Greinhofer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
       
       |
       <a href="_sources/usage.rst.txt"

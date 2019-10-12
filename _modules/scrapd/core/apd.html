@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>scrapd.core.apd &#8212; scrapd 2.1.1 documentation</title>
+    <title>scrapd.core.apd &#8212; scrapd 3.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -34,22 +34,22 @@
   <h1>Source code for scrapd.core.apd</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Define the module containing the function used to scrap data from the APD website.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">unicodedata</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urljoin</span>
 
 <span class="kn">import</span> <span class="nn">aiohttp</span>
-<span class="kn">import</span> <span class="nn">bs4</span>
-<span class="kn">import</span> <span class="nn">dateparser</span>
-<span class="kn">from</span> <span class="nn">dateparser.search</span> <span class="k">import</span> <span class="n">search_dates</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">tenacity</span> <span class="k">import</span> <span class="n">retry</span>
 <span class="kn">from</span> <span class="nn">tenacity</span> <span class="k">import</span> <span class="n">stop_after_attempt</span>
 <span class="kn">from</span> <span class="nn">tenacity</span> <span class="k">import</span> <span class="n">wait_exponential</span>
 
-<span class="kn">from</span> <span class="nn">scrapd.core.constant</span> <span class="k">import</span> <span class="n">Fields</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">article</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">constant</span>
 <span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">date_utils</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">twitter</span>
+<span class="kn">from</span> <span class="nn">scrapd.core.regex</span> <span class="k">import</span> <span class="n">match_pattern</span>
 
 <span class="n">APD_URL</span> <span class="o">=</span> <span class="s1">&#39;http://austintexas.gov/department/news/296&#39;</span>
 <span class="n">PAGE_DETAILS_URL</span> <span class="o">=</span> <span class="s1">&#39;http://austintexas.gov/&#39;</span>
@@ -160,691 +160,42 @@
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">element</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="parse_twitter_title"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_twitter_title">[docs]</a><span class="k">def</span> <span class="nf">parse_twitter_title</span><span class="p">(</span><span class="n">twitter_title</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse the Twitter tittle metadata.</span>
-
-<span class="sd">    :param str twitter_title: Twitter tittle embedded in the fatality details page</span>
-<span class="sd">    :return: A dictionary containing the &#39;Fatal crashes this year&#39; field.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">twitter_title</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">d</span>
-
-    <span class="c1"># Extract the fatality number from the title.</span>
-    <span class="n">match</span> <span class="o">=</span> <span class="n">parse_crashes_field</span><span class="p">(</span><span class="n">twitter_title</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">CRASHES</span><span class="p">]</span> <span class="o">=</span> <span class="n">match</span>
-
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="parse_twitter_description"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_twitter_description">[docs]</a><span class="k">def</span> <span class="nf">parse_twitter_description</span><span class="p">(</span><span class="n">twitter_description</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse the Twitter description metadata.</span>
-
-<span class="sd">    The Twitter description contains all the information that we need, and even though it is still unstructured data,</span>
-<span class="sd">    it is easier to parse than the data from the detail page.</span>
-
-<span class="sd">    :param str twitter_description: Twitter description embedded in the fatality details page</span>
-<span class="sd">    :return: A dictionary containing the details information about the fatality.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">twitter_description</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">d</span>
-
-    <span class="c1"># Split the description to be able to parse it.</span>
-    <span class="n">current_field</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">description_words</span> <span class="o">=</span> <span class="n">twitter_description</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">description_words</span><span class="p">:</span>
-        <span class="c1"># A word ending with a colon (&#39;:&#39;) is considered a field.</span>
-        <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">):</span>
-            <span class="n">current_field</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="k">continue</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">current_field</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">current_field</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
-
-    <span class="c1"># Parse the `Date` field.</span>
-    <span class="n">fatality_date</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fatality_date</span><span class="p">:</span>
-        <span class="c1"># Ensure it is a string.</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fatality_date</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">fatality_date</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fatality_date</span><span class="p">)</span>
-
-        <span class="c1"># Turn it into a date object.</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">parse_date</span><span class="p">(</span><span class="n">fatality_date</span><span class="p">)</span>
-
-    <span class="c1"># Convert the time to a time object.</span>
-    <span class="n">fatality_time</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fatality_time</span><span class="p">:</span>
-        <span class="c1"># Ensure it is a string.</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fatality_time</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">fatality_time</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fatality_time</span><span class="p">)</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">dateparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fatality_time</span><span class="p">)</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">TIME</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="k">if</span> <span class="n">dt</span> <span class="k">else</span> <span class="kc">None</span>
-
-    <span class="c1"># Handle special case where Date of birth is a token `DOB:`.</span>
-    <span class="n">tmp_dob</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">tmp_dob</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tmp_dob</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">parse_date</span><span class="p">(</span><span class="n">tmp_dob</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-    <span class="n">r</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">common_fatality_parsing</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">r</span></div>
-
-
-<div class="viewcode-block" id="common_fatality_parsing"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.common_fatality_parsing">[docs]</a><span class="k">def</span> <span class="nf">common_fatality_parsing</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Perform parsing common to Twitter descriptions and page content.</span>
-
-<span class="sd">    Ensures that the values are all strings and removes the &#39;Deceased&#39; field which does not contain</span>
-<span class="sd">    relevant information anymore.</span>
-
-<span class="sd">    :param dict d: the fatality to finish parsing</span>
-<span class="sd">    :return: A dictionary containing the details information about the fatality with sanitized entries.</span>
-<span class="sd">    :rtype: dict, list</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">parsing_errors</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="c1"># Extracting other fields from &#39;Deceased&#39; field.</span>
-    <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DECEASED</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">process_deceased_field</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DECEASED</span><span class="p">)))</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">parsing_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-
-    <span class="c1"># Compute the victim&#39;s age.</span>
-    <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">)</span> <span class="ow">and</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">):</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">AGE</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">compute_age</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">))</span>
-
-    <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">AGE</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">parsing_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;age is invalid: {d.get(Fields.AGE)}&#39;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">sanitize_fatality_entity</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">parsing_errors</span></div>
-
-
-<div class="viewcode-block" id="sanitize_fatality_entity"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.sanitize_fatality_entity">[docs]</a><span class="k">def</span> <span class="nf">sanitize_fatality_entity</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Clean up a fatality entity.</span>
-
-<span class="sd">    :return: A dictionary containing the details information about the fatality with sanitized entries.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Ensure the values have the right format.</span>
-    <span class="n">empty_values</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="c1"># Lists must be converted to strings.</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-
-        <span class="c1"># Strip the strings.</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="c1"># Store keys of empty values.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
-            <span class="n">empty_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-
-    <span class="c1"># Remove empty values.</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">empty_values</span><span class="p">:</span>
-        <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="parse_name"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_name">[docs]</a><span class="k">def</span> <span class="nf">parse_name</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse the victim&#39;s name.</span>
-
-<span class="sd">    :param list name: a list reprenting the deceased person&#39;s full name split on space characters</span>
-<span class="sd">    :return: a dictionary representing just the victim&#39;s first and last name</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">GENERATIONAL_TITLES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;jr&#39;</span><span class="p">,</span> <span class="s1">&#39;jr.&#39;</span><span class="p">,</span> <span class="s1">&#39;sr&#39;</span><span class="p">,</span> <span class="s1">&#39;sr.&#39;</span><span class="p">]</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)):</span>
-            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;last&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;last&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">GENERATIONAL_TITLES</span><span class="p">:</span>
-                <span class="k">break</span>
-        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;first&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-        <span class="k">pass</span>
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="dob_search"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.dob_search">[docs]</a><span class="k">def</span> <span class="nf">dob_search</span><span class="p">(</span><span class="n">split_deceased_field</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Search for the DOB in a deceased field.</span>
-
-<span class="sd">    :param list split_deceased_field: a list representing the deceased field</span>
-<span class="sd">    :return: the DOB index within the split deceased field.</span>
-<span class="sd">    :rtype: int</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dob_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="n">dob_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">,</span> <span class="s1">&#39;(D.O.B&#39;</span><span class="p">,</span> <span class="s1">&#39;(D.O.B.&#39;</span><span class="p">,</span> <span class="s1">&#39;(D.O.B:&#39;</span><span class="p">,</span> <span class="s1">&#39;(DOB&#39;</span><span class="p">,</span> <span class="s1">&#39;(DOB:&#39;</span><span class="p">,</span> <span class="s1">&#39;D.O.B.&#39;</span><span class="p">,</span> <span class="s1">&#39;DOB:&#39;</span><span class="p">]</span>
-    <span class="k">while</span> <span class="n">dob_index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">dob_tokens</span><span class="p">:</span>
-        <span class="n">dob_token</span> <span class="o">=</span> <span class="n">dob_tokens</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">dob_index</span> <span class="o">=</span> <span class="n">split_deceased_field</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">dob_token</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">break</span>
-
-    <span class="k">return</span> <span class="n">dob_index</span></div>
-
-
-<div class="viewcode-block" id="process_deceased_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.process_deceased_field">[docs]</a><span class="k">def</span> <span class="nf">process_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse the deceased field.</span>
-
-<span class="sd">    At this point the deceased field, if it exists, is garbage as it contains First Name, Last Name, Ethnicity,</span>
-<span class="sd">    Gender, D.O.B. and Notes. We need to explode this data into the appropriate fields.</span>
-
-<span class="sd">    :param str deceased_field: the deceased field from the fatality report</span>
-<span class="sd">    :return: a dictionary representing a deceased field.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">deceased_field</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">)</span>
-
-    <span class="c1"># Try to parse the deceased fields when the fields are comma separated.</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_comma_delimited_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="c1"># Try to parse the deceased fields when the fields are pipe separated.</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_pipe_delimited_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="c1"># Try to parse the deceased fields when the fields are space separated.</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_space_delimited_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="c1"># Try to parse the deceased fields assuming it contains an age.</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">parse_age_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;cannot parse </span><span class="si">{Fields.DECEASED}</span><span class="s1">: </span><span class="si">{deceased_field}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="parse_age_deceased_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_age_deceased_field">[docs]</a><span class="k">def</span> <span class="nf">parse_age_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse deceased field assuming it contains an age.</span>
-
-<span class="sd">    :param str deceased_field: the deceased field</span>
-<span class="sd">    :return: a dictionary representing the deceased field.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">age_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([0-9]+) years&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Raises AttributeError upon failure.</span>
-    <span class="n">age</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">age_pattern</span><span class="p">,</span> <span class="n">deceased_field</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">split_deceased_field</span> <span class="o">=</span> <span class="n">age_pattern</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">parse_fleg</span><span class="p">(</span><span class="n">split_deceased_field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-    <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">AGE</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">age</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="parse_comma_delimited_deceased_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_comma_delimited_deceased_field">[docs]</a><span class="k">def</span> <span class="nf">parse_comma_delimited_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse deceased fields seperated with commas.</span>
-
-<span class="sd">    :param str deceased_field: a list representing the deceased field</span>
-<span class="sd">    :return: a dictionary representing the deceased field.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">split_deceased_field</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; |(?&lt;=[A-Za-z])/&#39;</span><span class="p">,</span> <span class="n">deceased_field</span><span class="p">)</span>
-
-    <span class="c1"># Find the DOB token as we use it as a delimiter.</span>
-    <span class="n">dob_index</span> <span class="o">=</span> <span class="n">dob_search</span><span class="p">(</span><span class="n">split_deceased_field</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dob_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Cannot find DOB in the deceased field: </span><span class="si">{deceased_field}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">raw_dob</span> <span class="o">=</span> <span class="n">split_deceased_field</span><span class="p">[</span><span class="n">dob_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">raw_dob</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">calendar</span><span class="o">.</span><span class="n">month_abbr</span><span class="p">[</span><span class="n">month_index</span><span class="p">])</span> <span class="k">for</span> <span class="n">month_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">)):</span>
-        <span class="n">raw_dob</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">split_deceased_field</span><span class="p">[</span><span class="n">dob_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">dob_index</span> <span class="o">+</span> <span class="mi">4</span><span class="p">])</span>
-
-    <span class="c1"># Parse the field.</span>
-    <span class="n">fleg</span> <span class="o">=</span> <span class="n">split_deceased_field</span><span class="p">[:</span><span class="n">dob_index</span><span class="p">]</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">parse_deceased_field_common</span><span class="p">([</span><span class="n">raw_dob</span><span class="p">],</span> <span class="n">fleg</span><span class="p">)</span>
-
-    <span class="c1"># Add the notes.</span>
-    <span class="n">notes</span> <span class="o">=</span> <span class="n">split_deceased_field</span><span class="p">[</span><span class="n">dob_index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">:]</span>
-    <span class="k">if</span> <span class="n">notes</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">NOTES</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">notes</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="parse_pipe_delimited_deceased_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_pipe_delimited_deceased_field">[docs]</a><span class="k">def</span> <span class="nf">parse_pipe_delimited_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse deceased fields separated with pipes.</span>
-
-<span class="sd">    :param str deceased_field: the deceased field as a string.</span>
-<span class="sd">    :return: a dictionary representing the deceased field.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">split_deceased_field</span> <span class="o">=</span> <span class="n">deceased_field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
-    <span class="n">fleg</span> <span class="o">=</span> <span class="p">(</span><span class="n">split_deceased_field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">split_deceased_field</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">parse_deceased_field_common</span><span class="p">(</span><span class="n">split_deceased_field</span><span class="p">,</span> <span class="n">fleg</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="parse_space_delimited_deceased_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_space_delimited_deceased_field">[docs]</a><span class="k">def</span> <span class="nf">parse_space_delimited_deceased_field</span><span class="p">(</span><span class="n">deceased_field</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse deceased fields separated with spaces.</span>
-
-<span class="sd">    :param str deceased_field: the deceased field as a string.</span>
-<span class="sd">    :return: a dictionary representing the deceased field.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">split_deceased_field</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39; |/&#39;</span><span class="p">,</span> <span class="n">deceased_field</span><span class="p">)</span>
-    <span class="n">fleg</span> <span class="o">=</span> <span class="n">split_deceased_field</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">parse_deceased_field_common</span><span class="p">(</span><span class="n">split_deceased_field</span><span class="p">,</span> <span class="n">fleg</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="parse_deceased_field_common"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_deceased_field_common">[docs]</a><span class="k">def</span> <span class="nf">parse_deceased_field_common</span><span class="p">(</span><span class="n">split_deceased_field</span><span class="p">,</span> <span class="n">fleg</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse the deceased field.</span>
-
-<span class="sd">    :param list split_deceased_field: [description]</span>
-<span class="sd">    :param dict fleg: a dictionary containing First, Last, Ethnicity, Gender fields</span>
-<span class="sd">    :return: a dictionary representing the deceased field.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Populate FLEG.</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">parse_fleg</span><span class="p">(</span><span class="n">fleg</span><span class="p">)</span>
-
-    <span class="c1"># Extract and clean up DOB.</span>
-    <span class="n">raw_dob</span> <span class="o">=</span> <span class="n">split_deceased_field</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">dob_guess</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">parse_date</span><span class="p">(</span><span class="n">raw_dob</span><span class="p">)</span>
-    <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DOB</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">check_dob</span><span class="p">(</span><span class="n">dob_guess</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="parse_fleg"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_fleg">[docs]</a><span class="k">def</span> <span class="nf">parse_fleg</span><span class="p">(</span><span class="n">fleg</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse FLEG. `fleg` stands for First, Last, Ethnicity, Gender.</span>
-
-<span class="sd">    :param list fleg: values representing the fleg.</span>
-<span class="sd">    :return: a dictionary containing First, Last, Ethnicity, Gender fields</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Try to pop out the results one by one. If pop fails, it means there is nothing left to retrieve.</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">GENDER</span><span class="p">]</span> <span class="o">=</span> <span class="n">fleg</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">GENDER</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">GENDER</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;female&#39;</span>
-        <span class="k">elif</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">GENDER</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">GENDER</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;male&#39;</span>
-
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">ETHNICITY</span><span class="p">]</span> <span class="o">=</span> <span class="n">fleg</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">ETHNICITY</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">ETHNICITY</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;White&#39;</span>
-        <span class="k">elif</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">ETHNICITY</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">ETHNICITY</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Hispanic&#39;</span>
-        <span class="k">elif</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">ETHNICITY</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">ETHNICITY</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Black&#39;</span>
-    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="n">parse_name</span><span class="p">(</span><span class="n">fleg</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last&quot;</span><span class="p">):</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">LAST_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;first&quot;</span><span class="p">):</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">FIRST_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;first&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="notes_from_element"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.notes_from_element">[docs]</a><span class="k">def</span> <span class="nf">notes_from_element</span><span class="p">(</span><span class="n">deceased</span><span class="p">,</span> <span class="n">deceased_field_str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get Notes from deceased field&#39;s BeautifulSoup element.</span>
-
-<span class="sd">    :param deceased bs4.Beautifulsoup.element.Tag:</span>
-<span class="sd">        the first &lt;p&gt; tag of the Deceased field of the APD bulletin</span>
-<span class="sd">    :param deceased_field_str:</span>
-<span class="sd">        the string corresponding to the Deceased field</span>
-<span class="sd">    :return: notes from the Deceased field of the APD bulletin</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">text</span> <span class="o">=</span> <span class="n">deceased</span><span class="o">.</span><span class="n">text</span>
-    <span class="k">for</span> <span class="n">sibling</span> <span class="ow">in</span> <span class="n">deceased</span><span class="o">.</span><span class="n">next_siblings</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sibling</span><span class="p">,</span> <span class="n">bs4</span><span class="o">.</span><span class="n">NavigableString</span><span class="p">):</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="n">sibling</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">+=</span> <span class="n">sibling</span><span class="o">.</span><span class="n">text</span>
-    <span class="n">notes</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">deceased_field_str</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">if</span> <span class="s2">&quot;APD is investigating this case&quot;</span> <span class="ow">in</span> <span class="n">notes</span><span class="p">:</span>
-        <span class="n">without_boilerplate</span> <span class="o">=</span> <span class="n">notes</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;APD is investigating this case&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">without_boilerplate</span> <span class="o">=</span> <span class="n">notes</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;Anyone with information regarding&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">without_boilerplate</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;()&lt;&gt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="parse_page_content"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_page_content">[docs]</a><span class="k">def</span> <span class="nf">parse_page_content</span><span class="p">(</span><span class="n">detail_page</span><span class="p">,</span> <span class="n">notes_parsed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse the detail page to extract fatality information.</span>
-
-<span class="sd">    :param str news_page: the content of the fatality page</span>
-<span class="sd">    :return: a dictionary representing a fatality and a list of errors.</span>
-<span class="sd">    :rtype: dict, list</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">parsing_errors</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">normalized_detail_page</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">&quot;NFKD&quot;</span><span class="p">,</span> <span class="n">detail_page</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">to_soup</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">)</span>
-
-    <span class="c1"># Parse the `Case` field.</span>
-    <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">CASE</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_case_field</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">CASE</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A case number is mandatory.&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Parse the `Crashes` field.</span>
-    <span class="n">crash_str</span> <span class="o">=</span> <span class="n">parse_crashes_field</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">crash_str</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">CRASHES</span><span class="p">]</span> <span class="o">=</span> <span class="n">crash_str</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">parsing_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;could not retrieve the crash number&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Parse the `Date` field.</span>
-    <span class="n">date_field</span> <span class="o">=</span> <span class="n">parse_date_field</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">date_field</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">]</span> <span class="o">=</span> <span class="n">date_field</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">parsing_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;could not retrieve the crash date&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Parse the `Deceased` field.</span>
-    <span class="n">deceased_tag_p</span><span class="p">,</span> <span class="n">deceased_field_str</span> <span class="o">=</span> <span class="n">parse_deceased_field</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">deceased_field_str</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DECEASED</span><span class="p">]</span> <span class="o">=</span> <span class="n">deceased_field_str</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">parsing_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;could not retrieve the deceased information&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Parse the `Time` field.</span>
-    <span class="n">time_str</span> <span class="o">=</span> <span class="n">parse_time_field</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">time_str</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">TIME</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_str</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">parsing_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;could not retrieve the crash time&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Parse the location field.</span>
-    <span class="n">location_str</span> <span class="o">=</span> <span class="n">parse_location_field</span><span class="p">(</span><span class="n">normalized_detail_page</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">location_str</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">LOCATION</span><span class="p">]</span> <span class="o">=</span> <span class="n">location_str</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">parsing_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;could not retrieve the location&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Fill in Notes from Details page if not in twitter description.</span>
-    <span class="k">if</span> <span class="n">deceased_field_str</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">notes_parsed</span><span class="p">:</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">NOTES</span><span class="p">]</span> <span class="o">=</span> <span class="n">notes_from_element</span><span class="p">(</span><span class="n">deceased_tag_p</span><span class="p">,</span> <span class="n">deceased_field_str</span><span class="p">)</span>
-
-    <span class="n">r</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">common_fatality_parsing</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">parsing_errors</span> <span class="o">+</span> <span class="n">err</span></div>
-
-
-<div class="viewcode-block" id="parse_case_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_case_field">[docs]</a><span class="k">def</span> <span class="nf">parse_case_field</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract the case number from the content of the fatality page.</span>
-
-<span class="sd">    :param str page: the content of the fatality page</span>
-<span class="sd">    :return: a string representing the case number.</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">case_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Case:           # The name of the field we are looking for.</span>
-<span class="sd">        .*              # Any character.</span>
-<span class="sd">        (\d{2}-\d{6,7}) # The case the number we are looking for.</span>
-<span class="sd">        &#39;&#39;&#39;</span><span class="p">,</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">case_pattern</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="parse_crashes_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_crashes_field">[docs]</a><span class="k">def</span> <span class="nf">parse_crashes_field</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract the crash number from the content of the fatality page.</span>
-
-<span class="sd">    :param str page: the content of the fatality page</span>
-<span class="sd">    :return: a string representing the crash number.</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">crashes_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Traffic Fatality #(\d{1,3})&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">crashes_pattern</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="parse_date_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_date_field">[docs]</a><span class="k">def</span> <span class="nf">parse_date_field</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract the date from the content of the fatality page.</span>
-
-<span class="sd">    :param str page: the content of the fatality page</span>
-<span class="sd">    :return: a string representing the date.</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">date_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        &gt;Date:          # The name of the desired field.</span>
-<span class="sd">        .*\s{2,}        # Any character and whitespace.</span>
-<span class="sd">        (?:&lt;/strong&gt;)?  # Non-capture (literal match).</span>
-<span class="sd">        ([^&lt;]*)         # Capture any character except &#39;&lt;&#39;.</span>
-<span class="sd">        &lt;               # Non-capture (literal match)</span>
-<span class="sd">        &#39;&#39;&#39;</span><span class="p">,</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">date_pattern</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
-    <span class="n">date</span> <span class="o">=</span> <span class="n">search_dates</span><span class="p">(</span><span class="n">date</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">date</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">date</span><span class="p">()</span> <span class="k">if</span> <span class="n">date</span> <span class="k">else</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="parse_deceased_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_deceased_field">[docs]</a><span class="k">def</span> <span class="nf">parse_deceased_field</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract content from deceased field on the fatality page.</span>
-
-<span class="sd">    :param bs4.BeautifulSoup soup: the content of the fatality page</span>
-<span class="sd">    :return:</span>
-<span class="sd">        a tuple containing the tag for the Deceased paragraph</span>
-<span class="sd">        and the Deceased field as a string</span>
-<span class="sd">    :rtype: tuple</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">starts_with_deceased</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">tag</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Deceased&quot;</span><span class="p">)</span>
-
-    <span class="n">deceased_tag_p</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">starts_with_deceased</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">deceased_text</span> <span class="o">=</span> <span class="n">deceased_tag_p</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deceased_text</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="ow">and</span> <span class="s2">&quot;preliminary&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">deceased_text</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">deceased_tag_p</span><span class="p">,</span> <span class="n">deceased_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">deceased_field_str</span> <span class="o">=</span> <span class="n">deceased_tag_p</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;strong&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">next_sibling</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="n">deceased_field_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">deceased_tag_p</span><span class="p">,</span> <span class="n">deceased_field_str</span></div>
-
-
-<div class="viewcode-block" id="parse_time_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_time_field">[docs]</a><span class="k">def</span> <span class="nf">parse_time_field</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract the time from the content of the fatality page.</span>
-
-<span class="sd">    :param str page: the content of the fatality page</span>
-<span class="sd">    :return: a string representing the time.</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">time_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Time:                             # The name of the desired field.</span>
-<span class="sd">        (?:&lt;/strong&gt;)?                    # Non capture closing strong tag</span>
-<span class="sd">        \D*?                              # Any non-digit character (lazy).</span>
-<span class="sd">        (</span>
-<span class="sd">        (?:0?[1-9]|1[0-2]):?[0-5]?\d?     # 12h format.</span>
-<span class="sd">        \s*                               # Any whitespace (zero-unlimited).</span>
-<span class="sd">        [AaPp]\.?[Mm]\.?                  # AM/PM variations.</span>
-<span class="sd">        |                                 # OR</span>
-<span class="sd">        (?:[01]?[0-9]|2[0-3]):[0-5][0-9]  # 24h format.</span>
-<span class="sd">        )</span>
-<span class="sd">        &#39;&#39;&#39;</span><span class="p">,</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">time</span> <span class="o">=</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">time_pattern</span><span class="p">)</span>
-    <span class="n">dt</span> <span class="o">=</span> <span class="n">dateparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="k">if</span> <span class="n">time</span> <span class="k">else</span> <span class="kc">None</span></div>
-
-
-<div class="viewcode-block" id="parse_location_field"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_location_field">[docs]</a><span class="k">def</span> <span class="nf">parse_location_field</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract the location information from the content of the fatality page.</span>
-
-<span class="sd">    :param page: the content of the fatality page</span>
-<span class="sd">    :type page: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">location_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        &gt;Location:      # The name of the desired field.</span>
-<span class="sd">        \s*             # Any whitespace (at least 2)</span>
-<span class="sd">        (?:&lt;/span&gt;)?    # Non capture closing span tag</span>
-<span class="sd">        (?:&lt;/strong&gt;)?  # Non capture closing strong tag</span>
-<span class="sd">        \s{2,}          # Any whitespace (at least 2)</span>
-<span class="sd">        (?:&lt;/strong&gt;)?  # Non capture closing strong tag</span>
-<span class="sd">        ([^&lt;]+)         # Capture any character except &#39;&lt;&#39;.</span>
-<span class="sd">        &#39;&#39;&#39;</span><span class="p">,</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">location_pattern</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="match_pattern"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.match_pattern">[docs]</a><span class="k">def</span> <span class="nf">match_pattern</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">group_number</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Match a pattern.</span>
-
-<span class="sd">    :param str text: the text to match the pattern against</span>
-<span class="sd">    :param compiled regex pattern: the pattern to look for</span>
-<span class="sd">    :param int group_number: the capturing group number</span>
-<span class="sd">    :return: a string representing the captured group.</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="n">group_number</span><span class="p">]</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span></div>
-
-
-<div class="viewcode-block" id="extract_twitter_tittle_meta"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.extract_twitter_tittle_meta">[docs]</a><span class="k">def</span> <span class="nf">extract_twitter_tittle_meta</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract the twitter title from the metadata fields.</span>
-
-<span class="sd">    :param str page: the content of the fatality page</span>
-<span class="sd">    :return: a string representing the twitter tittle.</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        &lt;meta</span>
-<span class="sd">        \s+</span>
-<span class="sd">        name=\&quot;twitter:title\&quot;</span>
-<span class="sd">        \s+</span>
-<span class="sd">        content=\&quot;(.*)\&quot;</span>
-<span class="sd">        \s+</span>
-<span class="sd">        /&gt;</span>
-<span class="sd">        &#39;&#39;&#39;</span><span class="p">,</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="extract_twitter_description_meta"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.extract_twitter_description_meta">[docs]</a><span class="k">def</span> <span class="nf">extract_twitter_description_meta</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract the twitter description from the metadata fields.</span>
-
-<span class="sd">    :param str page: the content of the fatality page</span>
-<span class="sd">    :return: a string representing the twitter description.</span>
-<span class="sd">    :rtype: str</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        &lt;meta</span>
-<span class="sd">        \s+</span>
-<span class="sd">        name=\&quot;twitter:description\&quot;</span>
-<span class="sd">        \s+</span>
-<span class="sd">        content=\&quot;(.*)\&quot;</span>
-<span class="sd">        \s+</span>
-<span class="sd">        /&gt;</span>
-<span class="sd">        &#39;&#39;&#39;</span><span class="p">,</span>
-        <span class="n">re</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">match_pattern</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="parse_twitter_fields"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_twitter_fields">[docs]</a><span class="k">def</span> <span class="nf">parse_twitter_fields</span><span class="p">(</span><span class="n">page</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse the Twitter fields on a detail page.</span>
-
-<span class="sd">    :param str page: the content of the fatality page</span>
-<span class="sd">    :return: a dictionary representing a fatality.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">twitter_title</span> <span class="o">=</span> <span class="n">extract_twitter_tittle_meta</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
-    <span class="n">twitter_description</span> <span class="o">=</span> <span class="n">extract_twitter_description_meta</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
-
-    <span class="c1"># Parse the elements.</span>
-    <span class="n">title_d</span> <span class="o">=</span> <span class="n">parse_twitter_title</span><span class="p">(</span><span class="n">twitter_title</span><span class="p">)</span>
-    <span class="n">desc_d</span> <span class="o">=</span> <span class="n">parse_twitter_description</span><span class="p">(</span><span class="n">twitter_description</span><span class="p">)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">title_d</span><span class="p">,</span> <span class="o">**</span><span class="n">desc_d</span><span class="p">}</span>
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="parse_page"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_page">[docs]</a><span class="k">def</span> <span class="nf">parse_page</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_page"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.parse_page">[docs]</a><span class="k">def</span> <span class="nf">parse_page</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse the page using all parsing methods available.</span>
 
-<span class="sd">    :param str  page: the content of the fatality page</span>
+<span class="sd">    :param str page: the content of the fatality page</span>
 <span class="sd">    :param str url: detail page URL</span>
 <span class="sd">    :return: a dictionary representing a fatality.</span>
 <span class="sd">    :rtype: dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Report</span><span class="p">(</span><span class="n">case</span><span class="o">=</span><span class="s1">&#39;19-123456&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Parse the twitter fields.</span>
+    <span class="n">twitter_report</span><span class="p">,</span> <span class="n">twitter_err</span> <span class="o">=</span> <span class="n">twitter</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">twitter_report</span><span class="p">)</span>
+
     <span class="c1"># Parse the page.</span>
-    <span class="n">twitter_d</span> <span class="o">=</span> <span class="n">parse_twitter_fields</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
-    <span class="n">page_d</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">parse_page_content</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="nb">bool</span><span class="p">(</span><span class="n">twitter_d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">NOTES</span><span class="p">)))</span>
-    <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Fatality report </span><span class="si">{url}</span><span class="s1"> was not parsed correctly:</span><span class="se">\n\t</span><span class="s1"> * &#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1"> * &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+    <span class="n">article_report</span><span class="p">,</span> <span class="n">artricle_err</span> <span class="o">=</span> <span class="n">article</span><span class="o">.</span><span class="n">parse_content</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">article_report</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">twitter_err</span> <span class="ow">or</span> <span class="n">artricle_err</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="n">twitter_err_str</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Twitter fields:</span><span class="se">\n\t</span><span class="s1"> * &#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2"> * &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">twitter_err</span><span class="p">)</span> <span class="k">if</span> <span class="n">twitter_err</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">article_err_str</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Article fields:</span><span class="se">\n\t</span><span class="s1"> * &#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2"> * &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">artricle_err</span><span class="p">)</span> <span class="k">if</span> <span class="n">artricle_err</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Errors while parsing </span><span class="si">{url}</span><span class="s1">:</span><span class="si">{twitter_err_str}{article_err_str}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Merge the results, from right to left.</span>
-    <span class="c1"># (i.e. the rightmost object will override the object just before it, etc.)</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">page_d</span><span class="p">,</span> <span class="o">**</span><span class="n">twitter_d</span><span class="p">}</span>
+        <span class="c1"># Dump the file.</span>
+        <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
+            <span class="n">dumpr_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">constant</span><span class="o">.</span><span class="n">DUMP_DIR</span><span class="p">)</span>
+            <span class="n">dumpr_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">dump_file_name</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">dump_file</span> <span class="o">=</span> <span class="n">dumpr_dir</span> <span class="o">/</span> <span class="n">dump_file_name</span>
+            <span class="n">dump_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
 
-    <span class="c1"># We needed the deceased field to be in the return value of parse_page_content for testing.</span>
-    <span class="c1"># But now we can delete it.</span>
-    <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Deceased&#39;</span><span class="p">):</span>
-        <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;Deceased&#39;</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">d</span></div>
-
-
-<div class="viewcode-block" id="to_soup"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.to_soup">[docs]</a><span class="k">def</span> <span class="nf">to_soup</span><span class="p">(</span><span class="n">html</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a beautiful soup object from a HTML string.</span>
-
-<span class="sd">    :param string html: represents a HTML document</span>
-<span class="sd">    :return: A BeautifulSoup object.</span>
-<span class="sd">    :rtype: bs4.BeautifulSoup</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">soup</span></div>
+    <span class="k">return</span> <span class="n">report</span></div>
 
 
 <div class="viewcode-block" id="fetch_and_parse"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.fetch_and_parse">[docs]</a><span class="nd">@retry</span><span class="p">()</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_and_parse</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_and_parse</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse a fatality page from a URL.</span>
 
@@ -859,24 +210,26 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The URL </span><span class="si">{url}</span><span class="s1"> returned a 0-length content.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Parse it.</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">parse_page</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">:</span>
+    <span class="n">report</span> <span class="o">=</span> <span class="n">parse_page</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">dump</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;No data could be extracted from the page </span><span class="si">{url}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
-    <span class="c1"># Add the link.</span>
-    <span class="n">d</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">LINK</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
+    <span class="c1"># Add the report link.</span>
+    <span class="n">report</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="n">url</span>
 
-    <span class="c1"># Return the result.</span>
-    <span class="k">return</span> <span class="n">d</span></div>
+    <span class="k">return</span> <span class="n">report</span></div>
 
 
-<div class="viewcode-block" id="async_retrieve"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.async_retrieve">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">async_retrieve</span><span class="p">(</span><span class="n">pages</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attempts</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="async_retrieve"><a class="viewcode-back" href="../../../api/scrapd.core.html#scrapd.core.apd.async_retrieve">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">async_retrieve</span><span class="p">(</span><span class="n">pages</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">from_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attempts</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">backoff</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dump</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieve fatality data.</span>
 
 <span class="sd">    :param str pages: number of pages to retrieve or -1 for all</span>
 <span class="sd">    :param str from_: the start date</span>
 <span class="sd">    :param str to: the end date</span>
+<span class="sd">    :param int attempts: number of attempts per report</span>
+<span class="sd">    :param int backoff: initial backoff time (second)</span>
+<span class="sd">    :param bool dump: dump reports with parsing issues</span>
 <span class="sd">    :return: the list of fatalities and the number of pages that were read.</span>
 <span class="sd">    :rtype: tuple</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -911,14 +264,14 @@
                     <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="n">attempts</span><span class="p">),</span>
                     <span class="n">wait</span><span class="o">=</span><span class="n">wait_exponential</span><span class="p">(</span><span class="n">multiplier</span><span class="o">=</span><span class="n">backoff</span><span class="p">),</span>
                     <span class="n">reraise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="p">)(</span><span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span>
+                <span class="p">)(</span><span class="n">session</span><span class="p">,</span> <span class="n">link</span><span class="p">,</span> <span class="n">dump</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">links</span>
             <span class="p">]</span>
             <span class="n">page_res</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
 
-            <span class="c1"># If the page contains fatalities, ensure all of them happened within the specified time range.</span>
             <span class="k">if</span> <span class="n">page_res</span><span class="p">:</span>
+                <span class="c1"># If the page contains fatalities, ensure all of them happened within the specified time range.</span>
                 <span class="n">entries_in_time_range</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">page_res</span> <span class="k">if</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">is_between</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">],</span> <span class="n">from_date</span><span class="p">,</span> <span class="n">to_date</span><span class="p">)</span>
+                    <span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">page_res</span> <span class="k">if</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">is_between</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="n">from_date</span><span class="p">,</span> <span class="n">to_date</span><span class="p">)</span>
                 <span class="p">]</span>
 
                 <span class="c1"># If 2 pages in a row:</span>
@@ -926,7 +279,7 @@
                 <span class="c1">#   2) but none of them contain dates within the time range</span>
                 <span class="c1">#   3) and we did not collect any valid entries</span>
                 <span class="c1"># Then we can stop the operation.</span>
-                <span class="n">past_entries</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">date_utils</span><span class="o">.</span><span class="n">is_before</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">DATE</span><span class="p">],</span> <span class="n">from_date</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">page_res</span><span class="p">])</span>
+                <span class="n">past_entries</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">date_utils</span><span class="o">.</span><span class="n">is_before</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="n">from_date</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">page_res</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">from_</span> <span class="ow">and</span> <span class="n">past_entries</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_entries</span><span class="p">:</span>
                     <span class="n">no_date_within_range_count</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">no_date_within_range_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -943,11 +296,8 @@
                     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;There are no data within the specified time range on page </span><span class="si">{page}</span><span class="s1">.&#39;</span><span class="p">)</span>
                     <span class="k">break</span>
 
-                <span class="c1"># Store the results if the case number is new.</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-                    <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">CASE</span><span class="p">):</span> <span class="n">entry</span>
-                    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries_in_time_range</span> <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">CASE</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">res</span>
-                <span class="p">})</span>
+                <span class="c1"># Store the results if the ID number is new.</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">entry</span><span class="o">.</span><span class="n">case</span><span class="p">:</span> <span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">entries_in_time_range</span> <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">case</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">res</span><span class="p">})</span>
 
             <span class="c1"># Stop if there is no further pages.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">has_next</span><span class="p">(</span><span class="n">news_page</span><span class="p">)</span> <span class="ow">or</span> <span class="n">page</span> <span class="o">&gt;=</span> <span class="n">pages</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -999,10 +349,10 @@
 
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -1016,7 +366,7 @@
       &copy;2019, Rémy Greinhofer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
       
     </div>
 

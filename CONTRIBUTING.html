@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Contributing &#8212; scrapd 2.1.1 documentation</title>
+    <title>Contributing &#8212; scrapd 3.0.0 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -141,6 +141,44 @@ with sudo and will prompt you for your password:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="dumping">
+<span id="contributing-dumping"></span><h2>Dumping<a class="headerlink" href="#dumping" title="Permalink to this headline">¶</a></h2>
+<p><cite>scrapd</cite> comes with a <cite>–dump</cite> option, which will save the HTML content of the reports being parsed if they contains at
+least one parsing error either in the twitter fields or the article itself. The dumped files will be stored in a <cite>.dump</cite> directory</p>
+<div class="section" id="workflow">
+<h3>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h3>
+<p>Start by running <cite>scrapd</cite> at the root of this project:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scrapd</span> <span class="o">-</span><span class="n">vvv</span> <span class="o">--</span><span class="n">dump</span>  <span class="mi">1</span><span class="o">&gt;.</span><span class="n">dump</span><span class="o">/</span><span class="n">dump</span><span class="o">.</span><span class="n">json</span> <span class="mi">2</span><span class="o">&gt;.</span><span class="n">dump</span><span class="o">/</span><span class="n">dump</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+<p>In addition to the dumps, this will also create 2 files to help you debug:</p>
+<ul class="simple">
+<li><p>a <cite>dump.json</cite> containing the parsed reports in JSON (useful to double check the values)</p></li>
+<li><p>a <cite>dump.json.log</cite> containing the parsing errors and the names of the files triggering them</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You may encounter false positives. For intance some reports do not contain twitter fields, which will obviously
+trigger an error, but is not something we can act on.</p>
+</div>
+<p>Locate the test named <cite>test_dumped_page</cite> in the <cite>tests/core/test_apd.py</cite> file and update the test parameters with the
+name of the file you want to debug:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest.mark.parametrize</span><span class="p">(</span><span class="s1">&#39;page_dump&#39;</span><span class="p">,</span> <span class="p">[</span>
+  <span class="n">pytest</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="s1">&#39;traffic-fatality-1-2&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;dumped&#39;</span><span class="p">),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can specify as many files as you want, by adding more <cite>pytest.param</cite> objects. This can be useful if you notice
+the same parsing error being reported in various files.</p>
+</div>
+<p>And finally, run pytest with the <cite>dump</cite> marker:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">-</span><span class="n">s</span> <span class="o">-</span><span class="n">vvv</span> <span class="o">-</span><span class="n">n0</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">m</span> <span class="n">dump</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -184,6 +222,7 @@ with sudo and will prompt you for your password:</p>
 <li class="toctree-l2"><a class="reference internal" href="#developer-setup">Developer setup</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#profiling">Profiling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dumping">Dumping</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
@@ -191,10 +230,10 @@ with sudo and will prompt you for your password:</p>
 
 
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -208,7 +247,7 @@ with sudo and will prompt you for your password:</p>
       &copy;2019, Rémy Greinhofer.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
       
       |
       <a href="_sources/CONTRIBUTING.rst.txt"

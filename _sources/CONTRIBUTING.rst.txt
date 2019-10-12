@@ -123,6 +123,51 @@ with sudo and will prompt you for your password::
 
   inv flame-graph
 
+.. _contributing-dumping:
+
+Dumping
+-------
+
+`scrapd` comes with a `--dump` option, which will save the HTML content of the reports being parsed if they contains at
+least one parsing error either in the twitter fields or the article itself. The dumped files will be stored in a `.dump` directory
+
+Workflow
+^^^^^^^^
+
+Start by running `scrapd` at the root of this project::
+
+  scrapd -vvv --dump  1>.dump/dump.json 2>.dump/dump.json.log
+
+In addition to the dumps, this will also create 2 files to help you debug:
+
+* a `dump.json` containing the parsed reports in JSON (useful to double check the values)
+* a `dump.json.log` containing the parsing errors and the names of the files triggering them
+
+.. warning::
+
+  You may encounter false positives. For intance some reports do not contain twitter fields, which will obviously
+  trigger an error, but is not something we can act on.
+
+Locate the test named `test_dumped_page` in the `tests/core/test_apd.py` file and update the test parameters with the
+name of the file you want to debug:
+
+.. code-block:: python
+
+  @pytest.mark.parametrize('page_dump', [
+    pytest.param('traffic-fatality-1-2', id='dumped'),
+  ])
+
+.. note::
+
+  You can specify as many files as you want, by adding more `pytest.param` objects. This can be useful if you notice
+  the same parsing error being reported in various files.
+
+And finally, run pytest with the `dump` marker::
+
+  pytest -s -vvv -n0 -x -m dump
+
+
+
 
 .. _`Draft Pull Request`: https://github.blog/2019-02-14-introducing-draft-pull-requests/
 .. _`How to Write a Git Commit Message`: http://chris.beams.io/posts/git-commit
