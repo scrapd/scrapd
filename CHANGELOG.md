@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[3.0.0]] - 2019-10-12
+
 ### Added
 
 - Add CLI flag to dump reports with parsing errors on disk. This also adds helper functions and tests to simplify the
@@ -168,6 +170,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [2.0.0]: https://github.com/scrapd/scrapd/releases/2.0.0
 [2.1.0]: https://github.com/scrapd/scrapd/releases/2.1.0
 [2.1.1]: https://github.com/scrapd/scrapd/releases/2.1.1
+[3.0.0]: https://github.com/scrapd/scrapd/releases/3.0.0
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/scrapd/scrapd/issues/13
@@ -209,7 +212,9 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#171]: https://github.com/scrapd/scrapd/pull/171
 [#172]: https://github.com/scrapd/scrapd/pull/172
 [#178]: https://github.com/scrapd/scrapd/pull/178
+[#199]: https://github.com/scrapd/scrapd/pull/199
 [#203]: https://github.com/scrapd/scrapd/issues/203
 [#204]: https://github.com/scrapd/scrapd/issues/204
 [#208]: https://github.com/scrapd/scrapd/pull/208
 [#210]: https://github.com/scrapd/scrapd/pull/210
+[#214]: https://github.com/scrapd/scrapd/pull/214
