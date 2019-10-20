@@ -131,133 +131,182 @@ dob_search_scenarios = [
 deceased_scenarios = [
     {
         'input_': 'Rosbel “Rudy” Tamez, Hispanic male (D.O.B. 10-10-54)',
-        'expected': model.Fatality(
-            dob=datetime.date(1954, 10, 10),
-            ethnicity=model.Ethnicity.hispanic,
-            first='Rosbel',
-            gender=model.Gender.male,
-            last='Tamez',
-            middle='“Rudy”',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1954, 10, 10),
+                ethnicity=model.Ethnicity.hispanic,
+                first='Rosbel',
+                gender=model.Gender.male,
+                last='Tamez',
+                middle='“Rudy”',
+            )
+        ],
         'id': 'comma-delimited',
     },
     {
         'input_': 'Eva Marie Gonzales, W/F, DOB: 01-22-1961 (passenger)',
-        'expected': model.Fatality(
-            dob=datetime.date(1961, 1, 22),
-            ethnicity=model.Ethnicity.white,
-            first='Eva',
-            gender=model.Gender.female,
-            last='Gonzales',
-            middle='Marie',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1961, 1, 22),
+                ethnicity=model.Ethnicity.white,
+                first='Eva',
+                gender=model.Gender.female,
+                last='Gonzales',
+                middle='Marie',
+            )
+        ],
         'id': 'comma-delimited-shorts',
     },
     {
         'input_': 'DOB: 01-01-99',
-        'expected': model.Fatality(dob=datetime.date(1999, 1, 1)),
+        'expected': [model.Fatality(dob=datetime.date(1999, 1, 1))],
         'id': 'dob-only',
     },
     {
         'input_': 'Wing Cheung Chou | Asian male | 08/01/1949',
-        'expected': model.Fatality(
-            dob=datetime.date(1949, 8, 1),
-            ethnicity=model.Ethnicity.asian,
-            first='Wing',
-            gender=model.Gender.male,
-            last='Chou',
-            middle='Cheung',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1949, 8, 1),
+                ethnicity=model.Ethnicity.asian,
+                first='Wing',
+                gender=model.Gender.male,
+                last='Chou',
+                middle='Cheung',
+            )
+        ],
         'id': 'pipe-delimited',
     },
     {
         'input_': 'Christopher M Peterson W/M 10-8-1981',
-        'expected': model.Fatality(
-            dob=datetime.date(1981, 10, 8),
-            ethnicity=model.Ethnicity.white,
-            first='Christopher',
-            gender=model.Gender.male,
-            last='Peterson',
-            middle='M',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1981, 10, 8),
+                ethnicity=model.Ethnicity.white,
+                first='Christopher',
+                gender=model.Gender.male,
+                last='Peterson',
+                middle='M',
+            )
+        ],
         'id': 'space-delimited-shorts',
     },
     {
         'input_': 'Luis Angel Tinoco, Hispanic male (11-12-07',
-        'expected': model.Fatality(
-            dob=datetime.date(2007, 11, 12),
-            ethnicity=model.Ethnicity.hispanic,
-            first='Luis',
-            gender=model.Gender.male,
-            last='Tinoco',
-            middle='Angel',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(2007, 11, 12),
+                ethnicity=model.Ethnicity.hispanic,
+                first='Luis',
+                gender=model.Gender.male,
+                last='Tinoco',
+                middle='Angel',
+            )
+        ],
         'id': 'comma-delimited-shorts-parenthesis-dob',
     },
     {
         'input_': 'Ronnie Lee Hall, White male, 8-28-51',
-        'expected': model.Fatality(
-            dob=datetime.date(1951, 8, 28),
-            ethnicity=model.Ethnicity.white,
-            first='Ronnie',
-            gender=model.Gender.male,
-            last='Hall',
-            middle='Lee',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1951, 8, 28),
+                ethnicity=model.Ethnicity.white,
+                first='Ronnie',
+                gender=model.Gender.male,
+                last='Hall',
+                middle='Lee',
+            )
+        ],
         'id': 'comma-delimited-shorts-no-dob-marker',
     },
     {
         'input_': 'Hispanic male, 19 years of age',
-        'expected': model.Fatality(
+        'expected': [model.Fatality(
             age=19,
             ethnicity=model.Ethnicity.hispanic,
             gender=model.Gender.male,
-        ),
+        )],
         'id': 'years-of-age',
     },
     {
         'input_': 'Patrick Leonard Ervin, Black male, D.O.B. August 30, 1966',
-        'expected': model.Fatality(
-            dob=datetime.date(1966, 8, 30),
-            ethnicity=model.Ethnicity.black,
-            first='Patrick',
-            gender=model.Gender.male,
-            last='Ervin',
-            middle='Leonard',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1966, 8, 30),
+                ethnicity=model.Ethnicity.black,
+                first='Patrick',
+                gender=model.Gender.male,
+                last='Ervin',
+                middle='Leonard',
+            )
+        ],
         'id': 'comma-delimited-full-english-date',
     },
     {
         'input_': 'Ernesto Gonzales Garcia, H/M, (DOB: 11/15/1977)',
-        'expected': model.Fatality(
-            dob=datetime.date(1977, 11, 15),
-            ethnicity=model.Ethnicity.hispanic,
-            first='Ernesto',
-            gender=model.Gender.male,
-            last='Garcia',
-            middle='Gonzales',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1977, 11, 15),
+                ethnicity=model.Ethnicity.hispanic,
+                first='Ernesto',
+                gender=model.Gender.male,
+                last='Garcia',
+                middle='Gonzales',
+            )
+        ],
         'id': 'comma-delimited-shorts-(dob:',
     },
     {
         'input_': 'B/F, DOB: 01-01-99',
-        'expected': model.Fatality(
-            dob=datetime.date(1999, 1, 1),
-            ethnicity=model.Ethnicity.black,
-            gender=model.Gender.female,
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1999, 1, 1),
+                ethnicity=model.Ethnicity.black,
+                gender=model.Gender.female,
+            )
+        ],
         'id': 'no-names-shorts',
     },
     {
         'input_': 'Felipe Ramirez, Hispanic male, born 9-16-93',
-        'expected': model.Fatality(
-            dob=datetime.date(1993, 9, 16),
-            ethnicity=model.Ethnicity.hispanic,
-            first='Felipe',
-            gender=model.Gender.male,
-            last='Ramirez',
-        ),
+        'expected': [
+            model.Fatality(
+                dob=datetime.date(1993, 9, 16),
+                ethnicity=model.Ethnicity.hispanic,
+                first='Felipe',
+                gender=model.Gender.male,
+                last='Ramirez',
+            )
+        ],
         'id': 'born-instead-of-dob',
+    },
+    {
+        'input_': 'Unidentified male',
+        'expected': [model.Fatality(gender=model.Gender.male, )],
+        'id': 'unidentified-single',
+    },
+    {
+        'input_': 'Unidentified male Unidentified female',
+        'expected': [
+            model.Fatality(gender=model.Gender.male, ),
+            model.Fatality(gender=model.Gender.female, ),
+        ],
+        'id': 'unidentified-multiple',
+    },
+    {
+        'input_': 'Unidentified Hispanic male',
+        'expected': [model.Fatality(
+            ethnicity=model.Ethnicity.hispanic,
+            gender=model.Gender.male,
+        )],
+        'id': 'unidentified-single-with-ethinicity',
+    },
+    {
+        'input_': 'Unidentified, White male (D.O.B. unknown)',
+        'expected': [model.Fatality(
+            ethnicity=model.Ethnicity.white,
+            gender=model.Gender.male,
+        )],
+        'id': 'unidentified-single-custom',
     },
 ]
 
@@ -316,8 +365,8 @@ class TestFatality:
     )
     def test_process_deceased_field(self, input_, expected):
         """Ensure the deceased field gets processed correctly."""
-        actual, _ = deceased.process_deceased_field(input_)
-        assert actual == expected
+        actual = deceased.process_deceased_field(input_)
+        assert [fatality for fatality, err in actual] == expected
 
     @pytest.mark.parametrize(
         'input_,expected',

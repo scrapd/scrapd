@@ -89,11 +89,16 @@ def parse_deceased_field(soup):
     for deceased_tag in deceased_tags:
         deceased_field = parse_deceased_tag(deceased_tag)
         try:
-            fatality, err = deceased.process_deceased_field(deceased_field)
+            fatality = []
+            err = []
+            for processed_deceased in deceased.process_deceased_field(deceased_field):
+                f, e = processed_deceased
+                fatality.append(f)
+                err += e
         except ValueError as e:  # pragma: no cover
             errors.append(str(e))
         else:
-            fatalities.append(fatality)
+            fatalities.extend(fatality)
             errors.extend(err)
 
     return fatalities, errors

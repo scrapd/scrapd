@@ -134,9 +134,9 @@ least one parsing error either in the twitter fields or the article itself. The 
 Workflow
 ^^^^^^^^
 
-Start by running `scrapd` at the root of this project::
+Run the `dump-json` task from the root of the project::
 
-  scrapd -vvv --dump  1>.dump/dump.json 2>.dump/dump.json.log
+  inv dump-json
 
 In addition to the dumps, this will also create 2 files to help you debug:
 

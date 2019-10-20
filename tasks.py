@@ -4,6 +4,7 @@ from invoke import task
 from nox.virtualenv import VirtualEnv
 
 # Configuration values.
+DUMP_DIR = '.dump'
 VENV = 'venv'
 project_name = 'scrapd'
 docker_org = 'scrapd'
@@ -36,6 +37,20 @@ def clean_repo(c):
     """Remove unwanted files in project (!DESTRUCTIVE!)."""
     c.run('git clean -ffdx')
     c.run('git reset --hard')
+
+
+@task
+def dump_json(c):
+    """Dump errors and create JSON data set."""
+    c.run(f'mkdir -p {DUMP_DIR}')
+    c.run('scrapd -vvv --dump  1>.dump/dump.json 2>.dump/dump.json.log')
+
+
+@task
+def dump_csv(c):
+    """Dump errors and create CSV data set."""
+    c.run(f'mkdir -p {DUMP_DIR}')
+    c.run('scrapd -vvv --dump --format csv 1>.dump/dump.csv 2>.dump/dump.csv.log')
 
 
 @task

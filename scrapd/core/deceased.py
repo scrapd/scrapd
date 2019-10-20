@@ -218,17 +218,21 @@ def process_deceased_field(deceased_field):
         parse_pipe_delimited_deceased_field,
         parse_space_delimited_deceased_field,
         parse_age_deceased_field,
+        parse_unidentified,
     ]
 
     # Execute the parsing methods in order.
     for m in parse_methods:
         try:
             d = m(deceased_field)
-            return to_fatality(d)
+            if isinstance(d, dict):
+                return [to_fatality(d)]
+            if isinstance(d, list):
+                return [to_fatality(entry) for entry in d]
         except (ValueError, IndexError):
             pass
 
-    raise ValueError(f'cannot parse {Fields.DECEASED}: {deceased_field}')
+    raise ValueError(f'cannot parse {Fields.DECEASED}: "{deceased_field}"')
 
 
 def parse_age_deceased_field(deceased_field):
@@ -301,6 +305,40 @@ def parse_space_delimited_deceased_field(deceased_field):
     split_deceased_field = re.split(r' |/', deceased_field)
     fleg = split_deceased_field[:-1]
     return parse_deceased_field_common(split_deceased_field, fleg)
+
+
+def parse_unidentified(deceased_field):
+    """
+    Parse deceased field with unidentified victims.
+
+    :param str deceased_field: the deceased field as a string.
+    :return: a list of dictionaries representing the deceased field.
+    :rtype: list of dicts
+    """
+    unidentified_deceased_pattern = re.compile(
+        r'''
+        (
+        Unidentified                # The "Unidentified" keyword
+        ,?                          # Potentially a comma
+        \s                          # A whitespace
+        (?P<ethinicty>[^\s]+\s)?    # The ethinicty
+        (?P<gender>female|male)     # The gender
+        )
+        ''',
+        re.VERBOSE,
+    )
+    matches = re.finditer(unidentified_deceased_pattern, deceased_field)
+    unidentified_fatalities = []
+    for match in matches:
+        d = {
+            Fields.GENDER: (match.group('gender') or 'Undefined').strip().capitalize(),
+            Fields.ETHNICITY: (match.group('ethinicty') or 'Undefined').strip().capitalize(),
+        }
+        unidentified_fatalities.append(d)
+
+    if not unidentified_fatalities:
+        raise ValueError("no unidentified fatality found")
+    return unidentified_fatalities
 
 
 def parse_deceased_field_common(split_deceased_field, fleg):
