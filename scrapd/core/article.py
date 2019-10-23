@@ -70,6 +70,8 @@ def parse_deceased_tag(deceased_tag_p):
             continue
         if "preliminary" in passage:
             break
+        if "Arrested:" in passage:
+            break
         deceased_field_str += passage.string
 
     return deceased_field_str.strip()
