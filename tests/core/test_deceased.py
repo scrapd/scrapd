@@ -308,6 +308,14 @@ deceased_scenarios = [
         )],
         'id': 'unidentified-single-custom',
     },
+    {
+        'input_': 'Unknown, Hispanic male',
+        'expected': [model.Fatality(
+            ethnicity=model.Ethnicity.hispanic,
+            gender=model.Gender.male,
+        )],
+        'id': 'unknown-single',
+    },
 ]
 
 

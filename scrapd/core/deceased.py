@@ -317,8 +317,11 @@ def parse_unidentified(deceased_field):
     """
     unidentified_deceased_pattern = re.compile(
         r'''
-        (
-        Unidentified                # The "Unidentified" keyword
+        (?:                         # Non captured group
+        (Unidentified               # The "Unidentified" keyword
+        |                           # Or
+        Unknown                     # The "Unknown" keyword
+        )
         ,?                          # Potentially a comma
         \s                          # A whitespace
         (?P<ethinicty>[^\s]+\s)?    # The ethinicty
