@@ -252,10 +252,8 @@ class TestParseTwitter:
                 id='normalize-dob',
             ),
             pytest.param(
-                {'Deceased': 'Unidentified person'},
-                {
-                    'Deceased': 'Unidentified person',
-                },
+                {'Deceased': 'A person'},
+                {'Deceased': 'A person'},
                 id='with-fatality-error',
             ),
         ],

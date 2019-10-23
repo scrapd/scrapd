@@ -119,13 +119,12 @@ def normalize_tokens(d):
     # Process each fatality.
     for fatality in tmp_fatalities:
         try:
-            f, errors = deceased.process_deceased_field(fatality)
+            for f, errors in deceased.process_deceased_field(fatality):
+                d.setdefault('fatalities', []).append(f)
+                err.extend(errors)
         except ValueError as e:
             err.append(str(e))
             continue
-        else:
-            d.setdefault('fatalities', []).append(f)
-            err.extend(errors)
 
     # Parse the `Date` field.
     fatality_date = d.get('Date')
