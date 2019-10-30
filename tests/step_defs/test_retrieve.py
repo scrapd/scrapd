@@ -13,7 +13,10 @@ from tests.test_common import TEST_ROOT_DIR
 @scenario(
     TEST_ROOT_DIR / 'features/retrieve.feature',
     'Retrieve information',
-    example_converters={'entry_count': int},
+    example_converters={
+        'crash_count': int,
+        'fatality_count': int,
+    },
 )
 def test_collect_information():
     """Ensure a user retrieves correct information."""
@@ -36,16 +39,16 @@ def time_range(from_date, to_date):
     return time_range_params
 
 
-@then('the generated file must contain <entry_count> entries')
+@then('the generated file must contain <crash_count> and <fatality_count> entries')
 @pytest.mark.asyncio
-def ensure_results(mocker, event_loop, output_format, time_range, entry_count):
+def ensure_results(mocker, event_loop, output_format, time_range, crash_count, fatality_count):
     """Ensure we get the right amount of entries."""
     results, _ = event_loop.run_until_complete(apd.async_retrieve(pages=-1, **time_range))
     assert results is not None
-    assert len(results) == entry_count
     assert isinstance(results, list)
-    if results:
-        assert isinstance(results[0], model.Report)
+    assert isinstance(results[0], model.Report)
+    assert len(results) == crash_count
+    assert sum([len(report.fatalities) for report in results]) == fatality_count
 
     # Get the format and print the results.
     format_ = output_format['format'].lower()
