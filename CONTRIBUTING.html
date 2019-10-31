@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Contributing &#8212; scrapd 3.0.0 documentation</title>
+    <title>Contributing &#8212; scrapd 3.0.1 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -147,8 +147,8 @@ with sudo and will prompt you for your password:</p>
 least one parsing error either in the twitter fields or the article itself. The dumped files will be stored in a <cite>.dump</cite> directory</p>
 <div class="section" id="workflow">
 <h3>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h3>
-<p>Start by running <cite>scrapd</cite> at the root of this project:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scrapd</span> <span class="o">-</span><span class="n">vvv</span> <span class="o">--</span><span class="n">dump</span>  <span class="mi">1</span><span class="o">&gt;.</span><span class="n">dump</span><span class="o">/</span><span class="n">dump</span><span class="o">.</span><span class="n">json</span> <span class="mi">2</span><span class="o">&gt;.</span><span class="n">dump</span><span class="o">/</span><span class="n">dump</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">log</span>
+<p>Run the <cite>dump-json</cite> task from the root of the project:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">inv</span> <span class="n">dump</span><span class="o">-</span><span class="n">json</span>
 </pre></div>
 </div>
 <p>In addition to the dumps, this will also create 2 files to help you debug:</p>
