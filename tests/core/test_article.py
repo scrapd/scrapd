@@ -108,6 +108,23 @@ deceased_tag_scenarios = [
         'expected': [],
         'id': 'empty',
     },
+    {
+        'input': '''
+            <strong>Deceased:</strong>&nbsp; &nbsp; Brianna Nicole Polzine, White female (10-28-93)<br>
+	        &nbsp;<br><strong>Arrested:</strong>&nbsp;&nbsp;&nbsp;&nbsp; Justin Dakota Ayers, White male (26 years of age)<br>
+	        &nbsp;&nbsp;<br>''',
+        'expected': ['Brianna Nicole Polzine, White female (10-28-93)'],
+        'id': 'with-arrested-00',
+    },
+    {
+        'input': '''
+            <strong>Deceased:</strong>&nbsp; &nbsp; &nbsp;Robert Copeland, White male, (D.O.B. 11-7-57)<br>
+	        &nbsp;<br><strong>Arrested:</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rafael Padilla, Hispanic male (28 years of age)<br>
+	        &nbsp;<br>
+        ''',
+        'expected': ['Robert Copeland, White male, (D.O.B. 11-7-57)'],
+        'id': 'with-arrested-01',
+    },
 ]
 
 
