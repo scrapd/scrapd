@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[3.0.2]] - 2019-11-30
+
+### Fixed
+
+- Fix parsing with arrested field. [#227]
+
 ## [[3.0.1]] - 2019-10-30
 
 ### Fixed
@@ -181,6 +187,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [2.1.1]: https://github.com/scrapd/scrapd/releases/2.1.1
 [3.0.0]: https://github.com/scrapd/scrapd/releases/3.0.0
 [3.0.1]: https://github.com/scrapd/scrapd/releases/3.0.1
+[3.0.2]: https://github.com/scrapd/scrapd/releases/3.0.2
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/scrapd/scrapd/issues/13
@@ -231,3 +238,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#220]: https://github.com/scrapd/scrapd/pull/220
 [#223]: https://github.com/scrapd/scrapd/pull/223
 [#224]: https://github.com/scrapd/scrapd/pull/224
+[#227]: https://github.com/scrapd/scrapd/pull/227
