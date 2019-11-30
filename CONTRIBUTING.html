@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Contributing &#8212; scrapd 3.0.1 documentation</title>
+    <title>Contributing &#8212; scrapd 3.0.2 documentation</title>
     <link rel="stylesheet" href="_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -163,7 +163,7 @@ trigger an error, but is not something we can act on.</p>
 </div>
 <p>Locate the test named <cite>test_dumped_page</cite> in the <cite>tests/core/test_apd.py</cite> file and update the test parameters with the
 name of the file you want to debug:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest.mark.parametrize</span><span class="p">(</span><span class="s1">&#39;page_dump&#39;</span><span class="p">,</span> <span class="p">[</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;page_dump&#39;</span><span class="p">,</span> <span class="p">[</span>
   <span class="n">pytest</span><span class="o">.</span><span class="n">param</span><span class="p">(</span><span class="s1">&#39;traffic-fatality-1-2&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;dumped&#39;</span><span class="p">),</span>
 <span class="p">])</span>
 </pre></div>

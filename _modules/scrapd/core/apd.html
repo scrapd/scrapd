@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>scrapd.core.apd &#8212; scrapd 3.0.1 documentation</title>
+    <title>scrapd.core.apd &#8212; scrapd 3.0.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -34,22 +34,22 @@
   <h1>Source code for scrapd.core.apd</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Define the module containing the function used to scrap data from the APD website.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urljoin</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urljoin</span>
 
 <span class="kn">import</span> <span class="nn">aiohttp</span>
-<span class="kn">from</span> <span class="nn">loguru</span> <span class="k">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">tenacity</span> <span class="k">import</span> <span class="n">retry</span>
-<span class="kn">from</span> <span class="nn">tenacity</span> <span class="k">import</span> <span class="n">stop_after_attempt</span>
-<span class="kn">from</span> <span class="nn">tenacity</span> <span class="k">import</span> <span class="n">wait_exponential</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">tenacity</span> <span class="kn">import</span> <span class="n">retry</span>
+<span class="kn">from</span> <span class="nn">tenacity</span> <span class="kn">import</span> <span class="n">stop_after_attempt</span>
+<span class="kn">from</span> <span class="nn">tenacity</span> <span class="kn">import</span> <span class="n">wait_exponential</span>
 
-<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">article</span>
-<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">constant</span>
-<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">date_utils</span>
-<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">model</span>
-<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="k">import</span> <span class="n">twitter</span>
-<span class="kn">from</span> <span class="nn">scrapd.core.regex</span> <span class="k">import</span> <span class="n">match_pattern</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="kn">import</span> <span class="n">article</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="kn">import</span> <span class="n">constant</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="kn">import</span> <span class="n">date_utils</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="kn">import</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">scrapd.core</span> <span class="kn">import</span> <span class="n">twitter</span>
+<span class="kn">from</span> <span class="nn">scrapd.core.regex</span> <span class="kn">import</span> <span class="n">match_pattern</span>
 
 <span class="n">APD_URL</span> <span class="o">=</span> <span class="s1">&#39;http://austintexas.gov/department/news/296&#39;</span>
 <span class="n">PAGE_DETAILS_URL</span> <span class="o">=</span> <span class="s1">&#39;http://austintexas.gov/&#39;</span>
@@ -75,7 +75,7 @@
             <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientError</span><span class="p">,</span>
             <span class="n">aiohttp</span><span class="o">.</span><span class="n">http_exceptions</span><span class="o">.</span><span class="n">HttpProcessingError</span><span class="p">,</span>
     <span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;aiohttp exception for </span><span class="si">{url}</span><span class="s1"> -&gt; </span><span class="si">{e}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;aiohttp exception for </span><span class="si">{url}</span><span class="s1"> -&gt; </span><span class="si">{e}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span></div>
 
 
@@ -179,9 +179,9 @@
     <span class="n">article_report</span><span class="p">,</span> <span class="n">artricle_err</span> <span class="o">=</span> <span class="n">article</span><span class="o">.</span><span class="n">parse_content</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
     <span class="n">report</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">article_report</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">twitter_err</span> <span class="ow">or</span> <span class="n">artricle_err</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-        <span class="n">twitter_err_str</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Twitter fields:</span><span class="se">\n\t</span><span class="s1"> * &#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2"> * &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">twitter_err</span><span class="p">)</span> <span class="k">if</span> <span class="n">twitter_err</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">article_err_str</span> <span class="o">=</span> <span class="n">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Article fields:</span><span class="se">\n\t</span><span class="s1"> * &#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2"> * &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">artricle_err</span><span class="p">)</span> <span class="k">if</span> <span class="n">artricle_err</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Errors while parsing </span><span class="si">{url}</span><span class="s1">:</span><span class="si">{twitter_err_str}{article_err_str}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">twitter_err_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Twitter fields:</span><span class="se">\n\t</span><span class="s1"> * &#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2"> * &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">twitter_err</span><span class="p">)</span> <span class="k">if</span> <span class="n">twitter_err</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">article_err_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Article fields:</span><span class="se">\n\t</span><span class="s1"> * &#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2"> * &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">artricle_err</span><span class="p">)</span> <span class="k">if</span> <span class="n">artricle_err</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Errors while parsing </span><span class="si">{url}</span><span class="s1">:</span><span class="si">{twitter_err_str}{article_err_str}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># Dump the file.</span>
         <span class="k">if</span> <span class="n">dump</span><span class="p">:</span>
@@ -207,12 +207,12 @@
     <span class="c1"># Retrieve the page.</span>
     <span class="n">page</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fetch_detail_page</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">page</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The URL </span><span class="si">{url}</span><span class="s1"> returned a 0-length content.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The URL </span><span class="si">{url}</span><span class="s1"> returned a 0-length content.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Parse it.</span>
     <span class="n">report</span> <span class="o">=</span> <span class="n">parse_page</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">dump</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">report</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;No data could be extracted from the page </span><span class="si">{url}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No data could be extracted from the page </span><span class="si">{url}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Add the report link.</span>
     <span class="n">report</span><span class="o">.</span><span class="n">link</span> <span class="o">=</span> <span class="n">url</span>
@@ -240,23 +240,23 @@
     <span class="n">from_date</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">from_date</span><span class="p">(</span><span class="n">from_</span><span class="p">)</span>
     <span class="n">to_date</span> <span class="o">=</span> <span class="n">date_utils</span><span class="o">.</span><span class="n">to_date</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Retrieving fatalities from </span><span class="si">{from_date}</span><span class="s1"> to </span><span class="si">{to_date}</span><span class="s1">.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Retrieving fatalities from </span><span class="si">{from_date}</span><span class="s1"> to </span><span class="si">{to_date}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># Fetch the news page.</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Fetching page </span><span class="si">{page}</span><span class="s1">...&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Fetching page </span><span class="si">{page}</span><span class="s1">...&#39;</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">news_page</span> <span class="o">=</span> <span class="k">await</span> <span class="n">fetch_news_page</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Cannot retrieve news page #</span><span class="si">{page}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot retrieve news page #</span><span class="si">{page}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
             <span class="c1"># Looks for traffic fatality links.</span>
             <span class="n">page_details_links</span> <span class="o">=</span> <span class="n">extract_traffic_fatalities_page_details_link</span><span class="p">(</span><span class="n">news_page</span><span class="p">)</span>
 
             <span class="c1"># Generate the full URL for the links.</span>
             <span class="n">links</span> <span class="o">=</span> <span class="n">generate_detail_page_urls</span><span class="p">(</span><span class="n">page_details_links</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{len(links)} fatality page(s) to process.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;{len(links)} fatality page(s) to process.&#39;</span><span class="p">)</span>
 
             <span class="c1"># Fetch and parse each link.</span>
             <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
@@ -283,17 +283,17 @@
                 <span class="k">if</span> <span class="n">from_</span> <span class="ow">and</span> <span class="n">past_entries</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_entries</span><span class="p">:</span>
                     <span class="n">no_date_within_range_count</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">no_date_within_range_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{len(entries_in_time_range)} fatality page(s) within the specified time range.&#39;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;{len(entries_in_time_range)} fatality page(s) within the specified time range.&#39;</span><span class="p">)</span>
                     <span class="k">break</span>
 
                 <span class="c1"># Check whether we found entries in the previous pages.</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">has_entries</span><span class="p">:</span>
                     <span class="n">has_entries</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">has_entries</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">entries_in_time_range</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;{len(entries_in_time_range)} fatality page(s) is/are within the specified time range.&#39;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;{len(entries_in_time_range)} fatality page(s) is/are within the specified time range.&#39;</span><span class="p">)</span>
 
                 <span class="c1"># If there are none in range, we do not need to search further, and we can discard the results.</span>
                 <span class="k">if</span> <span class="n">has_entries</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">entries_in_time_range</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;There are no data within the specified time range on page </span><span class="si">{page}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;There are no data within the specified time range on page </span><span class="si">{page}</span><span class="s1">.&#39;</span><span class="p">)</span>
                     <span class="k">break</span>
 
                 <span class="c1"># Store the results if the ID number is new.</span>
