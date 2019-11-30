@@ -125,6 +125,15 @@ deceased_tag_scenarios = [
         'expected': ['Robert Copeland, White male, (D.O.B. 11-7-57)'],
         'id': 'with-arrested-01',
     },
+    {
+        'input': '''
+            <strong>Deceased:&nbsp; </strong>&nbsp;&nbsp;&nbsp;Risean Deontay Lee Green | Black male | 10/16/1991<br>
+	        &nbsp;<br><strong>Arrested: &nbsp;</strong>&nbsp; &nbsp; Amanda Overman, White female, 30 years of age<br>
+	        &nbsp;<br>
+        ''',
+        'expected': ['Risean Deontay Lee Green | Black male | 10/16/1991'],
+        'id': 'with-arrested-02',
+    },
 ]
 
 

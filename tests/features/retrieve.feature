@@ -11,5 +11,5 @@ Feature: Retrieve
     Examples:
       | format | from_date   | to_date     | crash_count | fatality_count |
       | csv    | Jan 15 2019 | Jan 18 2019 | 2           | 2              |
-      | json   | Jan 2018    | Dec 2018    | 72          | 73             |
+      | json   | Jan 2018    | Dec 2018    | 72          | 72             |
       | json   | Jan 15 2018 | Jan 18 2018 | 1           | 1              |
