@@ -32,12 +32,12 @@ def match_pattern(text, pattern, group_number=0):
     Match a pattern.
 
     :param str text: the text to match the pattern against
-    :param compiled regex pattern: the pattern to look for
+    :param compiled regex pattern: the regex to look for
     :param int group_number: the capturing group number
     :return: a string representing the captured group.
     :rtype: str
     """
-    match = re.search(pattern, text)
+    match = pattern.search(text)
     return match.groups()[group_number] if match else ''
 
 
@@ -94,8 +94,22 @@ def match_crash_field(page):
     :return: a string representing the crash number.
     :rtype: str
     """
-    crashes_pattern = re.compile(r'Traffic Fatality #(\d{1,3})')
-    return match_pattern(page, crashes_pattern)
+    crashes_pattern = re.compile(
+        r'''
+        (?:
+        (?:Traffic\sFatality\s\#(\d{1,3}))
+        |
+        (?:Fatality\sCrash\s\#(\d{1,3}))
+        )
+        ''',
+        re.VERBOSE,
+    )
+    matches = crashes_pattern.search(page)
+    if not matches:
+        return None
+
+    non_empty_match = [match for match in matches.groups() if match]
+    return non_empty_match[0]
 
 
 def match_date_field(page):
