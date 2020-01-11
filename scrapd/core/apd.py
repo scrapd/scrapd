@@ -36,6 +36,7 @@ async def fetch_text(session, url, params=None):
         params = {}
     try:
         async with session.get(url, params=params) as response:
+            logger.debug(response.url)
             return await response.text()
     except (
             aiohttp.ClientError,
@@ -82,10 +83,33 @@ def extract_traffic_fatalities_page_details_link(news_page):
     :return: a list of links.
     :rtype: list or `None`
     """
-    PATTERN = r'<a href="(/news/traffic-fatality-\d{1,3}-\d|\S*)">(Traffic Fatality #(\d{1,3})).*\s*</a>'
-    regex = re.compile(PATTERN)
+    regex = re.compile(
+        r'''
+        <a\shref="
+        (?:
+            (?:
+                (/news/traffic-fatality-\d{1,3}-\d|\S*)
+                ">
+                (Traffic\sFatality\s\#(\d{1,3}))
+            )
+            |
+            (?:
+                (/news/fatality-crash-\d{1,3}-\d)
+                ">
+                (Fatality\sCrash\s\#(\d{1,3}))
+            )
+        )
+        .*\s*
+        </a>
+        ''',
+        re.VERBOSE | re.MULTILINE,
+    )
     matches = regex.findall(news_page, re.MULTILINE)
-    return matches
+    compact_matches = []
+    for match in matches:
+        parts = tuple(part for part in match if part != '')
+        compact_matches.append(parts)
+    return compact_matches
 
 
 def generate_detail_page_urls(titles):

@@ -1,6 +1,7 @@
 """Define the ScrAPD models."""
 import datetime
 from enum import Enum
+import re
 from typing import List
 
 from pydantic import BaseModel
@@ -130,7 +131,7 @@ class Report(BaseModel):
     @validator('case')
     def valid_case_number(cls, v):  # pylint: disable=no-self-argument
         """Ensure a case number is valid."""
-        pattern = r"(\d{2}-\d{3,7})"
+        pattern = re.compile(r"(\d{2}-\d{3,7})")
         if not regex.match_pattern(v, pattern):
             raise ValueError('invalid format: "{v}"')
         return v

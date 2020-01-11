@@ -165,7 +165,7 @@ def run_pytest_units(session):
 
 
 def run_pytest_integrations(session):
-    run_pytest(session, '-m', 'integrations', '--reruns', '3', '--reruns-delay', '5', '-r', 'R')
+    run_pytest(session, '-m', 'integrations and not dump', '--reruns', '3', '--reruns-delay', '5', '-r', 'R')
 
 
 def run_sphinx(session):
