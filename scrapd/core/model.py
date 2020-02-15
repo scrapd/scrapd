@@ -125,6 +125,9 @@ class Report(BaseModel):
 
         # Set the non-empty attributes of `other` into the empty attributes of the current instance.
         for attr in attrs:
+            if attr == 'fatalities':
+                setattr(self, attr, getattr(other, attr))
+                continue
             if not getattr(self, attr) and getattr(other, attr):
                 setattr(self, attr, getattr(other, attr))
 

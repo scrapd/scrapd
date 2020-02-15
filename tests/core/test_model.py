@@ -77,6 +77,95 @@ update_model_scenarios = [
         'strict': False,
         'id': 'complex',
     },
+    {
+        'input_': model.Report(
+            case='20-0420110',
+            crash=15,
+            date=datetime.date(2020, 2, 11),
+            fatalities=[
+                model.Fatality(
+                    age=21,
+                    dob=datetime.date(1998, 4, 28),
+                    ethnicity=model.Ethnicity.white,
+                    first='Owen',
+                    gender=model.Gender.male,
+                    last='Macki',
+                    middle='William',
+                ),
+            ],
+            location='North Capital of Texas Hwy/North Mopac NB Svrd',
+            notes=' The preliminary investigation shows Owen William Macki was driving '
+            'a black, 2015 Toyota Camry eastbound in the inside lane of North Capital '
+            'of Texas Hwy at a high rate of speed when he struck the concrete barrier '
+            'wall of the North Mopac NB Svrd. Owen Macki was pronounced deceased on '
+            'scene. The passenger in the vehicle, Raquel Gitane Aveytia, was '
+            'transported to Saint David’s Round Rock Medical Center where she was '
+            'pronounced deceased shortly after her arrival.',
+            time=datetime.time(2, 2),
+        ),
+        'other': model.Report(
+            case='20-0420110',
+            crash=15,
+            date=datetime.date(2020, 2, 11),
+            fatalities=[
+                model.Fatality(
+                    age=21,
+                    dob=datetime.date(1998, 4, 28),
+                    ethnicity=model.Ethnicity.white,
+                    first='Owen',
+                    gender=model.Gender.male,
+                    last='Macki',
+                    middle='William',
+                ),
+                model.Fatality(
+                    age=24,
+                    dob=datetime.date(1995, 7, 26),
+                    ethnicity=model.Ethnicity.asian,
+                    first='Aamna',
+                    gender=model.Gender.female,
+                    last='Najam',
+                    middle='Gitane',
+                ),
+            ],
+            time=datetime.time(2, 2),
+        ),
+        'expected': model.Report(
+            case='20-0420110',
+            crash=15,
+            date=datetime.date(2020, 2, 11),
+            fatalities=[
+                model.Fatality(
+                    age=21,
+                    dob=datetime.date(1998, 4, 28),
+                    ethnicity=model.Ethnicity.white,
+                    first='Owen',
+                    gender=model.Gender.male,
+                    last='Macki',
+                    middle='William',
+                ),
+                model.Fatality(
+                    age=24,
+                    dob=datetime.date(1995, 7, 26),
+                    ethnicity=model.Ethnicity.asian,
+                    first='Aamna',
+                    gender=model.Gender.female,
+                    last='Najam',
+                    middle='Gitane',
+                ),
+            ],
+            location='North Capital of Texas Hwy/North Mopac NB Svrd',
+            notes=' The preliminary investigation shows Owen William Macki was driving '
+            'a black, 2015 Toyota Camry eastbound in the inside lane of North Capital '
+            'of Texas Hwy at a high rate of speed when he struck the concrete barrier '
+            'wall of the North Mopac NB Svrd. Owen Macki was pronounced deceased on '
+            'scene. The passenger in the vehicle, Raquel Gitane Aveytia, was '
+            'transported to Saint David’s Round Rock Medical Center where she was '
+            'pronounced deceased shortly after her arrival.',
+            time=datetime.time(2, 2),
+        ),
+        'strict': False,
+        'id': 'update-multi-fatalities',
+    },
 ]
 
 
