@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[3.0.4]] - 2020-02-15
+
 ### Fixed
 
 - Fix `model.Report` update function. `fatalities` field is now always overridden with the new values. [#234]
@@ -199,6 +201,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [3.0.1]: https://github.com/scrapd/scrapd/releases/3.0.1
 [3.0.2]: https://github.com/scrapd/scrapd/releases/3.0.2
 [3.0.3]: https://github.com/scrapd/scrapd/releases/3.0.3
+[3.0.4]: https://github.com/scrapd/scrapd/releases/3.0.4
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/scrapd/scrapd/issues/13
