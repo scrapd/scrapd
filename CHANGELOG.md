@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[3.0.5]] - 2020-02-22
+
+### Fixed
+
+- Fix `model.Report` update function. The model won't be updated with empty fatalities. [#237]
+
 ## [[3.0.4]] - 2020-02-15
 
 ### Fixed
@@ -202,6 +208,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [3.0.2]: https://github.com/scrapd/scrapd/releases/3.0.2
 [3.0.3]: https://github.com/scrapd/scrapd/releases/3.0.3
 [3.0.4]: https://github.com/scrapd/scrapd/releases/3.0.4
+[3.0.5]: https://github.com/scrapd/scrapd/releases/3.0.5
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/scrapd/scrapd/issues/13
@@ -255,3 +262,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#227]: https://github.com/scrapd/scrapd/pull/227
 [#230]: https://github.com/scrapd/scrapd/pull/230
 [#234]: https://github.com/scrapd/scrapd/pull/234
+[#237]: https://github.com/scrapd/scrapd/pull/237

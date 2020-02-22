@@ -114,21 +114,23 @@ class Report(BaseModel):
 
         # When strict...
         if strict:
-            # The case number and date must be identical.
+            # The case number must be identical.
             if not all([getattr(self, attr) == getattr(other, attr) for attr in required_attrs]):
                 raise ValueError(
                     f'in strict mode the required attributes "({", ".join(required_attrs)})" must be identical')
         else:
-            # Otherwise they are overridden.
+            # Otherwise the required attributes are overridden.
             for attr in required_attrs:
                 setattr(self, attr, getattr(other, attr))
 
         # Set the non-empty attributes of `other` into the empty attributes of the current instance.
         for attr in attrs:
+            # Fatalities are a special case because we cannot simply update their attributes individually.
+            # Therefore it is all or nothing, but we want to make sure we do not update it with empty values.
             if attr == 'fatalities':
-                setattr(self, attr, getattr(other, attr))
-                continue
-            if not getattr(self, attr) and getattr(other, attr):
+                if getattr(other, attr):
+                    setattr(self, attr, getattr(other, attr))
+            elif not getattr(self, attr) and getattr(other, attr):
                 setattr(self, attr, getattr(other, attr))
 
     @validator('case')
