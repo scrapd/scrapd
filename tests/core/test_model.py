@@ -166,6 +166,44 @@ update_model_scenarios = [
         'strict': False,
         'id': 'update-multi-fatalities',
     },
+    {
+        'input_': model.Report(
+            case='19-123456',
+            date=now.date(),
+            link='link',
+            fatalities=[
+                model.Fatality(
+                    age=21,
+                    dob=datetime.date(1998, 4, 28),
+                    ethnicity=model.Ethnicity.white,
+                    first='Owen',
+                    gender=model.Gender.male,
+                    last='Macki',
+                    middle='William',
+                ),
+            ],
+        ),
+        'other': model.Report(case='19-123456', date=now.date(), link='other link', crash=1, fatalities=[]),
+        'expected': model.Report(
+            case='19-123456',
+            date=now.date(),
+            link='link',
+            crash=1,
+            fatalities=[
+                model.Fatality(
+                    age=21,
+                    dob=datetime.date(1998, 4, 28),
+                    ethnicity=model.Ethnicity.white,
+                    first='Owen',
+                    gender=model.Gender.male,
+                    last='Macki',
+                    middle='William',
+                ),
+            ],
+        ),
+        'strict': True,
+        'id': 'update-no-fatalities',
+    },
 ]
 
 
@@ -252,7 +290,8 @@ class TestReportModel:
         """Ensure models can be updated."""
         actual = input_.copy(deep=True)
         actual.update(other, strict)
-        assert actual == expected
+        # assert actual == expected
+        assert actual.dict() == expected.dict()
 
     def test_update_01(self):
         """Ensure required fields are identical in strict mode."""
