@@ -211,6 +211,8 @@ def parse(page):
     twitter_description = match_description_meta(page)
 
     # Parse the twitter description.
+    if not twitter_description:
+        return None, None
     report, err = parse_description(twitter_description)
     if not report:
         return None, err  # pragma: no cover

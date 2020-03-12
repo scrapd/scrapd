@@ -94,9 +94,7 @@ def extract_traffic_fatalities_page_details_link(news_page):
             )
             |
             (?:
-                (/news/fatality-crash-\d{1,3}-\d)
-                ">
-                (Fatality\sCrash\s\#(\d{1,3}))
+                (/news/fatality-crash(-\d{1,3})-\d)
             )
         )
         .*\s*
