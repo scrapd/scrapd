@@ -30,17 +30,39 @@ def news_page(scope='session'):
     return page_fd.read_text()
 
 
-def test_extract_traffic_fatalities_page_details_link_00(news_page):
+@pytest.mark.parametrize(
+    'input_,expected',
+    [
+        pytest.param(
+            load_test_page('296'),
+            [
+                ('/news/fatality-crash-20-2', '20'),
+                ('/news/fatality-crash-17-2', '17'),
+                ('/news/fatality-crash-18-2', '18'),
+                ('/news/fatality-crash-19-3', '19'),
+                ('/news/fatality-crash-15-2', '15'),
+                ('/news/fatality-crash-16-2', '16'),
+            ],
+            id='news-page-0',
+        ),
+        pytest.param(
+            load_test_page('296-page=2'),
+            [
+                ('/news/fatality-crash-4-1', '4'),
+                ('/news/fatality-crash-3-2', '3'),
+                ('/news/fatality-crash-1-2', '1'),
+                ('/news/fatality-crash-2-2', '2'),
+                ('/news/traffic-fatality-86', '86'),
+                ('/news/traffic-fatality-85', '85'),
+                ('/news/traffic-fatality-84', '84'),
+            ],
+            id='news-page-2',
+        ),
+    ],
+)
+def test_extract_traffic_fatalities_page_details_link_00(input_, expected):
     """Ensure page detail links are extracted from news page."""
-    actual = apd.extract_traffic_fatalities_page_details_link(news_page)
-    expected = [
-        ('/news/fatality-crash-20-2', '20'),
-        ('/news/fatality-crash-17-2', '17'),
-        ('/news/fatality-crash-18-2', '18'),
-        ('/news/fatality-crash-19-3', '19'),
-        ('/news/fatality-crash-15-2', '15'),
-        ('/news/fatality-crash-16-2', '16'),
-    ]
+    actual = apd.extract_traffic_fatalities_page_details_link(input_)
     assert actual == expected
 
 
@@ -83,13 +105,15 @@ def test_has_next_01():
 
 @pytest.mark.parametrize(
     'input_,expected',
-    (
-        ('<li class="pager__item pager__item--next">'
-         '<a href="?page=1" title="Go to next page" rel="next">'
-         '<span class="visually-hidden">Next page</span>'
-         '<span aria-hidden="true">››</span>'
-         '</a>'
-         '</li>', True), ),
+    ((
+        '<li class="pager__item pager__item--next">'
+        '<a href="?page=1" title="Go to next page" rel="next">'
+        '<span class="visually-hidden">Next page</span>'
+        '<span aria-hidden="true">››</span>'
+        '</a>'
+        '</li>',
+        True,
+    ), ),
 )
 def test_has_next_02(input_, expected):
     """Ensure we detect whether there are more news pages."""
