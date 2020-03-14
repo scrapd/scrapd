@@ -91,7 +91,7 @@ def test_extract_traffic_fatalities_page_details_link_01():
     </div>
     """
     actual = apd.extract_traffic_fatalities_page_details_link(news_page)
-    expected = [('/news/fatality-crash-20-2', '20')]
+    expected = [('/news/fatality-crash-20-2', '20', '2')]
     assert actual == expected
 
 
