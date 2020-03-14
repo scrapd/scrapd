@@ -79,6 +79,35 @@ page_scenarios = [
         ),
         'errors': None,
     },
+    {
+        'id': 'new-format-00',
+        'page': 'fatality-crash-20-2',
+        'expected': model.Report(
+            case='20-0530341',
+            crash=20,
+            date=datetime.date(2020, 2, 22),
+            fatalities=[
+                model.Fatality(
+                    age=36,
+                    dob=datetime.date(1984, 1, 17),
+                    ethnicity=model.Ethnicity.white,
+                    first='Calvin',
+                    gender=model.Gender.male,
+                    last='Bench',
+                    middle='Charles',
+                ),
+            ],
+            location='7800 FM 969',
+            notes='The preliminary investigation shows that a 2005, red Honda Accord was exiting a private drive in '
+            'the 7800 block of FM 969 and attempting to turn westbound onto FM 969. A 2020, silver Chevrolet Equinox '
+            'was traveling eastbound in the outside lane of FM 969 and struck the driver’s side with its front.\n\nThe '
+            'driver of the Honda, Calvin Charles Bench, was pronounced deceased at the scene.\n\nThe driver of the '
+            'Chevrolet was arrested for DWI. Although he was arrested for DWI, his intoxication was not a contributing '
+            'factor in the crash.',
+            time=datetime.time(4, 54),
+        ),
+        'errors': None,
+    },
 ]
 
 deceased_tag_scenarios = [
@@ -150,7 +179,7 @@ class TestPageParseContent:
         if errors or err:
             assert errors == len(err)
         else:
-            assert actual == expected
+            assert actual.dict() == expected.dict()
 
     def test_parse_page_content_01(self):
         """Ensure a missing case number raises an exception."""

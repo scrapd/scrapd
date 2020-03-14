@@ -12,7 +12,6 @@ from tenacity import stop_after_attempt
 
 from scrapd.core import apd
 from scrapd.core import article
-from scrapd.core import twitter
 from tests.test_common import load_dumped_page
 from tests.test_common import load_test_page
 from tests.test_common import TEST_DATA_DIR
@@ -35,12 +34,12 @@ def test_extract_traffic_fatalities_page_details_link_00(news_page):
     """Ensure page detail links are extracted from news page."""
     actual = apd.extract_traffic_fatalities_page_details_link(news_page)
     expected = [
-        ('/news/traffic-fatality-2-3', 'Traffic Fatality #2', '2'),
-        ('/news/traffic-fatality-1-4', 'Traffic Fatality #1', '1'),
-        ('/news/traffic-fatality-72-1', 'Traffic Fatality #72', '72'),
-        ('/news/traffic-fatality-73-2', 'Traffic Fatality #73', '73'),
-        ('/news/traffic-fatality-71-2', 'Traffic Fatality #71', '71'),
-        ('/news/traffic-fatality-69-3', 'Traffic Fatality #69', '69'),
+        ('/news/fatality-crash-20-2', '20'),
+        ('/news/fatality-crash-17-2', '17'),
+        ('/news/fatality-crash-18-2', '18'),
+        ('/news/fatality-crash-19-3', '19'),
+        ('/news/fatality-crash-15-2', '15'),
+        ('/news/fatality-crash-16-2', '16'),
     ]
     assert actual == expected
 
@@ -50,12 +49,12 @@ def test_extract_traffic_fatalities_page_details_link_01():
     news_page = """
     <div class="views-field views-field-title">
         <span class="field-content">
-            <a href="/news/traffic-fatality-59-update">Traffic Fatality #59- Update</a>
+            <a href="/news/fatality-crash-20-2" hreflang="en">Fatality Crash #20</a>
         </span>
     </div>
     """
     actual = apd.extract_traffic_fatalities_page_details_link(news_page)
-    expected = [('/news/traffic-fatality-59-update', 'Traffic Fatality #59', '59')]
+    expected = [('/news/fatality-crash-20-2', '20')]
     assert actual == expected
 
 
@@ -84,10 +83,18 @@ def test_has_next_01():
 
 @pytest.mark.parametrize(
     'input_,expected',
-    (('<div class="item-list"><ul class="pager"><li class="pager-previous first">&nbsp;</li>'
-      '<li class="pager-current">1 of 27</li>'
-      '<li class="pager-next last"><a title="Go to next page" href="/department/news/296-page=1">next ›</a></li>'
-      '</ul></div>', True), ))
+    (
+        # ('<div class="item-list"><ul class="pager"><li class="pager-previous first">&nbsp;</li>'
+        #  '<li class="pager-current">1 of 27</li>'
+        #  '<li class="pager-next last"><a title="Go to next page" href="/department/news/296-page=1">next ›</a></li>'
+        #  '</ul></div>', True),
+        ('<li class="pager__item pager__item--next">'
+         '<a href="?page=1" title="Go to next page" rel="next">'
+         '<span class="visually-hidden">Next page</span>'
+         '<span aria-hidden="true">››</span>'
+         '</a>'
+         '</li>', True), ),
+)
 def test_has_next_02(input_, expected):
     """Ensure we detect whether there are more news pages."""
     assert apd.has_next(input_) == expected
@@ -95,7 +102,7 @@ def test_has_next_02(input_, expected):
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
                  side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
-@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('traffic-fatality-2-3'))
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('fatality-crash-20-2'))
 @pytest.mark.asyncio
 async def test_date_filtering_00(fake_details, fake_news):
     """Ensure the date filtering do not fetch unnecessary data."""
@@ -107,7 +114,7 @@ async def test_date_filtering_00(fake_details, fake_news):
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
                  side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
-@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('traffic-fatality-2-3'))
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", return_value=load_test_page('fatality-crash-20-2'))
 @pytest.mark.asyncio
 async def test_date_filtering_01(fake_details, fake_news):
     """Ensure the date filtering do not fetch unnecessary data."""
@@ -119,7 +126,7 @@ async def test_date_filtering_01(fake_details, fake_news):
                  side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
 @asynctest.patch(
     "scrapd.core.apd.fetch_detail_page",
-    side_effect=[load_test_page(page) for page in ['traffic-fatality-2-3'] + ['traffic-fatality-71-2'] * 14])
+    side_effect=[load_test_page(page) for page in ['traffic-fatality-2-3'] + ['traffic-fatality-71-2'] * 25])
 @pytest.mark.asyncio
 async def test_date_filtering_02(fake_details, fake_news):
     """Ensure the date filtering do not fetch unnecessary data."""
@@ -131,7 +138,7 @@ async def test_date_filtering_02(fake_details, fake_news):
 
 @asynctest.patch("scrapd.core.apd.fetch_news_page",
                  side_effect=[load_test_page(page) for page in ['296', '296-page=1', '296-page=27']])
-@asynctest.patch("scrapd.core.apd.fetch_detail_page", side_effect=[load_test_page('traffic-fatality-50-3')] * 15)
+@asynctest.patch("scrapd.core.apd.fetch_detail_page", side_effect=[load_test_page('traffic-fatality-50-3')] * 20)
 @pytest.mark.asyncio
 async def test_both_fatalities_from_one_incident(fake_details, fake_news):
     data, _ = await apd.async_retrieve(pages=-1, from_="2019-08-16", to="2019-08-18", attempts=1, backoff=1)
