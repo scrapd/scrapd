@@ -7,13 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [[3.0.6]] - 2020-03-10
+## [[4.0.0]] - 2020-03-14
 
 ### Fixed
 
-- Fix parsing bugs related to the new APD main page format:
-  - regex detecting fatalities. [#238]
-  - twitter fields were removed. [#238]
+- Fix parsing bugs related to the new APD main page format [#238]
+  - regex detecting fatalities.
+  - twitter fields were removed.
 
 ## [[3.0.5]] - 2020-02-22
 

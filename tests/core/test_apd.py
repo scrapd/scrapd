@@ -84,10 +84,6 @@ def test_has_next_01():
 @pytest.mark.parametrize(
     'input_,expected',
     (
-        # ('<div class="item-list"><ul class="pager"><li class="pager-previous first">&nbsp;</li>'
-        #  '<li class="pager-current">1 of 27</li>'
-        #  '<li class="pager-next last"><a title="Go to next page" href="/department/news/296-page=1">next ›</a></li>'
-        #  '</ul></div>', True),
         ('<li class="pager__item pager__item--next">'
          '<a href="?page=1" title="Go to next page" rel="next">'
          '<span class="visually-hidden">Next page</span>'
