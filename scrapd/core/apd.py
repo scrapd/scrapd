@@ -85,9 +85,9 @@ def extract_traffic_fatalities_page_details_link(news_page):
     regex = re.compile(
         r'''
         (?:
-            (/news/traffic-fatality-(\d{1,3})?\d?)
+            (/news/traffic-fatality-(\d{1,3})(-?\d?))
             |
-            (/news/fatality-crash-(\d{1,3})-\d)
+            (/news/fatality-crash-(\d{1,3})-(\d))
         )
         ''',
         re.VERBOSE | re.MULTILINE,
