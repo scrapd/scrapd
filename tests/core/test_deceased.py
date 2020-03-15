@@ -383,7 +383,12 @@ class TestFatality:
         ],
     )
     def test_to_fatality(self, input_, expected):
-        """."""
+        """Ensure deceased information convert to a `fatality` object."""
         actual, err = deceased.to_fatality(input_)
         assert actual == expected[0]
         assert len(err) == expected[1]
+
+    def test_parse_unindentified(self):
+        """Ensure ."""
+        with pytest.raises(ValueError):
+            actual = deceased.parse_unidentified("I cannot be identified")

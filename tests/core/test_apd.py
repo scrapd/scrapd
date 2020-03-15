@@ -64,12 +64,12 @@ def news_page(scope='session'):
                 ('/news/traffic-fatality-83', '83'),
                 ('/news/traffic-fatality-82', '82'),
                 ('/news/traffic-fatality-81', '81'),
-                ('/news/traffic-fatality-80-0', '80', '-0'),
-                ('/news/traffic-fatality-79-0', '79', '-0'),
-                ('/news/traffic-fatality-77-1', '77', '-1'),
-                ('/news/traffic-fatality-78-0', '78', '-0'),
-                ('/news/traffic-fatality-75-0', '75', '-0'),
-                ('/news/traffic-fatality-76-0', '76', '-0'),
+                ('/news/traffic-fatality-80-0', '80', '0'),
+                ('/news/traffic-fatality-79-0', '79', '0'),
+                ('/news/traffic-fatality-77-1', '77', '1'),
+                ('/news/traffic-fatality-78-0', '78', '0'),
+                ('/news/traffic-fatality-75-0', '75', '0'),
+                ('/news/traffic-fatality-76-0', '76', '0'),
             ],
             id='news-page-3',
         ),
@@ -81,17 +81,38 @@ def test_extract_traffic_fatalities_page_details_link_00(input_, expected):
     assert actual == expected
 
 
-def test_extract_traffic_fatalities_page_details_link_01():
+@pytest.mark.parametrize(
+    'input_,expected',
+    [
+        pytest.param(
+            '<div class="views-field views-field-title">'
+            '<span class="field-content">'
+            '<a href="/news/fatality-crash-20-2" hreflang="en">Fatality Crash #20</a>'
+            '</span></div>',
+            [('/news/fatality-crash-20-2', '20', '2')],
+            id="crash-20-2",
+        ),
+        pytest.param(
+            '<div class="views-field views-field-title">'
+            '<span class="field-content">'
+            '<a href="/news/traffic-fatality-25-4">Traffic Fatality #25</a>'
+            '</span></div>',
+            [("/news/traffic-fatality-25-4", "25", "4")],
+            id="crash-25-4",
+        ),
+        pytest.param(
+            '<div class="views-field views-field-title">'
+            '<span class="field-content">'
+            '<a href="/news/traffic-fatality-25-update">Traffic Fatality #25 Update</a>'
+            '</span></div>',
+            [("/news/traffic-fatality-25-update", "25", "update")],
+            id="crash-update",
+        )
+    ],
+)
+def test_extract_traffic_fatalities_page_details_link_01(input_, expected):
     """Ensure page detail links are extracted from news page."""
-    news_page = """
-    <div class="views-field views-field-title">
-        <span class="field-content">
-            <a href="/news/fatality-crash-20-2" hreflang="en">Fatality Crash #20</a>
-        </span>
-    </div>
-    """
-    actual = apd.extract_traffic_fatalities_page_details_link(news_page)
-    expected = [('/news/fatality-crash-20-2', '20', '2')]
+    actual = apd.extract_traffic_fatalities_page_details_link(input_)
     assert actual == expected
 
 
