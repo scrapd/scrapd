@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>scrapd.core.version &#8212; scrapd 3.0.5 documentation</title>
+    <title>scrapd.core.version &#8212; scrapd 3.1.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/aiohttp.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -50,7 +50,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">version_info</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">VersionInfo</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
             <span class="n">package_version</span> <span class="o">=</span> <span class="n">version_info</span><span class="o">.</span><span class="n">release_string</span><span class="p">()</span>
-        <span class="k">except</span> <span class="p">(</span><span class="n">ModuleNotFoundError</span><span class="p">,</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">DistributionNotFound</span><span class="p">):</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ModuleNotFoundError</span><span class="p">,</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">DistributionNotFound</span><span class="p">):</span>
             <span class="n">distribution_info</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">get_distribution</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
             <span class="n">package_version</span> <span class="o">=</span> <span class="n">distribution_info</span><span class="o">.</span><span class="n">version</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
