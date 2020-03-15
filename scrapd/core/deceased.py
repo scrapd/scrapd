@@ -232,7 +232,7 @@ def process_deceased_field(deceased_field):
         except (ValueError, IndexError):
             pass
 
-    raise ValueError(f'cannot parse {Fields.DECEASED}: "{deceased_field}"') # pragma: no cover
+    raise ValueError(f'cannot parse {Fields.DECEASED}: "{deceased_field}"')  # pragma: no cover
 
 
 def parse_age_deceased_field(deceased_field):
