@@ -14,7 +14,6 @@ from scrapd.core import article
 from scrapd.core import constant
 from scrapd.core import date_utils
 from scrapd.core import model
-from scrapd.core import twitter
 from scrapd.core.regex import match_pattern
 
 APD_URL = 'http://austintexas.gov/department/news/296'
@@ -85,22 +84,11 @@ def extract_traffic_fatalities_page_details_link(news_page):
     """
     regex = re.compile(
         r'''
-        <a\shref="
         (?:
-            (?:
-                (/news/traffic-fatality-\d{1,3}-\d|\S*)
-                ">
-                (Traffic\sFatality\s\#(\d{1,3}))
-            )
+            (/news/traffic-fatality-(\d{1,3})(?:-(\d?|[a-z]+))?)\"
             |
-            (?:
-                (/news/fatality-crash-\d{1,3}-\d)
-                ">
-                (Fatality\sCrash\s\#(\d{1,3}))
-            )
+            (/news/fatality-crash-(\d{1,3})-(\d))
         )
-        .*\s*
-        </a>
         ''',
         re.VERBOSE | re.MULTILINE,
     )
@@ -136,13 +124,9 @@ def has_next(news_page):
 
     pattern = re.compile(
         r'''
-        <a                  # Beginning of the anchor
-        \s+
-        title=\"[^\"]*\"    # Anchor tittle
-        \s+
-        href=\"[^\"]*\">    # Anchor href
-        (next\s›)            # Test indicating a next page
-        </a>                # End of the anchor.
+        <span\saria-hidden=\"true\">
+        (››)                        # Test indicating a next page
+        </span>
         ''',
         re.VERBOSE | re.MULTILINE,
     )
@@ -161,17 +145,12 @@ def parse_page(page, url, dump=False):
     """
     report = model.Report(case='19-123456')
 
-    # Parse the twitter fields.
-    twitter_report, twitter_err = twitter.parse(page)
-    report.update(twitter_report)
-
     # Parse the page.
     article_report, artricle_err = article.parse_content(page)
     report.update(article_report)
-    if twitter_err or artricle_err:  # pragma: no cover
-        twitter_err_str = f'\nTwitter fields:\n\t * ' + "\n\t * ".join(twitter_err) if twitter_err else ''
+    if artricle_err:  # pragma: no cover
         article_err_str = f'\nArticle fields:\n\t * ' + "\n\t * ".join(artricle_err) if artricle_err else ''
-        logger.debug(f'Errors while parsing {url}:{twitter_err_str}{article_err_str}')
+        logger.debug(f'Errors while parsing {url}:{article_err_str}')
 
         # Dump the file.
         if dump:

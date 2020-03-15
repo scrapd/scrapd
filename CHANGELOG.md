@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[3.1.0]] - 2020-03-15
+
+### Fixed
+
+- Fix parsing bugs related to the new APD main page format [#238]
+  - regex detecting fatalities.
+  - twitter fields were removed.
+
 ## [[3.0.5]] - 2020-02-22
 
 ### Fixed
@@ -209,6 +217,7 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [3.0.3]: https://github.com/scrapd/scrapd/releases/3.0.3
 [3.0.4]: https://github.com/scrapd/scrapd/releases/3.0.4
 [3.0.5]: https://github.com/scrapd/scrapd/releases/3.0.5
+[3.1.0]: https://github.com/scrapd/scrapd/releases/3.1.0
 
 [//]: # (Issue/PR links)
 [#13]: https://github.com/scrapd/scrapd/issues/13
@@ -263,3 +272,4 @@ This first version allows a user to retrieve traffic fatality repports for a cer
 [#230]: https://github.com/scrapd/scrapd/pull/230
 [#234]: https://github.com/scrapd/scrapd/pull/234
 [#237]: https://github.com/scrapd/scrapd/pull/237
+[#238]: https://github.com/scrapd/scrapd/pull/238

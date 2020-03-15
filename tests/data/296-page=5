@@ -1,689 +1,1580 @@
-<!doctype html>
-<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
-<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
-<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html lang="en" dir="ltr"> <!--<![endif]-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr"
+  prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# ">
 
-<head profile="http://www.w3.org/1999/xhtml/vocab">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="shortcut icon" href="http://austintexas.gov/sites/all/themes/austintexas_ninesixty/images/favicon.png" type="image/png" />
-  <title>Recent News | AustinTexas.gov - The Official Website of the City of Austin</title>
-  <link rel="shortcut icon" href="/sites/all/themes/austintexas_ninesixty/images/favicon.ico" type="image/vnd.microsoft.icon">
-  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
-  <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9">
-  <link type="text/css" rel="stylesheet" href="http://austintexas.gov/sites/default/files/css/css_xE-rWrJf-fncB6ztZfd2huxqgxu4WO-qwma6Xer30m4.css" media="all and (min-width: 720px)" />
-<link type="text/css" rel="stylesheet" href="http://austintexas.gov/sites/default/files/css/css_jUPkzjuISEKCFD3UTVx3NJPXpM2ZQ__Ao31ERvPrNlE.css" media="all and (min-width: 720px)" />
-<link type="text/css" rel="stylesheet" href="http://austintexas.gov/sites/default/files/css/css_xmK5BftMQSAZ3vaNn-WkxtfxRpSHYyOAYEDKXjIxSeU.css" media="all" />
-<link type="text/css" rel="stylesheet" href="http://austintexas.gov/sites/default/files/css/css_YjxgLs0qYdMrEomG2JLboQSch_opHXifPlSvWAwMdOQ.css" media="print" />
-  <!--[if lt IE 9]>
-  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-  <script type="text/javascript" src="http://austintexas.gov/sites/all/libraries/respondjs/respond.min.js?pl2p2x"></script>
-<script type="text/javascript" src="http://austintexas.gov/sites/default/files/js/js_vDrW3Ry_4gtSYaLsh77lWhWjIC6ml2QNkcfvfP5CVFs.js"></script>
-<script type="text/javascript" src="http://austintexas.gov/sites/default/files/js/js_EqxjhUxbQBcm4Chk5aj7KPJN05wxpJ5hq1H62qbO_Y8.js"></script>
-<script type="text/javascript" src="http://austintexas.gov/sites/default/files/js/js_TscBVj1bj2vUmvUKTAge0UDajhU6wsLjOsHym5mf9qE.js"></script>
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-var _gaq = _gaq || [];_gaq.push(["_setAccount", "UA-27761834-1"]);_gaq.push(["_setDomainName", ".austintexas.gov"]);_gaq.push(["_trackPageview"]);(function() {var ga = document.createElement("script");ga.type = "text/javascript";ga.async = true;ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga, s);})();
-//--><!]]>
-</script>
-<script type="text/javascript" src="http://austintexas.gov/sites/default/files/js/js_CHUGQAVFwPh2H3igzJglIs0cdH__8TSUZX73Hgz34ZY.js"></script>
-<script type="text/javascript">
-<!--//--><![CDATA[//><!--
-jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"austintexas_ninesixty","theme_token":"AxmYZlTzvwsnWH6q300h0Wl7OvrtXCf0H1_yR2IT3Eg","js":{"sites\/all\/libraries\/respondjs\/respond.min.js":1,"misc\/jquery.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/views_slideshow_xtra\/views_slideshow_xtra_overlay\/js\/views_slideshow_xtra_overlay.js":1,"sites\/all\/modules\/calendar_update\/calendar_update.js":1,"sites\/all\/libraries\/colorbox\/jquery.colorbox-min.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox.js":1,"sites\/all\/modules\/colorbox\/styles\/default\/colorbox_default_style.js":1,"sites\/all\/modules\/colorbox\/js\/colorbox_inline.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/superfish.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/jquery.bgiframe.min.js":1,"sites\/all\/modules\/nice_menus\/superfish\/js\/jquery.hoverIntent.minified.js":1,"sites\/all\/modules\/nice_menus\/nice_menus.js":1,"sites\/all\/modules\/panels\/js\/panels.js":1,"sites\/all\/modules\/flickr\/flickr_colorbox.js":1,"sites\/all\/modules\/field_group\/field_group.js":1,"sites\/all\/modules\/google_analytics\/googleanalytics.js":1,"0":1,"sites\/all\/themes\/austintexas_ninesixty\/js\/coascripts.js":1,"sites\/all\/themes\/austintexas_ninesixty\/js\/jquery.cycle.all.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"sites\/all\/modules\/ckeditor\/ckeditor.css":1,"sites\/all\/modules\/colorbox\/styles\/default\/colorbox_default_style.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/nice_menus\/nice_menus.css":1,"sites\/all\/modules\/nice_menus\/nice_menus_default.css":1,"sites\/all\/modules\/panels\/css\/panels.css":1,"modules\/aggregator\/aggregator.css":1,"modules\/book\/book.css":1,"modules\/comment\/comment.css":1,"sites\/all\/modules\/date\/date_api\/date.css":1,"sites\/all\/modules\/date\/date_popup\/themes\/datepicker.1.7.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"modules\/poll\/poll.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views_slideshow_xtra\/views_slideshow_xtra_overlay\/css\/views_slideshow_xtra_overlay.css":1,"sites\/all\/modules\/workbench_notification\/workbench_notification.css":1,"modules\/forum\/forum.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/themes\/austintexas_ninesixty\/layouts\/960_16_484_leftSb\/..\/..\/..\/..\/styles\/styles.css":1,"sites\/all\/modules\/field_group\/field_group.css":1,"sites\/all\/modules\/panels\/plugins\/layouts\/onecol\/onecol.css":1,"sites\/all\/modules\/flickr\/flickr.css":1,"sites\/all\/modules\/coa_imce_slideshow\/library\/GalleryView\/css\/jquery.galleryview-3.0-dev.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/reset.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/text.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/960.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/framework\/debug.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/styles.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/ie.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/blogs.css":1,"sites\/all\/themes\/austintexas_ninesixty\/styles\/print.css":1}},"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"100%","maxHeight":"100%","fixed":true},"nice_menus_options":{"delay":"800","speed":"slow"},"googleanalytics":{"trackOutbound":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls|xml|z|zip","trackDomainMode":"1"},"urlIsAjaxTrusted":{"\/department\/news\/296?page=5":true}});
-//--><!]]>
-</script>
+<head>
+  <meta charset="utf-8" />
+  <link rel="canonical" href="http://austintexas.gov/department/news/296" />
+  <meta name="Generator" content="Drupal 8 (https://www.drupal.org)" />
+  <meta name="MobileOptimized" content="width" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="/themes/custom/coa/favicon.ico" type="image/png" />
+  <script>window.a2a_config = window.a2a_config || {}; a2a_config.callbacks = []; a2a_config.overlays = []; a2a_config.templates = {};</script>
+
+  <title>Police News | AustinTexas.gov</title>
+  <link rel="stylesheet" media="all"
+    href="/sites/default/files/css/css_wp-n2a9kvHEdMHAtvJhH-WZn4zkcTAZBoDTG8B2Ov8I.css" />
+  <link rel="stylesheet" media="all"
+    href="/sites/default/files/css/css_xs6raqVT8lnVSbnoD3hqGYy7-b1Hw4kV6Vn2wRYLs3Y.css" />
+
+
+  <!--[if lte IE 8]>
+<script src="/sites/default/files/js/js_VtafjXmRvoUgAzqzYTA3Wrjkx9wcWhjP0G4ZnnqRamA.js"></script>
+<![endif]-->
 
 </head>
-<body class="html not-front not-logged-in no-sidebars page-department page-department-news page-department-news- page-department-news-296 show-grid" >
-  <div id="skip-link">
-    <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+
+<body class="department-news-296 path-department navbar-is-fixed-top has-glyphicons">
+
+  <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+
+    <header class="navbar navbar-default navbar-fixed-top" id="navbar">
+      <a href="#main-content" class="focusable skip-link"><span>Skip to main content</span></a>
+      <div id="above_header">
+        <a href="/" class="microsite-home-link">austintexas.gov</a>
+        <div class="region region-above-header">
+          <nav role="navigation" aria-labelledby="block-actionnavigation-menu"
+            id="block-actionnavigation">
+
+            <h2 class="visually-hidden" id="block-actionnavigation-menu">Action Navigation</h2>
+
+
+
+
+            <ul class="menu menu--menu-action-navigation nav">
+
+              <li class="first last">
+                <a class="icon-311" href="/department/311">3-1-1</a>
+              </li>
+            </ul>
+
+
+          </nav>
+
+        </div>
+
+      </div>
+
+      <div class="navbar-header-wrapper">
+        <div class="navbar-header">
+          <div class="region region-navigation">
+            <span class="notranslate">
+              <a class="logo navbar-btn" href="/" title="City of Austin Home" rel="home">
+                austintexas<span>.</span>gov
+              </a>
+            </span>
+            <section
+              class="views-exposed-form block block-views block-views-exposed-filter-blocksearch-pages-page-1 clearfix"
+              data-drupal-selector="views-exposed-form-search-pages-page-1"
+              id="block-exposedformsearch-pagespage-1">
+
+
+
+              <form action="/search-pages" method="get" id="views-exposed-form-search-pages-page-1"
+                accept-charset="UTF-8">
+                <div class="form--inline form-inline clearfix">
+                  <div
+                    class="form-item js-form-item form-type-textfield js-form-type-textfield form-item-search-api-fulltext js-form-item-search-api-fulltext form-group">
+                    <label for="edit-search-api-fulltext" class="control-label">Filter
+                      Results</label>
+
+
+                    <input placeholder="Search by keyword"
+                      data-drupal-selector="edit-search-api-fulltext" class="form-text form-control"
+                      type="text" id="edit-search-api-fulltext" name="search_api_fulltext" value=""
+                      size="30" maxlength="128" />
+
+
+
+                  </div>
+                  <div
+                    class="form-item js-form-item form-type-select js-form-type-select form-item-department js-form-item-department form-group">
+                    <label for="edit-department" class="control-label">Department</label>
+
+
+                    <div class="select-wrapper"><select data-drupal-selector="edit-department"
+                        class="form-select form-control" id="edit-department" name="department">
+                        <option value="" selected="selected">Select a department</option>
+                        <option value="311">311</option>
+                        <option value="Airport">Airport</option>
+                        <option value="Animal Services">Animal Services</option>
+                        <option value="Auditor">Auditor</option>
+                        <option value="Austin Energy">Austin Energy</option>
+                        <option value="Austin Resource Recovery">Austin Resource Recovery</option>
+                        <option value="Austin Water Utility">Austin Water Utility</option>
+                        <option value="Boards and Commissions">Boards and Commissions</option>
+                        <option value="Capital Contracting">Capital Contracting</option>
+                        <option value="Capital Planning">Capital Planning</option>
+                        <option value="City Clerk">City Clerk</option>
+                        <option value="City Council">City Council</option>
+                        <option value="City Manager">City Manager</option>
+                        <option value="Code">Code</option>
+                        <option value="Communications">Communications</option>
+                        <option value="Community Court">Community Court</option>
+                        <option value="Convention Center">Convention Center</option>
+                        <option value="Development Services">Development Services</option>
+                        <option value="Economic Development">Economic Development</option>
+                        <option value="EMS">EMS</option>
+                        <option value="Equity">Equity</option>
+                        <option value="Financial Services">Financial Services</option>
+                        <option value="Fire">Fire</option>
+                        <option value="GIS and Maps">GIS and Maps</option>
+                        <option value="Health">Health</option>
+                        <option value="Homeland Security and Emergency Management">Homeland Security
+                          and Emergency Management</option>
+                        <option value="Housing">Housing</option>
+                        <option value="Human Resources">Human Resources</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Innovation">Innovation</option>
+                        <option value="Intergovernmental Relations">Intergovernmental Relations
+                        </option>
+                        <option value="Law">Law</option>
+                        <option value="Library">Library</option>
+                        <option value="Municipal Civil Service Office">Municipal Civil Service
+                          Office</option>
+                        <option value="Municipal Court">Municipal Court</option>
+                        <option value="Office of the Medical Director">Office of the Medical
+                          Director</option>
+                        <option value="Parks and Recreation">Parks and Recreation</option>
+                        <option value="Planning and Zoning">Planning and Zoning</option>
+                        <option value="Police">Police</option>
+                        <option value="Police Monitor">Police Monitor</option>
+                        <option value="Public Works">Public Works</option>
+                        <option value="Real Estate Services">Real Estate Services</option>
+                        <option value="Small and Minority Business">Small and Minority Business
+                        </option>
+                        <option value="Sustainability">Sustainability</option>
+                        <option value="Telecommunications">Telecommunications</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Watershed Protection">Watershed Protection</option>
+                      </select></div>
+
+
+
+                  </div>
+                  <div
+                    class="form-item js-form-item form-type-select js-form-type-select form-item-sort-order js-form-item-sort-order form-group">
+                    <label for="edit-sort-order" class="control-label">Order</label>
+
+
+                    <div class="select-wrapper"><select data-drupal-selector="edit-sort-order"
+                        class="form-select form-control" id="edit-sort-order" name="sort_order">
+                        <option value="ASC">Order ASC</option>
+                        <option value="DESC" selected="selected">Order DESC</option>
+                      </select></div>
+
+
+
+                  </div>
+                  <div
+                    class="form-item js-form-item form-type-select js-form-type-select form-item-sort-by js-form-item-sort-by form-group">
+                    <label for="edit-sort-by" class="control-label">Sort by</label>
+
+
+                    <div class="select-wrapper"><select data-drupal-selector="edit-sort-by"
+                        class="form-select form-control" id="edit-sort-by" name="sort_by">
+                        <option value="search_api_relevance" selected="selected">Sort by Relevance
+                        </option>
+                        <option value="title">Sort by Title</option>
+                        <option value="created">Sort by Authored on</option>
+                      </select></div>
+
+
+
+                  </div>
+                  <div data-drupal-selector="edit-actions"
+                    class="form-actions form-group js-form-wrapper form-wrapper" id="edit-actions">
+                    <button data-drupal-selector="edit-submit-search-pages"
+                      class="button js-form-submit form-submit btn-primary btn icon-before"
+                      type="submit" id="edit-submit-search-pages" value="Filter" name=""><span
+                        class="icon glyphicon glyphicon-filter" aria-hidden="true"></span>
+                      Filter</button></div>
+
+                </div>
+
+              </form>
+
+            </section>
+
+
+          </div>
+
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+            data-target="#navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="menu-label">Menu</span>
+            <span class="close-label">Close</span>
+          </button>
+
+          <a href="#" class="icon-search" data-toggle="collapse"
+            data-target="#navbar .block-views-exposed-filter-blocksearch-pages-page-1">Search</a>
+        </div>
+      </div>
+
+      <div id="navbar-collapse" class="navbar-collapse collapse">
+        <div class="region region-navigation-collapsible">
+          <nav role="navigation" aria-labelledby="block-mainmenu-menu" id="block-mainmenu">
+            <h2 class="sr-only" id="block-mainmenu-menu">Main menu</h2>
+
+
+            <a href="/" class="menu-home-link visible-xs">Home</a>
+
+
+
+
+            <ul class="menu menu--main nav navbar-nav">
+              <li class="expanded dropdown first">
+                <a class="resident dropdown-toggle" href="/resident" data-toggle="dropdown">
+                  Resident
+                </a>
+
+                <div class="dropdown-menu">
+                  <div class="descriptor">
+                    <h3>Resident</h3>
+                    <a class="btn btn-default hidden-xs" href="/resident">Open the Resident page</a>
+                  </div>
+
+
+
+
+                  <ul class="nav three-level">
+                    <a class="btn btn-hollow hidden-lg" href="/resident">Open the Resident page</a>
+                    <li class="has-children first">
+                      <a href="/resident/household">
+                        Household
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/resident/getting-home">
+                              Getting a Home
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/utilities">
+                              Utilities
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/trash-and-recycling">
+                              Trash and Recycling
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/gardening-and-home-improvements">
+                              Gardening and Home Improvements
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/gardening-and-home-improvements">
+                              Home Improvements
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/resident/pets-and-adoption">
+                              Pets and Adoption
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/resident/household">Open the Household
+                          page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="has-children">
+                      <a href="/resident/neighborhoods">
+                        Neighborhoods
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/resident/education">
+                              Education
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/libraries">
+                              Libraries
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/families">
+                              Families
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/resident/neighborhood-community">
+                              Neighborhood &amp; Community
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/resident/neighborhoods">Open the
+                          Neighborhoods page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="has-children no-column">
+                      <a href="/resident/health">
+                        Health
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/resident/animals">
+                              Animals
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/resident/public-health">
+                              Public Health
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/resident/health">Open the Health page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="has-children">
+                      <a href="/resident/public-safety">
+                        Public Safety
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/resident/crime">
+                              Crime
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/courts">
+                              Courts
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/fire-safety">
+                              Fire Safety
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/emergency-preparedness">
+                              Emergency Preparedness
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/resident/public-safety-employment">
+                              Public Safety Employment
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/resident/public-safety">Open the Public
+                          Safety page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="has-children">
+                      <a href="/resident/arts-and-leisure">
+                        Arts and Leisure
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/resident/arts-history-and-culture">
+                              Arts, History and Culture
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/outdoor-nature-and-wildlife">
+                              Outdoor, Nature and Wildlife
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/events">
+                              Events
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/city-venues-and-facilities">
+                              City Venues and Facilities
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/resident/film-and-music">
+                              Film and Music
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/resident/arts-and-leisure">Open the Arts
+                          and Leisure page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="has-children">
+                      <a href="/resident/environmental">
+                        Environmental
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/resident/city-programs-and-initiatives">
+                              City Programs and Initiatives
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/conservation-and-recycling">
+                              Conservation and Recycling
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/animals-and-wildlife">
+                              Animals and Wildlife
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/resident/parks">
+                              Parks
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/resident/environmental">Open the
+                          Environmental page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="has-children">
+                      <a href="/resident/transportation">
+                        Transportation
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/resident/carbus">
+                              Car/Bus
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/aviation">
+                              Aviation
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/bicyclepedestrian">
+                              Bicycle/Pedestrian
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/resident/streetsmaps">
+                              Streets/Maps
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/resident/transportation">Open the
+                          Transportation page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="has-children last">
+                      <a href="/resident/city-austin">
+                        City of Austin
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/resident/about-city-austin">
+                              About Austin
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/department/election-resources">
+                              Voting and Elections
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/department/volunteer-city-austin">
+                              Get Involved
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/resident/city-jobs">
+                              City Jobs
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/resident/records-and-documents">
+                              Records and Documents
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/resident/city-austin">Open the City of
+                          Austin page</a>
+                      </div>
+
+
+                    </li>
+                  </ul>
+
+
+                </div>
+
+              </li>
+              <li class="expanded dropdown">
+                <a class="business dropdown-toggle" href="/content/business" data-toggle="dropdown">
+                  Business
+                </a>
+
+                <div class="dropdown-menu">
+                  <div class="descriptor">
+                    <h3>Business</h3>
+                    <a class="btn btn-default hidden-xs" href="/content/business">Open the Business
+                      page</a>
+                  </div>
+
+
+
+
+                  <ul class="nav three-level">
+                    <a class="btn btn-hollow hidden-lg" href="/content/business">Open the Business
+                      page</a>
+                    <li class="has-children first">
+                      <a href="/business/doing-business">
+                        Doing Business
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/business/utilities">
+                              Utilities
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/business/doing-business-city">
+                              Doing Business with the City
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/business/taxes">
+                              Taxes
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/business/mbewbe-program">
+                              MBE/WBE Program
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/business/city-code">
+                              City Code
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/business/food-establishments">
+                              Food Establishments
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/business/permits">
+                              Permits
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/business/day-labor">
+                              Day Labor
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/business/records-and-documents">
+                              Records and Documents
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/business/doing-business">Open the Doing
+                          Business page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="has-children no-column">
+                      <a href="/business/starting-out">
+                        Starting Out
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/business/starting-business">
+                              Starting a Business
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/business/relocating-business">
+                              Relocating a Business
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/business/incentives-and-grants-0">
+                              Incentives and Grants
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/business/starting-out">Open the Starting
+                          Out page</a>
+                      </div>
+
+
+                    </li>
+                    <li>
+                      <a target="_blank" href="/financeonline/finance/index.cfm">
+                        City Contracts
+                      </a>
+                    </li>
+                    <li class="has-children no-column">
+                      <a href="/business/small-business-centers">
+                        Small Business Centers
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/business/small-business-development">
+                              Small Business Development
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/business/incentives-and-grants">
+                              Incentives and Grants
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/business/small-business-centers">Open the
+                          Small Business Centers page</a>
+                      </div>
+
+
+                    </li>
+                    <li>
+                      <a href="/content/austin-center-events">
+                        Austin Center for Events
+                      </a>
+                    </li>
+                    <li class="has-children no-column">
+                      <a href="/business/nonprofits">
+                        Nonprofits
+                      </a>
+
+
+                      <div class="sideways-menu">
+
+
+                        <ul class="nav third-level">
+                          <li class="first last">
+                            <a href="/business/grants">
+                              Grants
+                            </a>
+                          </li>
+                        </ul>
+
+                        <a class="btn btn-primary" href="/business/nonprofits">Open the Nonprofits
+                          page</a>
+                      </div>
+
+
+                    </li>
+                    <li class="last">
+                      <a href="/page/green-resources">
+                        Green Resources
+                      </a>
+                    </li>
+                  </ul>
+
+
+                </div>
+
+              </li>
+              <li class="expanded dropdown">
+                <a class="government dropdown-toggle" href="/government" data-toggle="dropdown">
+                  Government
+                </a>
+
+                <div class="dropdown-menu">
+                  <div class="descriptor">
+                    <h3>Government</h3>
+                    <a class="btn btn-default hidden-xs" href="/government">Open the Government
+                      page</a>
+                  </div>
+
+
+
+
+                  <ul class="nav two-level">
+                    <a class="btn btn-hollow hidden-lg" href="/government">Open the Government
+                      page</a>
+                    <li class="first">
+                      <a href="/department/city-manager">
+                        City Manager&#039;s Office
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/austin-city-council">
+                        City Council
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/department/city-council/council/council_meeting_info_center.htm">
+                        City Council meeting information
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/government/city-hall">
+                        City Hall
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/department/boards-and-commissions">
+                        Boards and Commissions
+                      </a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="https://www.austincityjobs.org/">
+                        Jobs
+                      </a>
+                    </li>
+                    <li class="last">
+                      <a target="_blank" href="https://www.austintexas.gov/edims/search.cfm">
+                        Public Records
+                      </a>
+                    </li>
+                  </ul>
+
+
+                </div>
+
+              </li>
+              <li class="expanded dropdown">
+                <a class="departments dropdown-toggle" href="/content/d8-departments"
+                  data-toggle="dropdown">
+                  Departments
+                </a>
+
+                <div class="dropdown-menu">
+                  <div class="descriptor">
+                    <h3>Departments</h3>
+                    <a class="btn btn-default hidden-xs" href="/content/d8-departments">View full
+                      directory of departments</a>
+                  </div>
+
+                  <h2 class="menu-title hidden-xs">Frequently Viewed Departments</h2>
+
+
+
+                  <ul class="nav department-menu">
+                    <a class="btn btn-hollow hidden-lg" href="/content/d8-departments">View full
+                      directory of departments</a>
+                    <li class="has-children no-column first">
+                      <span class="menu-separator-label">
+                        Visit
+                      </span>
+
+
+                      <div class="department-menu-section">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/airport">
+                              Airport
+                            </a>
+                          </li>
+                          <li>
+                            <a href="https://www.austintexas.org/">
+                              Visitors Bureau
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="https://www.austinconventioncenter.com/">
+                              Convention Center
+                            </a>
+                          </li>
+                        </ul>
+
+                      </div>
+
+
+                    </li>
+                    <li class="has-children no-column">
+                      <span class="menu-separator-label">
+                        Utilities
+                      </span>
+
+
+                      <div class="department-menu-section">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/department/austin-energy">
+                              Austin Energy
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/department/austin-water-utility-0">
+                              Austin Water
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/department/austin-resource-recovery">
+                              Resource Recovery
+                            </a>
+                          </li>
+                        </ul>
+
+                      </div>
+
+
+                    </li>
+                    <li class="has-children no-column">
+                      <span class="menu-separator-label">
+                        Education &amp; Recreation
+                      </span>
+
+
+                      <div class="department-menu-section">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="https://library.austintexas.gov/">
+                              Library
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/department/parks-and-recreation">
+                              Parks and Recreation
+                            </a>
+                          </li>
+                        </ul>
+
+                      </div>
+
+
+                    </li>
+                    <li class="has-children no-column">
+                      <span class="menu-separator-label">
+                        Safety
+                      </span>
+
+
+                      <div class="department-menu-section">
+
+
+                        <ul class="nav third-level">
+                          <li class="first last">
+                            <a href="/department/police">
+                              Police
+                            </a>
+                          </li>
+                        </ul>
+
+                      </div>
+
+
+                    </li>
+                    <li class="has-children no-column last">
+                      <span class="menu-separator-label">
+                        Other
+                      </span>
+
+
+                      <div class="department-menu-section">
+
+
+                        <ul class="nav third-level">
+                          <li class="first">
+                            <a href="/department/aac">
+                              Animal Service
+                            </a>
+                          </li>
+                          <li>
+                            <a href="/department/development-services">
+                              Development Services
+                            </a>
+                          </li>
+                          <li class="last">
+                            <a href="/department/economic-development">
+                              Economic Development
+                            </a>
+                          </li>
+                        </ul>
+
+                      </div>
+
+
+                    </li>
+                  </ul>
+
+
+                </div>
+
+              </li>
+              <li class="expanded dropdown last">
+                <a class="dropdown-toggle" href="/" data-toggle="dropdown">
+                  Connect
+                </a>
+
+                <div class="dropdown-menu">
+                  <div class="descriptor">
+                    <h3>Connect</h3>
+                  </div>
+
+
+
+
+                  <ul class="nav two-level">
+                    <a class="btn btn-hollow hidden-lg" href="/">Open the Connect page</a>
+                    <li class="first">
+                      <a href="https://www.speakupaustin.org/">
+                        Share ideas online about improving Austin
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/department/participate-city-government">
+                        Participate in the City
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/page/austin-notes">
+                        Sign up for email updates
+                      </a>
+                    </li>
+                    <li class="last">
+                      <a href="/contact-us">
+                        City contact information
+                      </a>
+                    </li>
+                  </ul>
+
+
+                </div>
+
+              </li>
+            </ul>
+
+
+
+
+          </nav>
+
+        </div>
+
+      </div>
   </div>
-    
+  </header>
+  <div role="main" class="main-container js-quickedit-main-content">
+
+    <div id="header_hero" role="banner">
+
+      <div class="region region-header-hero">
+        <div class="header-hero-background ">
+
+        </div>
+        <div class="header-hero-breadcrumb-title-wrapper">
+          <div class="container-wide-lg container-wide-md container-wide-sm container-xs">
+            <div class="inner">
+              <div class="header-hero-breadcrumb">
+
+              </div>
+              <div class="header-hero-title">
+                <h1 class="page-header">Police News</h1>
 
 
-  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <div id="brandbar">  <div class="region region-topmenu">
-    <div id="block-menu-menu-brand-bar" class="block block-menu ">
-
-    
-  <div class="content">
-    <ul class="menu"><li class="first leaf"><a href="/" title="">austintexas.gov</a></li>
-<li class="leaf"><a href="/department/airport" title="">Airport</a></li>
-<li class="leaf"><a href="http://library.austintexas.gov/" title="">Library</a></li>
-<li class="leaf"><a href="http://www.austinenergy.com/" title="">Austin Energy</a></li>
-<li class="leaf"><a href="/department/water" title="">Austin Water</a></li>
-<li class="leaf"><a href="http://www.austinconventioncenter.com/" title="">Convention Center</a></li>
-<li class="leaf"><a href="http://www.austintexas.org/" title="">Visitors Bureau</a></li>
-<li class="last leaf"><a href="/page/city-council-open-government" title="">Open Government</a></li>
-</ul>  </div>
-</div>
-  </div>
-</div>
-
-
-<div id="page" class="container-16 clearfix">
-
-  <div id="header" class="clearfix">
-  
-	<div id="top-search">
-      <div class="region region-search">
-    <div id="block-search-form" class="block block-search ">
-
-    
-  <div class="content">
-    <form action="/department/news/296?page=5" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
-      <h2 class="element-invisible">Search form</h2>
-    <div class="form-item form-type-textfield form-item-search-block-form">
-  <label class="element-invisible" for="edit-search-block-form--2">Search </label>
- <input title="Enter the terms you wish to search for." type="text" id="edit-search-block-form--2" name="search_block_form" value="" size="15" maxlength="128" class="form-text" />
-</div>
-<div class="form-actions form-wrapper" id="edit-actions"><input type="submit" id="edit-submit" name="op" value="Search" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-xrGw4W9Lc70W3Jljk5rXIMqAicwYyca1YJMt0rTEBUA" />
-<input type="hidden" name="form_id" value="search_block_form" />
-</div>
-</div></form>  </div>
-</div>
-  </div>
-    <a href="/advanced-search-page" class="adv-search">Advanced Search</a>
-  </div>
-
-  
-	<div id="logo" class="grid-5 clearfix">
-	
-                              <div id="branding"><strong><a href="/">
-                          <img src="http://austintexas.gov/sites/all/themes/austintexas_ninesixty/images/logo.png" title="" alt="" id="logo" alt="AustinTexas.Gov" />
-                        </a></strong></div>
-                  	</div><!-- /logo -->
-	
-	
-	<div id="action-menu" class="grid-11">  <div class="region region-toplinks">
-    <div id="block-nice-menus-4" class="block block-nice-menus ">
-
-    
-  <div class="content">
-    <ul class="nice-menu nice-menu-down" id="nice-menu-4"><li class="menu-532 menu-path-pay_online first  odd "><a href="/pay_online">Pay Online</a></li>
-<li class="menu-2756 menu-path-services even "><a href="/services">Services</a></li>
-<li class="menu-534 menu-path-fullcalendar odd "><a href="/fullcalendar">Calendar</a></li>
-<li class="menu-535 menu-path-taxonomy-term-568 even "><a href="/department/communications/media">Media</a></li>
-<li class="menu-536 menu-path-departments odd "><a href="/departments">Departments</a></li>
-<li class="menu-537 menu-path-node-20906 even "><a href="/department/austin-3-1-1">3-1-1</a></li>
-<li class="menu-10559 menu-path-translategooglecom-translateuaustintexasgovhlenlangpairauto|estbb1ieutf-8 odd  last "><a href="http://translate.google.com/translate?u=http://www.austintexas.gov&amp;hl=en&amp;langpair=auto|es&amp;tbb=1&amp;ie=utf-8">Translate</a></li>
-</ul>
-  </div>
-</div>
-  </div>
-</div><!-- /#action-menu -->
-
-        
-        
-	     <div id="main-menu" class="clearfix">
-
-
-        <h2 class="element-invisible">Main menu</h2><ul id="main-menu-links" class="links clearfix"><li class="menu-877 first"><a href="/" title="">Resident</a></li>
-<li class="menu-3683"><a href="/business">Business</a></li>
-<li class="menu-573"><a href="/development-portal">Development</a></li>
-<li class="menu-574"><a href="/government">Government</a></li>
-<li class="menu-575 last"><a href="/environment" title="">Environment</a></li>
-</ul>
-	</div><!-- /#main-menu -->
-        
-    
-    
-    
-    
-    
-        <div id="sub-menu"></div>
-</div> <!-- /#header -->
-
-
-
-
-	<div id="maincontent">
-
-                    
-          <a id="main-content"></a>
-          
-          <!-- START TABS -->
-                    <div id="tabs-wrapper" class="clearfix">
-                    
-                                        <!--  class="with-tabs">Recent News -->
-                                                  
-          
-          </div>          <!-- / TABS -->
-          
-          
-          		  		  
-	
-
-
-
-
-
-	
-		<div id="main" class="rounded-corners">
-	
-		    <h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="/departments">Department</a> » <a href="/department/police">Police</a> » Recent News</div>		    
-		    					     	<!-- <h1 class="title" id="page-title">Recent News</h1>  -->
-		    		    
-
-		          
-
-
-		    
-		    		
-		    <div id="main-content" class="region clearfix">
-		        <div class="region region-content">
-    <div id="block-system-main" class="block block-system ">
-
-    
-  <div class="content">
-    <div class="panel-display 960-16-484-leftSb center-column">
-
-	<div class="grid-4">
-	  
-	  	  <div id="panel-leftsb" class="panel-panel panel-col-first">
-		<div class="panel-pane pane-block pane-block-25" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-portal-page-menu view-id-portal_page_menu view-display-id-panel_pane_1 item-list menu-block p-t-10 view-dom-id-13 contextual-links-region">
-<ul>
-<li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police">Home</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/about">About</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/services">Services</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/programs">Programs</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/divisions">Divisions</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/media">Media</a></span></div></li><li><div class="views-field views-field-name"><span class="field-content"><a href="/department/police/faq">FAQ</a></span></div></li></ul>
-</div>
-<div class="view view-pdr-search-block view-id-pdr_search_block view-display-id-block view-dom-id-3cf6c120fdec74239a5226769644729d">
-        
-  
-  
-  
-  
-  
-  
-  
-  
-</div>  </div>
-
-  
-  </div>
-<div class="panel-separator"></div><div class="panel-pane pane-views-panes pane-dept-page-blocks-panel-pane-5" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-panel_pane_5 clearfix view-dom-id-c6bc7deeb70e3800c1eeedc992484594">
-        
-  
-      <div class="attachment attachment-before">
-      <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-attachment_1 clearfix">
-        
-  
-  
-  
-  
-  
-  
-  
-  
-</div>    </div>
-  
-      <div class="view-content">
-        <div class="views-row views-row-1 views-row-odd views-row-first large-promo">
-      
-  <div class="views-field views-field-field-promo-image-vertical">        <div class="field-content"><a href="http://austintexas.gov/department/apd-reports "><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/null/POLICE-Reports2-206x300.jpg" width="206" height="300" alt="" /></a></div>  </div>  </div>
-  <div class="views-row views-row-2 views-row-even views-row-last large-promo">
-      
-  <div class="views-field views-field-field-promo-image-vertical">        <div class="field-content"><a href="http://www.austintexas.gov/department/austin-pd-smartphone-app "><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/APD_App_Large_Promo_0.jpg" width="183" height="303" alt="" /></a></div>  </div>  </div>
     </div>
-  
-  
-  
-  
-  
-  
-</div>  </div>
 
-  
-  </div>
-	  </div>
 
-	  <div class="clear"></div>
-	  	  
-	</div><!-- / 4 -->
-	
-	
-	
-	
-	<div class="grid-12">
-	
-	  	  <div id="department-banner" class="panel-panel panel-col-last">
-		<div class="panel-pane pane-views-panes pane-dept-page-blocks-panel-pane-6" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-panel_pane_6 clearfix view-dom-id-fcb12044ea818449c45b5f246021db70">
-        
-  
-  
-      <div class="view-content">
-        <div class="views-row views-row-1 views-row-odd views-row-first views-row-last">
-      
-  <div class="views-field views-field-field-dept-banner">        <div class="field-content"><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/APD_banner_2.jpg" width="708" height="175" alt="" /></div>  </div>  </div>
+    <div class="container-wide-lg container-wide-md container-wide-sm container-xs">
+      <div class="row">
+
+        <aside class="col-sm-3" role="complementary">
+          <div class="region region-sidebar-first">
+            <section id="block-menublock-2"
+              class="block block-coa-custom block-menu-block clearfix">
+
+
+
+              <ul>
+                <li> <a href="/department/police" class="is-active">Home</a></li>
+                <li> <a href="/department/police/about">About</a></li>
+                <li> <a href="/department/police/services">Services</a></li>
+                <li> <a href="/department/police/programs">Programs</a></li>
+                <li> <a href="/department/police/divisions">Divisions</a></li>
+                <li> <a href="/department/police/media">Media</a></li>
+                <li> <a href="/department/police/faq">FAQ</a></li>
+              </ul>
+            </section>
+
+
+          </div>
+
+        </aside>
+        <section class="col-sm-6 page-department-news">
+          <div class="highlighted">
+            <div class="region region-highlighted">
+              <div data-drupal-messages-fallback class="hidden"></div>
+
+            </div>
+          </div>
+
+
+          <div id="main-content">
+            <div class="region region-content">
+              <div class="views-element-container form-group">
+                <div
+                  class="view view-extra-term-blocks view-id-extra_term_blocks view-display-id-page_2 js-view-dom-id-5c1616bdccd2d5f2be5ec5cde7776ccb63c4f9274edef30a273c8794d05e6a0c">
+
+
+                  <div class="view-header">
+                    <h2 class="header-title">All Recent News</h2>
+                  </div>
+
+                  <div class="view-content">
+                    <div class="item-list">
+
+                      <ul>
+
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 30, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/traffic-fatality-68-4">Traffic Fatality #68</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 28, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/apd-announces-sixth-street-halloween-safety-plans-street-closures-2">APD
+                                announces Sixth Street Halloween safety plans, street closures</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 28, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/2019-halloween-no-refusal-initiative">2019 Halloween No
+                                Refusal Initiative</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 28, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/apd-offers-halloween-safety-tips-children-and-adults-7">APD
+                                offers Halloween safety tips for children and adults</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 23, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/apd-seeking-assistance-identifying-robbery-threat-suspect">APD
+                                seeking assistance in identifying robbery by threat suspect </a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 18, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/traffic-fatality-65-4">Traffic Fatality #65</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 18, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/bank-robbery-17-1">Bank Robbery #17</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 18, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/bank-robbery-18-2">Bank Robbery #18</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 18, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/traffic-fatality-66-4">Traffic Fatality #66</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 17, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/apd-seeking-assistance-identifying-aggravated-robbery-suspect-1">APD
+                                Seeking Assistance in Identifying Aggravated Robbery Suspect</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 17, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/apd-seeking-assistance-locating-missing-woman-louella-renee-addison">APD
+                                Seeking Assistance Locating Missing Woman - Louella Renee
+                                Addison</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 16, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/apd-seeking-assistance-identifying-robbery-suspects-1">APD
+                                Seeking Assistance in Identifying Robbery Suspects</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 15, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/austin-city-limits-music-festival-no-refusal-initiative-stats">Austin
+                                City Limits Music Festival No-Refusal Initiative Stats</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 14, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/update-apd-seeking-assistance-aggravated-assault-case">Update:
+                                APD Seeking Assistance with Aggravated Assault Case </a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 14, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/homicide-29">Homicide #29</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 14, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/bank-robbery-16-5">Bank Robbery #16</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 11, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/apd-seeking-assistance-criminal-mischief-case">APD
+                                Seeking Assistance with Criminal Mischief Case</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 10, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/bank-robbery-15-5">Bank Robbery #15</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 9, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/bank-robbery-12-4">Bank Robbery #12</a>
+                            </span></div>
+                        </li>
+                        <li>
+                          <div class="views-field views-field-field-news-release-date">
+                            <div class="field-content">October 8, 2019</div>
+                          </div>
+                          <div class="views-field views-field-title"><span class="field-content"><a
+                                href="/news/traffic-fatality-64-4">Traffic Fatality #64</a>
+                            </span></div>
+                        </li>
+
+                      </ul>
+
+                    </div>
+
+                  </div>
+
+                  <nav class="pager-nav text-center" role="navigation"
+                    aria-labelledby="pagination-heading">
+                    <h4 id="pagination-heading" class="visually-hidden">Pagination</h4>
+                    <ul class="pagination js-pager__items">
+
+                      <li class="pager__item pager__item--first">
+                        <a href="?page=0" title="Go to first page" rel="first">
+                          <span class="visually-hidden">First page</span>
+                          <span aria-hidden="true">« First</span>
+                        </a>
+                      </li>
+
+                      <li class="pager__item pager__item--previous">
+                        <a href="?page=4" title="Go to previous page" rel="prev">
+                          <span class="visually-hidden">Previous page</span>
+                          <span aria-hidden="true">‹‹</span>
+                        </a>
+                      </li>
+
+                      <li class="pager__item">
+                        <a href="?page=1" title="Go to page 2">
+                          <span class="visually-hidden">
+                            Page
+                          </span>2</a>
+                      </li>
+                      <li class="pager__item">
+                        <a href="?page=2" title="Go to page 3">
+                          <span class="visually-hidden">
+                            Page
+                          </span>3</a>
+                      </li>
+                      <li class="pager__item">
+                        <a href="?page=3" title="Go to page 4">
+                          <span class="visually-hidden">
+                            Page
+                          </span>4</a>
+                      </li>
+                      <li class="pager__item">
+                        <a href="?page=4" title="Go to page 5">
+                          <span class="visually-hidden">
+                            Page
+                          </span>5</a>
+                      </li>
+                      <li class="pager__item is-active active">
+                        <a href="?page=5" title="Current page">
+                          <span class="visually-hidden">
+                            Current page
+                          </span>6</a>
+                      </li>
+                      <li class="pager__item">
+                        <a href="?page=6" title="Go to page 7">
+                          <span class="visually-hidden">
+                            Page
+                          </span>7</a>
+                      </li>
+                      <li class="pager__item">
+                        <a href="?page=7" title="Go to page 8">
+                          <span class="visually-hidden">
+                            Page
+                          </span>8</a>
+                      </li>
+                      <li class="pager__item">
+                        <a href="?page=8" title="Go to page 9">
+                          <span class="visually-hidden">
+                            Page
+                          </span>9</a>
+                      </li>
+                      <li class="pager__item">
+                        <a href="?page=9" title="Go to page 10">
+                          <span class="visually-hidden">
+                            Page
+                          </span>10</a>
+                      </li>
+
+                      <li class="pager__item pager__item--next">
+                        <a href="?page=6" title="Go to next page" rel="next">
+                          <span class="visually-hidden">Next page</span>
+                          <span aria-hidden="true">››</span>
+                        </a>
+                      </li>
+
+                      <li class="pager__item pager__item--last">
+                        <a href="?page=27" title="Go to last page" rel="last">
+                          <span class="visually-hidden">Last page</span>
+                          <span aria-hidden="true">Last »</span>
+                        </a>
+                      </li>
+
+                    </ul>
+                  </nav>
+
+                </div>
+              </div>
+
+
+            </div>
+
+
+          </div>
+        </section>
+
+        <aside class="col-sm-3" role="complementary">
+          <div class="region region-sidebar-second">
+            <section
+              class="views-element-container block block-views block-views-blockextra-term-blocks-block-14 clearfix"
+              id="block-views-block-extra-term-blocks-block-14">
+
+              <h2 class="block-title">Top Content</h2>
+
+
+              <div class="form-group">
+                <div
+                  class="view view-extra-term-blocks view-id-extra_term_blocks view-display-id-block_14 js-view-dom-id-8936d8246ddf491117c988b23950f00a3f48707c0b61b8e306611ee4edb35be9">
+
+
+                  <div class="view-header">
+
+                  </div>
+
+                  <div class="view-content">
+                    <div class="views-row">
+                      <div class="views-field views-field-title"><span class="field-content"><a
+                            href="/department/apd-recruiting" hreflang="en">APD
+                            Recruiting</a></span></div>
+                    </div>
+                    <div class="views-row">
+                      <div class="views-field views-field-title"><span class="field-content"><a
+                            href="/department/apd-reports" hreflang="en">APD Reports</a></span>
+                      </div>
+                    </div>
+                    <div class="views-row">
+                      <div class="views-field views-field-title"><span class="field-content"><a
+                            href="/department/ireportaustincom"
+                            hreflang="en">IREPORTAUSTIN.COM</a></span></div>
+                    </div>
+                    <div class="views-row">
+                      <div class="views-field views-field-title"><span class="field-content"><a
+                            href="/department/austin-police-department" hreflang="en">Austin Police
+                            Department</a></span></div>
+                    </div>
+                    <div class="views-row">
+                      <div class="views-field views-field-title"><span class="field-content"><a
+                            href="/page/offenses" hreflang="en">Offenses</a></span></div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+
+            </section>
+
+
+          </div>
+
+        </aside>
+
+      </div>
     </div>
-  
-  
-  
-  
-  
-  
-</div>  </div>
 
-  
   </div>
-	  </div>
+  <footer class="footer " role="contentinfo">
+    <div class="region region-footer clearfix">
+      <div id="coa_seal">City of Austin</div>
+      <nav role="navigation" aria-labelledby="block-footermenu-menu" id="block-footermenu">
 
-	  <div class="clear"></div>
-	  
-	  	  <div id="panel-maincontent" class="panel-panel panel-col alpha grid-8">
-		<div class="panel-pane pane-views-panes pane-dept-page-blocks-panel-pane-51" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-panel_pane_51 item-list star view-dom-id-af61f56ea35317de38335fb92b25eec9">
-            <div class="view-header">
-      <h2>Recent News <a href="/department/news/296/rss.xml"><img src="/sites/all/themes/austintexas_ninesixty/images/icons/icon_rss_16.png" style="float:right;" /></a></h2>
+        <h2 class="visually-hidden" id="block-footermenu-menu">Footer Menu</h2>
+
+
+
+        <ul class="menu menu--menu-footer-menu nav">
+          <li class="first">
+            <a
+              href="https://www.translatetheweb.com/?from=en&amp;to=es&amp;a=https%3A//www.austintexas.gov/">Translate</a>
+          </li>
+          <li>
+            <a href="/department/311" data-drupal-link-system-path="taxonomy/term/1859">Get
+              information or assistance</a>
+          </li>
+          <li>
+            <a href="/online-form/austintexasgov-feedback"
+              data-drupal-link-system-path="node/14082">Give feedback on our website</a>
+          </li>
+          <li>
+            <a href="/sitemap" data-drupal-link-system-path="sitemap">Site Map</a>
+          </li>
+          <li class="last">
+            <a href="https://austincouncilforum.org/">City Council Message Board</a>
+          </li>
+        </ul>
+
+
+      </nav>
+      <section id="block-footersocialmedia-2"
+        class="block block-block-content block-block-contentc20c22f2-ed50-44e4-82fa-fd4ab488f313 clearfix">
+
+
+
+
+        <div
+          class="field field--name-body field--type-text-with-summary field--label-hidden field--item">
+          <ul>
+            <li><a class="icon-facebook" href="https://www.facebook.com/austintexasgov"
+                target="_blank">Facebook</a></li>
+            <li><a class="icon-twitter" href="https://twitter.com/austintexasgov"
+                target="_blank">Twitter</a></li>
+            <li><a class="icon-linkedin" href="https://www.linkedin.com/company/city-of-austin/"
+                target="_blank">LinkedIn</a></li>
+            <li><a class="icon-instagram" href="https://www.instagram.com/austintexasgov/"
+                target="_blank">Instagram</a></li>
+            <li><a class="icon-youtube" href="http://www.youtube.com/user/austintexasgov"
+                target="_blank">YouTube</a></li>
+            <li><a class="icon-rss" href="/site/news/rss.xml">RSS</a></li>
+          </ul>
+        </div>
+
+      </section>
+
+      <nav role="navigation" aria-labelledby="block-gettherefromhere-menu"
+        id="block-gettherefromhere">
+
+        <h2 class="visually-hidden" id="block-gettherefromhere-menu">Second Footer Menu</h2>
+
+
+
+        <ul class="menu menu--footer-one nav">
+          <li class="first">
+            <a href="https://www.austintexas.org/">Visit Austin</a>
+          </li>
+          <li>
+            <a href="/contact-us" data-drupal-link-system-path="contact-us">City Directory</a>
+          </li>
+          <li>
+            <a href="https://www.austincityjobs.org/">Jobs</a>
+          </li>
+          <li>
+            <a href="https://austintexas.gov/edims/search.cfm">Public Records</a>
+          </li>
+          <li>
+            <a href="/page/legal-notice" data-drupal-link-system-path="node/2467">Legal Notices</a>
+          </li>
+          <li class="last">
+            <a href="/page/privacy-policy" data-drupal-link-system-path="node/2468">Privacy
+              Policy</a>
+          </li>
+        </ul>
+
+
+      </nav>
+      <section id="block-footersocialmedia"
+        class="block block-block-content block-block-contentc20c22f2-ed50-44e4-82fa-fd4ab488f313 clearfix">
+
+
+
+        <nav>
+
+          <div
+            class="field field--name-body field--type-text-with-summary field--label-hidden field--item">
+            <ul>
+              <li><a class="icon-facebook" href="https://www.facebook.com/austintexasgov"
+                  target="_blank">Facebook</a></li>
+              <li><a class="icon-twitter" href="https://twitter.com/austintexasgov"
+                  target="_blank">Twitter</a></li>
+              <li><a class="icon-linkedin" href="https://www.linkedin.com/company/city-of-austin/"
+                  target="_blank">LinkedIn</a></li>
+              <li><a class="icon-instagram" href="https://www.instagram.com/austintexasgov/"
+                  target="_blank">Instagram</a></li>
+              <li><a class="icon-youtube" href="http://www.youtube.com/user/austintexasgov"
+                  target="_blank">YouTube</a></li>
+              <li><a class="icon-rss" href="/site/news/rss.xml">RSS</a></li>
+            </ul>
+          </div>
+
+        </nav>
+      </section>
+
     </div>
-  
-  
-  
-      <div class="view-content">
-          <ul>          <li class="views-row views-row-1 views-row-odd views-row-first">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-27T00:00:00-05:00">August 27, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/missing-person-found-deceased">Missing Person Found Deceased</a></span>  </div></li>
-          <li class="views-row views-row-2 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-25T00:00:00-05:00">August 25, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/murder-22-6">Murder #22</a></span>  </div></li>
-          <li class="views-row views-row-3 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-22T00:00:00-05:00">August 22, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/traffic-fatality-42-3">Traffic Fatality #42</a></span>  </div></li>
-          <li class="views-row views-row-4 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-22T00:00:00-05:00">August 22, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/apd-seeking-publics-assistance-locating-missing-person">APD Seeking Public&#039;s Assistance in Locating Missing Person</a></span>  </div></li>
-          <li class="views-row views-row-5 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-21T00:00:00-05:00">August 21, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/traffic-fatality-40-3">Traffic Fatality #40</a></span>  </div></li>
-          <li class="views-row views-row-6 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-21T00:00:00-05:00">August 21, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/traffic-fatality-41-3">Traffic Fatality #41</a></span>  </div></li>
-          <li class="views-row views-row-7 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-19T00:00:00-05:00">August 19, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/apd-offers-back-school-safety-tips-20182019">APD offers back to school safety tips for 2018/2019</a></span>  </div></li>
-          <li class="views-row views-row-8 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-18T00:00:00-05:00">August 18, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/apd-seeking-assistance-aggravated-assault">APD Seeking Assistance in Aggravated Assault</a></span>  </div></li>
-          <li class="views-row views-row-9 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-15T00:00:00-05:00">August 15, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/2018-extended-labor-day-no-refusal-initiative">2018 Extended Labor Day No Refusal Initiative </a></span>  </div></li>
-          <li class="views-row views-row-10 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-09T00:00:00-05:00">August 9, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/apd-lgpoa-paulo-alvarado-launch-i-am-you-campaign">APD, LGPOA, Paulo Alvarado launch I AM LIKE YOU campaign</a></span>  </div></li>
-          <li class="views-row views-row-11 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-04T00:00:00-05:00">August 4, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/apd-seeking-publics-assistance-locating-witness-aggravated-robbery-case">APD seeking public&#039;s assistance in locating witness to aggravated robbery case</a></span>  </div></li>
-          <li class="views-row views-row-12 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-02T00:00:00-05:00">August 2, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/suspect-arrested-traffic-fatality-39">Suspect arrested in Traffic Fatality #39</a></span>  </div></li>
-          <li class="views-row views-row-13 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-02T00:00:00-05:00">August 2, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/apd-seeking-assistance-locating-witness-aggravated-robbery-case">APD seeking assistance in locating witness to an aggravated robbery case</a></span>  </div></li>
-          <li class="views-row views-row-14 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-01T00:00:00-05:00">August 1, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/apd-news-release-bank-robbery-19-suspect-custody">APD News Release: Bank Robbery #19 - Suspect in Custody</a></span>  </div></li>
-          <li class="views-row views-row-15 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-01T00:00:00-05:00">August 1, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/apd-hosting-icare-community-conference-strengthening-community-relationships-through-education-and-understanding">APD Hosting I.C.A.R.E. Community Conference: Strengthening Community Relationships through Education and Understanding  </a></span>  </div></li>
-          <li class="views-row views-row-16 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-01T00:00:00-05:00">August 1, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/photos-suspect-and-vehicle-traffic-fatality-39">Photos of suspect and vehicle traffic fatality #39</a></span>  </div></li>
-          <li class="views-row views-row-17 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-08-01T00:00:00-05:00">August 1, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/traffic-fatality-39-3">Traffic Fatality #39</a></span>  </div></li>
-          <li class="views-row views-row-18 views-row-even">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-07-30T00:00:00-05:00">July 30, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/traffic-fatality-38-2">Traffic Fatality #38</a></span>  </div></li>
-          <li class="views-row views-row-19 views-row-odd">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-07-29T00:00:00-05:00">July 29, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/traffic-fatality-37-3">Traffic Fatality #37</a></span>  </div></li>
-          <li class="views-row views-row-20 views-row-even views-row-last">  
-  <div class="views-field views-field-field-news-release-date">        <div class="field-content"><span class="date-display-single" property="dc:date" datatype="xsd:dateTime" content="2018-07-27T00:00:00-05:00">July 27, 2018</span></div>  </div>  
-  <div class="views-field views-field-title">        <span class="field-content"><a href="/news/traffic-fatality-36-2">Traffic Fatality #36</a></span>  </div></li>
-      </ul>    </div>
-  
-      <div class="item-list"><ul class="pager"><li class="pager-previous first"><a title="Go to previous page" href="/department/news/296?page=4">‹ previous</a></li>
-<li class="pager-current">6 of 28</li>
-<li class="pager-next last"><a title="Go to next page" href="/department/news/296?page=6">next ›</a></li>
-</ul></div>  
-  
-  
-  
-  
-</div>  </div>
 
-  
+  </footer>
+
   </div>
-	  </div>
-	  	  
-	  
-
-	  	  <div id="panel-rightsb" class="panel-panel panel-col-last grid-4 omega">
-		<div class="panel-pane pane-views-panes pane-dept-page-blocks-panel-pane-15" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-panel_pane_15 upcoming-events-sidebar view-dom-id-1ee031ee48c5adec00b7c045773b230b">
-        
-  
-  
-  
-  
-  
-  
-  
-  
-</div>  </div>
-
-  
-  </div>
-<div class="panel-separator"></div><div class="panel-pane pane-views-panes pane-dept-page-blocks-panel-pane-1" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-panel_pane_1 clearfix view-dom-id-c7983523b135e6d454cc4545a9f4a9da">
-            <div class="view-header">
-      <h2>Contact Info</h2>
-    </div>
-  
-  
-  
-      <div class="view-content">
-        <div class="views-row views-row-1 views-row-odd views-row-first views-row-last dep-right-col">
-      
-  <div class="views-field views-field-field-email-txt">        <p class="field-content"><a href="/email/police3">Email</a></p>  </div>  
-  <div class="views-field views-field-field-facebook">        <div class="field-content"><a href="https://www.facebook.com/AustinPolice" class="facebook-link"><span>Facebook</span></a></div>  </div>  
-  <div class="views-field views-field-field-twitter">        <div class="field-content"><a href="https://twitter.com/austin_police" class="twitter-link"><span>Twitter</span></a></div>  </div>  
-  <div class="views-field views-field-field-youtube">        <div class="field-content"><a href="http://www.youtube.com/austinpolice" class="youtube-link"><span>YouTube</span></a></div>  </div>  
-  <div class="views-field views-field-field-instagram">        <div class="field-content"><a href="http://instagram.com/austin_police" class="instagram-link"><span>http://instagram.com/austin_police</span></a></div>  </div>  </div>
-    </div>
-  
-  
-  
-  
-  
-  
-</div>  </div>
-
-  
-  </div>
-<div class="panel-separator"></div><div class="panel-pane pane-views-panes pane-dept-page-blocks-panel-pane-2" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-panel_pane_2 clearfix view-dom-id-beb1e704f86ee7427e3c9019b78492dc">
-        
-  
-  
-      <div class="view-content">
-        <div class="views-row views-row-1 views-row-odd views-row-first promo-tile style-1">
-      
-  <div class="views-field views-field-title">        <span class="field-content"><a href="http://austintexas.gov/gethomesafe">Get Home Safe</a></span>  </div>  
-  <div class="views-field views-field-field-promo-image">        <div class="field-content"><a href="http://austintexas.gov/gethomesafe"><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/Get_Home_Safe_0.png" width="207" height="46" alt="" /></a></div>  </div>  </div>
-  <div class="views-row views-row-2 views-row-even promo-tile style-1">
-      
-  <div class="views-field views-field-title">        <span class="field-content"><a href="http://austintexas.gov/page/apd-videos">APD Videos</a></span>  </div>  
-  <div class="views-field views-field-field-promo-image">        <div class="field-content"><a href="http://austintexas.gov/page/apd-videos"><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/apd_videos_icon.jpg" width="184" height="45" alt="" /></a></div>  </div>  </div>
-  <div class="views-row views-row-3 views-row-odd promo-tile style-1">
-      
-  <div class="views-field views-field-title">        <span class="field-content"><a href="http://www.austinexplorers.com/apply">Be an Explorer</a></span>  </div>  
-  <div class="views-field views-field-field-promo-image">        <div class="field-content"><a href="http://www.austinexplorers.com/apply"><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/apd_promo_sm_apply-explorer.jpg" width="206" height="42" alt="" /></a></div>  </div>  </div>
-  <div class="views-row views-row-4 views-row-even views-row-last promo-tile style-1">
-      
-  <div class="views-field views-field-title">        <span class="field-content"><a href="https://play.google.com/store/apps/details?id=com.ezaxess.icampus.android.austintexaspd">For Android Phones:</a></span>  </div>  
-  <div class="views-field views-field-field-promo-image">        <div class="field-content"><a href="https://play.google.com/store/apps/details?id=com.ezaxess.icampus.android.austintexaspd"><img typeof="foaf:Image" src="http://austintexas.gov/sites/default/files/googleplay_0.gif" width="206" height="45" alt="" /></a></div>  </div>  </div>
-    </div>
-  
-  
-  
-  
-  
-  
-</div>  </div>
-
-  
-  </div>
-<div class="panel-separator"></div><div class="panel-pane pane-views-panes pane-dept-page-blocks-panel-pane-3" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-panel_pane_3 clearfix view-dom-id-da1c609ca2165885793099165792b4ca">
-        
-  
-  
-      <div class="view-content">
-        <div class="views-row views-row-1 views-row-odd views-row-first promo-tile style-2">
-      
-  <div class="views-field views-field-title">        <span class="field-content"><a href="http://www.austintexas.gov/GIS/CrimeViewer/ ">CrimeViewer</a></span>  </div>  
-  <div class="views-field views-field-field-body">        <p class="field-content">Search for crime throughout the City of Austin</p>  </div>  </div>
-  <div class="views-row views-row-2 views-row-even views-row-last promo-tile style-2">
-      
-  <div class="views-field views-field-title">        <span class="field-content"><a href="http://austintexas.gov/department/crime-information#overlay-context=department/crime-information ">Crime &amp; Traffic Information/Viewers</a></span>  </div>  
-  <div class="views-field views-field-field-body">        <p class="field-content">Search for historical crime data by zip code </p>  </div>  </div>
-    </div>
-  
-  
-  
-  
-  
-  
-</div>  </div>
-
-  
-  </div>
-<div class="panel-separator"></div><div class="panel-pane pane-views-panes pane-dept-page-blocks-panel-pane-12" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="view view-dept-page-blocks view-id-dept_page_blocks view-display-id-panel_pane_12 clearfix view-dom-id-ea3d07939335c767030eb2edc9fd5e4f">
-        
-  
-  
-  
-  
-  
-  
-  
-  
-</div>  </div>
-
-  
-  </div>
-	  </div>
-	  
-
-	  <div class="clear"></div>
-	  
-	</div><!-- / 12 -->
-
-</div>
-  </div>
-</div>
-  </div>
-		    </div>
-		    
-		
-		    	  </div>
-	
 
 
+  <script type="application/json"
+    data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","scriptPath":null,"pathPrefix":"","currentPath":"department\/news\/296","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en","currentQuery":{"page":"5"}},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"98%","maxHeight":"98%","fixed":true,"mobiledetect":true,"mobiledevicewidth":"480px"},"data":{"extlink":{"extTarget":true,"extTargetNoOverride":false,"extNofollow":false,"extFollowNoOverride":false,"extClass":"0","extLabel":"(link is external)","extImgClass":false,"extSubdomains":false,"extExclude":"","extInclude":"","extCssExclude":"","extCssExplicit":"","extAlert":false,"extAlertText":"This link will take you to an external web site. We are not responsible for their content.","mailtoClass":"0","mailtoLabel":"(link sends email)"}},"ckeditorAccordion":{"accordionStyle":{"collapseAll":null}},"bootstrap":{"forms_has_error_value_toggle":1,"modal_animation":1,"modal_backdrop":"true","modal_focus_input":1,"modal_keyboard":1,"modal_select_text":1,"modal_show":1,"modal_size":"","popover_enabled":1,"popover_animation":1,"popover_auto_close":1,"popover_container":"body","popover_content":"","popover_delay":"0","popover_html":0,"popover_placement":"right","popover_selector":"","popover_title":"","popover_trigger":"click","tooltip_enabled":1,"tooltip_animation":1,"tooltip_container":"body","tooltip_delay":"0","tooltip_html":0,"tooltip_placement":"auto left","tooltip_selector":"","tooltip_trigger":"hover"},"ajaxTrustedUrl":{"\/search-pages":true},"user":{"uid":0,"permissionsHash":"d2b91d9fe2a0beb036b41b81955f0b23a77cdca609c9f5e8653a2bcb7b7d44b1"}}</script>
+  <script src="/sites/default/files/js/js_v1_-5L1UBXnN9DJzWgTNYXGSxBy9idDPxHypmSa7W-Q.js"></script>
+  <script src="https://static.addtoany.com/menu/page.js" async></script>
+  <script src="/sites/default/files/js/js_ub51wMJa7a5s4rqOWoE6LS41MCo9CtIgrOXRfmOjgqI.js"></script>
+  <script
+    src="/sites/default/files/asset_injector/js/siteimprove-7b595d30a491af27a9a5d0051b2043be.js?q75pao"></script>
+  <script src="/sites/default/files/js/js_vH-Fk4SS3SksSxu100rVOQF0UudEwNIO_ZpEEdgD9PY.js"></script>
 
+</body>
 
-
-
-
-
-
-
-	</div><!-- /#maincontent -->
-
-
-</div> <!-- /#page .container-16 -->
-
-
-
-
-
-
-
-<div id="footer">
-
-						<div id="footer-blocks" class="container-16 clearfix">  <div class="region region-footer">
-    <div id="block-block-28" class="block block-block ">
-
-    
-  <div class="content">
-    <script>
-
-
-</script>  </div>
-</div>
-<div id="block-block-2" class="block block-block grid-2">
-
-    
-  <div class="content">
-    <p><img alt="Official seal of the City of Austin" src="/sites/all/themes/austintexas_ninesixty/images/austin_stamp.png" /></p>
-  </div>
-</div>
-<div id="block-panels-mini-footer-panels" class="block block-panels-mini grid-14">
-
-    
-  <div class="content">
-    <div class="panel-display panel-1col clearfix" id="mini-panel-footer_panels">
-  <div class="panel-panel panel-col">
-    <div><div class="panel-pane pane-block pane-block-7" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="round-corners-footer rounded-corners footer-column" id="">
-<div class="content-container">
-<p>Get There from Here</p>
-<ul class="footer-list"><li><a href="https://www.austincityjobs.org/">City Jobs</a></li>
-<li><a href="http://www.austintexas.gov/financeonline/finance/index.cfm">Austin Finance Online</a></li>
-<li><a href="/resident/neighborhoods ">Neighborhoods</a></li>
-<li><a href="/resident/public-safety">Public Safety</a></li>
-<li><a href="/department/city-council ">City Council</a></li>
-<li><a href="http://austintexas.gov/edims/search.cfm">Public Records </a></li>
-<li><a href="/online-form/austintexasgov-feedback">Website Feedback</a></li>
-<li><a href="http://austincouncilforum.org/">Council Message Board</a></li>
-</ul></div>
-</div>
-<!-- /footer-column -->  </div>
-
-  
-  </div>
-<div class="panel-separator"></div><div class="panel-pane pane-block pane-block-8" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="round-corners-footer rounded-corners footer-column" id="">
-<div class="content-container">
-<p>Towards a Best Managed City</p>
-<ul class="footer-list"><li><a href="/department/city-manager/vision-values">PRIDE - Vision and Values</a></li>
-<li><a href="https://www.austintexas.gov/financeonline/afo_content.cfm?s=74&amp;p=98">Community Surveys</a></li>
-<li><a href="http://speakupaustin.org">Share your Ideas</a></li>
-<li><a href="http://www.austintexas.gov/budget/eperf/index.cfm">Performance Measures</a></li>
-<li><a href="/page/equal-opportunity-programs-and-services">Equal Opportunity</a></li>
-</ul></div>
-</div>
-<!-- /footer-column -->  </div>
-
-  
-  </div>
-<div class="panel-separator"></div><div class="panel-pane pane-block pane-block-9" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="round-corners-footer rounded-corners footer-column" id="">
-<div class="content-container">
-<p>Connect With Us</p>
-<ul class="footer-list"><li><a href="http://data.austintexas.gov"><img alt="" src="/sites/default/files/images/icons/data_icon.png" style="width: 16px; height: 16px; margin-bottom:-3px" /> City Data</a></li>
-<!--li id="cwu-facebook"><a href="http://www.facebook.com/austintexasgov ">Facebook</a></li--><!--li id="cwu-twitter"><a href="http://twitter.com/#!/austintexasgov ">Twitter</a></li--><!--li id="cwu-youtube"><a href="http://www.youtube.com/austintexasgov ">Youtube</a></li--><li id="cwu-socialmedia" style="background: url(/sites/default/files/files/icon_citysm_16.gif) no-repeat scroll 0 0 transparent; height: 16px; line-height: 16px; margin: 5px 0; text-indent: 20px;"><a href="http://www.austintexas.gov/social">City Social Media</a></li>
-<li id="cwu-rss"><a href="/site/news/rss.xml">RSS Feeds</a></li>
-<li><a href="/notes"><img alt="" src="/sites/default/files/images/icons/austinnotes_icon.png" style="width: 16px; height: 16px;margin-bottom:-3px" /> Austin Notes</a></li>
-<!--li id="cwu-contactus"><a href="/contact-us">Contact Us</a></li--></ul></div>
-</div>
-<!-- /footer-column -->  </div>
-
-  
-  </div>
-<div class="panel-separator"></div><div class="panel-pane pane-block pane-block-10" >
-  
-      
-  
-  <div class="pane-content">
-    <div class="round-corners-footer rounded-corners footer-column" id="twitter">
-					<div class="content-container">
-                                               					</div>
-
-
-<style>
-#twitter-widget-0 { min-width: 140px; !important; }
-</style>
-
-<a class="twitter-timeline" data-chrome="nofooter noheader noborders noscrollbar transparent" data-tweet-limit="1" width="100" height="160" href="https://twitter.com/austintexasgov" data-widget-id="345620747160518656">Tweets by @austintexasgov</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-
-
-
-</div>  </div>
-
-  
-  </div>
-</div>
-  </div>
-</div>
-  </div>
-</div>
-  </div>
-</div>
-
-			<div id="footer-menu" class="container-16">  <div class="region region-footer-menu">
-    <div id="block-menu-menu-footer-menu" class="block block-menu ">
-
-    
-  <div class="content">
-    <ul class="menu"><li class="first leaf"><a href="http://translate.google.com/translate?u=http%3A%2F%2Fwww.austintexas.gov&amp;hl=en&amp;langpair=auto|es&amp;tbb=1&amp;ie=utf-8" title="">Translate</a></li>
-<li class="leaf"><a href="/pay_online" title="City of Austin Utilities - Online Customer Care">Pay Online</a></li>
-<li class="leaf"><a href="/fullcalendar" title="">Calendar</a></li>
-<li class="leaf"><a href="/department/communications/media" title="Media Center">Media Center</a></li>
-<li class="leaf"><a href="/page/frequently-asked-questions" title="Frequently Asked Questions">FAQ</a></li>
-<li class="leaf"><a href="/contact-us" title="">Contact Us</a></li>
-<li class="leaf"><a href="/sitemap" title="">Site Map</a></li>
-<li class="leaf"><a href="/page/legal-notice">Legal Notices</a></li>
-<li class="leaf"><a href="/page/privacy-policy">Privacy Policy</a></li>
-<li class="last leaf"><a href="http://www.austintexas.gov/department/311" title="">3-1-1</a></li>
-</ul>  </div>
-</div>
-  </div>
-</div>
-
-</div><!-- /footer -->  <div id="disable_messages-debug-div" style="display:none;"><pre>NULL</pre></div></body>
 </html>

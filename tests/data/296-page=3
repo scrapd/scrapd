@@ -1065,15 +1065,7 @@
 
 
 
-              <ul>
-                <li> <a href="/department/police" class="is-active">Home</a></li>
-                <li> <a href="/department/police/about">About</a></li>
-                <li> <a href="/department/police/services">Services</a></li>
-                <li> <a href="/department/police/programs">Programs</a></li>
-                <li> <a href="/department/police/divisions">Divisions</a></li>
-                <li> <a href="/department/police/media">Media</a></li>
-                <li> <a href="/department/police/faq">FAQ</a></li>
-              </ul>
+              <ul></ul>
             </section>
 
 
@@ -1093,7 +1085,7 @@
             <div class="region region-content">
               <div class="views-element-container form-group">
                 <div
-                  class="view view-extra-term-blocks view-id-extra_term_blocks view-display-id-page_2 js-view-dom-id-340194dd2cfb6b7e67ec8daebafd0b96e858ace609ea5dff879f5d49fdb5b94f">
+                  class="view view-extra-term-blocks view-id-extra_term_blocks view-display-id-page_2 js-view-dom-id-4405fac3224cb4ff2762b05c956502010cc3de9286318b38ea1290af27bdad64">
 
 
                   <div class="view-header">
@@ -1107,177 +1099,175 @@
 
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">February 7, 2020</div>
+                            <div class="field-content">December 20, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/bank-robbery-2-7">Bank Robbery #2</a>
+                                href="/news/traffic-fatality-83">Traffic Fatality #83</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">February 5, 2020</div>
+                            <div class="field-content">December 20, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-seeking-assistance-locating-person-interest-sexual-assault-child-case">APD
-                                seeking assistance in locating a person of interest in sexual
-                                assault of a child case</a>
+                                href="/news/amigos-en-azul-shop-cop-and-first-responder-target-south-park-meadows">Amigos
+                                en Azul, Shop with a Cop and a First Responder at Target South Park
+                                Meadows</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">February 4, 2020</div>
+                            <div class="field-content">December 19, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-seeking-assistance-identifying-aggravated-assault-suspect-2">APD
-                                seeking assistance in identifying aggravated assault suspect</a>
+                                href="/news/bank-robbery-20-convenience-store-robberies">Bank
+                                Robbery #20, Convenience Store Robberies</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">February 4, 2020</div>
+                            <div class="field-content">December 19, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-seeks-assistance-locating-suspect-attempted-aggravated-sexual-assault-kidnapping-child-investigation">APD
-                                seeks assistance in locating suspect in attempted Aggravated Sexual
-                                Assault, Kidnapping of a Child investigation</a>
+                                href="/news/traffic-fatality-82">Traffic Fatality #82</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">February 4, 2020</div>
+                            <div class="field-content">December 18, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-presents-juvenile-justice-jeopardy-game-improve-youth-understanding-interactions-police-peers">APD
-                                presents the Juvenile Justice Jeopardy Game to Improve Youth
-                                Understanding of Interactions with Police &amp; Peers</a>
+                                href="/news/traffic-fatality-81">Traffic Fatality #81</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 31, 2020</div>
+                            <div class="field-content">December 13, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-seeking-assistance-aggravated-robbery-carjacking-case">APD
-                                Seeking Assistance with Aggravated Robbery, Carjacking Case </a>
+                                href="/news/apd-seeking-assistance-identifying-person-interest-aggravated-robbery">APD
+                                seeking the assistance in identifying a person of interest in an
+                                aggravated robbery</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 31, 2020</div>
+                            <div class="field-content">December 12, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/fatality-crash-9-2">Fatality Crash #9</a>
+                                href="/news/apd-citizen-police-academy-celebrates-milestone-100th-101st-class-graduation-ceremony">APD
+                                Citizen Police Academy Celebrates Milestone with 100th &amp; 101st
+                                Class Graduation Ceremony</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 31, 2020</div>
+                            <div class="field-content">December 12, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/fatality-crash-11-2">Fatality Crash #11</a>
+                                href="/news/missing-adult-and-baby">MISSING ADULT AND BABY</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 31, 2020</div>
+                            <div class="field-content">December 12, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/fatality-crash-10-1">Fatality Crash #10</a>
+                                href="/news/holiday-no-refusal-initiative-dec-12-jan-4">Holiday No
+                                Refusal Initiative Dec. 12 - Jan. 4</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 30, 2020</div>
+                            <div class="field-content">December 12, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/fatality-crash-8-2">Fatality Crash #8</a>
+                                href="/news/austin-police-seeking-assistance-locating-identifying-robbery-suspect">Austin
+                                Police seeking assistance in locating, identifying robbery
+                                suspect</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 29, 2020</div>
+                            <div class="field-content">December 11, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-training-academy-graduate-67-new-officers-friday">APD
-                                Training Academy to Graduate 67 New Officers Friday</a>
+                                href="/news/amigos-en-azul-brings-joy-children-17th-annual-shop-cop-event">Amigos
+                                en Azul brings joy to children with the 17th annual Shop with a Cop
+                                Event</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 28, 2020</div>
+                            <div class="field-content">December 11, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/fatality-crash-7-2">Fatality Crash #7</a>
+                                href="/news/traffic-fatality-80-0">Traffic Fatality #80</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 28, 2020</div>
+                            <div class="field-content">December 10, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/fatality-crash-6-2">Fatality Crash #6</a>
+                                href="/news/traffic-fatality-79-0">Traffic Fatality #79</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 24, 2020</div>
+                            <div class="field-content">December 6, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-seeking-assistance-aggravated-assault-case-neches-st">APD
-                                Seeking Assistance in Aggravated Assault Case on Neches St. </a>
+                                href="/news/traffic-fatality-77-1">Traffic Fatality #77</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 24, 2020</div>
+                            <div class="field-content">December 6, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/homicide-4-0">Homicide #4</a>
+                                href="/news/traffic-fatality-78-0">Traffic Fatality #78</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 23, 2020</div>
+                            <div class="field-content">December 6, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/austin-police-department-gun-surrender-program">Austin
-                                Police Department Gun Surrender Program</a>
+                                href="/news/homicide-34">Homicide #34</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 22, 2020</div>
+                            <div class="field-content">December 2, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-seeking-assistance-thefts-robbery-assault-cases">APD
-                                Seeking Assistance in Thefts, Robbery by Assault Cases</a>
+                                href="/news/homicide-33">Homicide #33</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 17, 2020</div>
+                            <div class="field-content">November 26, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/fatality-crash-5-2">Fatality Crash #5</a>
+                                href="/news/traffic-fatality-75-0">Traffic Fatality #75</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 15, 2020</div>
+                            <div class="field-content">November 26, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-seeking-assistance-robbery-case-1">APD Seeking
-                                Assistance in Robbery Case</a>
+                                href="/news/traffic-fatality-76-0">Traffic Fatality #76</a>
                             </span></div>
                         </li>
                         <li>
                           <div class="views-field views-field-field-news-release-date">
-                            <div class="field-content">January 14, 2020</div>
+                            <div class="field-content">November 26, 2019</div>
                           </div>
                           <div class="views-field views-field-title"><span class="field-content"><a
-                                href="/news/apd-seeking-assistance-identifying-person-interest-fraud-case">APD
-                                Seeking Assistance in Identifying a Person of Interest in Fraud Case
-                              </a>
+                                href="/news/apd-seeks-assistance-identifying-deceased-person">APD
+                                seeks assistance in identifying deceased person </a>
                             </span></div>
                         </li>
 
@@ -1300,7 +1290,7 @@
                       </li>
 
                       <li class="pager__item pager__item--previous">
-                        <a href="?page=0" title="Go to previous page" rel="prev">
+                        <a href="?page=2" title="Go to previous page" rel="prev">
                           <span class="visually-hidden">Previous page</span>
                           <span aria-hidden="true">‹‹</span>
                         </a>
@@ -1312,10 +1302,10 @@
                             Page
                           </span>1</a>
                       </li>
-                      <li class="pager__item is-active active">
-                        <a href="?page=1" title="Current page">
+                      <li class="pager__item">
+                        <a href="?page=1" title="Go to page 2">
                           <span class="visually-hidden">
-                            Current page
+                            Page
                           </span>2</a>
                       </li>
                       <li class="pager__item">
@@ -1324,10 +1314,10 @@
                             Page
                           </span>3</a>
                       </li>
-                      <li class="pager__item">
-                        <a href="?page=3" title="Go to page 4">
+                      <li class="pager__item is-active active">
+                        <a href="?page=3" title="Current page">
                           <span class="visually-hidden">
-                            Page
+                            Current page
                           </span>4</a>
                       </li>
                       <li class="pager__item">
@@ -1362,7 +1352,7 @@
                       </li>
 
                       <li class="pager__item pager__item--next">
-                        <a href="?page=2" title="Go to next page" rel="next">
+                        <a href="?page=4" title="Go to next page" rel="next">
                           <span class="visually-hidden">Next page</span>
                           <span aria-hidden="true">››</span>
                         </a>
@@ -1399,7 +1389,7 @@
 
               <div class="form-group">
                 <div
-                  class="view view-extra-term-blocks view-id-extra_term_blocks view-display-id-block_14 js-view-dom-id-b1b61b88f1ad6a2974458e75c331ca65584532992a4450752453b4a247c380ea">
+                  class="view view-extra-term-blocks view-id-extra_term_blocks view-display-id-block_14 js-view-dom-id-c5fbf9240e11b694f2d5afce3ab1e3fb8def0621ebea4dfbc7038a08f04260b4">
 
 
                   <div class="view-header">
@@ -1571,7 +1561,7 @@
 
 
   <script type="application/json"
-    data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","scriptPath":null,"pathPrefix":"","currentPath":"department\/news\/296","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en","currentQuery":{"page":"1"}},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"98%","maxHeight":"98%","fixed":true,"mobiledetect":true,"mobiledevicewidth":"480px"},"data":{"extlink":{"extTarget":true,"extTargetNoOverride":false,"extNofollow":false,"extFollowNoOverride":false,"extClass":"0","extLabel":"(link is external)","extImgClass":false,"extSubdomains":false,"extExclude":"","extInclude":"","extCssExclude":"","extCssExplicit":"","extAlert":false,"extAlertText":"This link will take you to an external web site. We are not responsible for their content.","mailtoClass":"0","mailtoLabel":"(link sends email)"}},"ckeditorAccordion":{"accordionStyle":{"collapseAll":null}},"bootstrap":{"forms_has_error_value_toggle":1,"modal_animation":1,"modal_backdrop":"true","modal_focus_input":1,"modal_keyboard":1,"modal_select_text":1,"modal_show":1,"modal_size":"","popover_enabled":1,"popover_animation":1,"popover_auto_close":1,"popover_container":"body","popover_content":"","popover_delay":"0","popover_html":0,"popover_placement":"right","popover_selector":"","popover_title":"","popover_trigger":"click","tooltip_enabled":1,"tooltip_animation":1,"tooltip_container":"body","tooltip_delay":"0","tooltip_html":0,"tooltip_placement":"auto left","tooltip_selector":"","tooltip_trigger":"hover"},"ajaxTrustedUrl":{"\/search-pages":true},"user":{"uid":0,"permissionsHash":"d2b91d9fe2a0beb036b41b81955f0b23a77cdca609c9f5e8653a2bcb7b7d44b1"}}</script>
+    data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","scriptPath":null,"pathPrefix":"","currentPath":"department\/news\/296","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en","currentQuery":{"page":"3"}},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"98%","maxHeight":"98%","fixed":true,"mobiledetect":true,"mobiledevicewidth":"480px"},"data":{"extlink":{"extTarget":true,"extTargetNoOverride":false,"extNofollow":false,"extFollowNoOverride":false,"extClass":"0","extLabel":"(link is external)","extImgClass":false,"extSubdomains":false,"extExclude":"","extInclude":"","extCssExclude":"","extCssExplicit":"","extAlert":false,"extAlertText":"This link will take you to an external web site. We are not responsible for their content.","mailtoClass":"0","mailtoLabel":"(link sends email)"}},"ckeditorAccordion":{"accordionStyle":{"collapseAll":null}},"bootstrap":{"forms_has_error_value_toggle":1,"modal_animation":1,"modal_backdrop":"true","modal_focus_input":1,"modal_keyboard":1,"modal_select_text":1,"modal_show":1,"modal_size":"","popover_enabled":1,"popover_animation":1,"popover_auto_close":1,"popover_container":"body","popover_content":"","popover_delay":"0","popover_html":0,"popover_placement":"right","popover_selector":"","popover_title":"","popover_trigger":"click","tooltip_enabled":1,"tooltip_animation":1,"tooltip_container":"body","tooltip_delay":"0","tooltip_html":0,"tooltip_placement":"auto left","tooltip_selector":"","tooltip_trigger":"hover"},"ajaxTrustedUrl":{"\/search-pages":true},"user":{"uid":0,"permissionsHash":"d2b91d9fe2a0beb036b41b81955f0b23a77cdca609c9f5e8653a2bcb7b7d44b1"}}</script>
   <script src="/sites/default/files/js/js_v1_-5L1UBXnN9DJzWgTNYXGSxBy9idDPxHypmSa7W-Q.js"></script>
   <script src="https://static.addtoany.com/menu/page.js" async></script>
   <script src="/sites/default/files/js/js_ub51wMJa7a5s4rqOWoE6LS41MCo9CtIgrOXRfmOjgqI.js"></script>

@@ -6,8 +6,8 @@ import bs4
 
 from scrapd.core import date_utils
 from scrapd.core import deceased
+from scrapd.core import model
 from scrapd.core import regex
-from scrapd.core import twitter
 from scrapd.core.constant import Fields
 
 
@@ -153,8 +153,8 @@ def parse_content(page):
         parsing_errors.append("could not retrieve the location")
 
     # Convert to a report object.
-    report, err = twitter.to_report(d)
-    parsing_errors.extend(err)
+    report = model.Report(**d)
+    report.compute_fatalities_age()
 
     # Convert the page to a BeautifulSoup object.
     soup = to_soup(normalized_detail_page.replace("<br>", "</br>"))
@@ -197,6 +197,9 @@ def parse_notes_field(soup):
         else:
             deceased_text += sibling.text
     notes = deceased_text.split(split_tag)[1]
+    if 'arrested' in notes.lower():
+        alt = [el for el in list(deceased_tag.parent.next_siblings) if isinstance(el, bs4.element.Tag)]
+        notes = alt[0].text if len(alt) == 1 else ''
     if "APD is investigating this case" in notes:
         without_boilerplate = notes.split("APD is investigating this case")[0]
     else:
