@@ -197,9 +197,13 @@ def parse_notes_field(soup):
         else:
             deceased_text += sibling.text
     notes = deceased_text.split(split_tag)[1]
-    if 'arrested' in notes.lower():
-        alt = [el for el in list(deceased_tag.parent.next_siblings) if isinstance(el, bs4.element.Tag)]
-        notes = alt[0].text if len(alt) == 1 else ''
+    if 'arrested:' in notes.lower():
+        filtered_notes = [part for part in list(filter(None, notes.split('\n'))) if 'arrested:' not in part.lower()]
+        if filtered_notes:
+            notes = '\n'.join(filtered_notes)
+        else:
+            alt = [el for el in list(deceased_tag.parent.next_siblings) if isinstance(el, bs4.element.Tag)]
+            notes = alt[0].text if len(alt) == 1 else ''
     if "APD is investigating this case" in notes:
         without_boilerplate = notes.split("APD is investigating this case")[0]
     else:
