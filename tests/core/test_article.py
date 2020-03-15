@@ -108,6 +108,41 @@ page_scenarios = [
         ),
         'errors': None,
     },
+    {
+        'id': 'new-format-01',
+        'page': 'fatality-crash-5-2',
+        'expected': model.Report(
+            case='20-0151955',
+            crash=5,
+            date=datetime.date(2020, 1, 15),
+            fatalities=[
+                model.Fatality(
+                    age=18,
+                    dob=datetime.date(2001, 12, 20),
+                    ethnicity=model.Ethnicity.hispanic,
+                    first='Fabian',
+                    gender=model.Gender.male,
+                    last='Morales',
+                ),
+            ],
+            location='7600 block of Bluff Springs Rd.',
+            notes='The preliminary investigation shows that a silver, 2012 Chevrolet truck and a red, 2005, Infinity '
+            'sedan were in the parking lot near the 7600 block of Bluff Springs Rd. when they decided to have a road '
+            'race. The Chevrolet truck and the Infiniti drove south near the 8200 block of Bluff Springs Rd. to start '
+            'the race. The Chevrolet truck was in the left lane and the Infiniti was in the right lanes of northbound '
+            'Bluff Springs Rd. As they raced, the Infiniti pulled way ahead of the Chevrolet truck. As the Infiniti '
+            'approached the 7600 block of Bluff Springs Rd., the Infiniti attempted to turn left into the parking lot '
+            'where they had previously been sitting. The Chevrolet truck hit the driver’s side of the Infiniti as it '
+            'was attempting the turn. The Infiniti spun several times and came to final rest against a pole on the '
+            'west side of the roadway. The driver of the Infiniti was transported to St. David’s South Austin Hospital '
+            'where he died as a result of his injuries at 12:18 a.m. on Thursday, January 16, 2020. The driver of the '
+            'Chevrolet truck initially fled the scene after the crash but returned to the scene later.\n'
+            '\tJorge Luis Lopez-Dominguez was arrested and has been charged with two second degree felonies, racing on a '
+            'highway and fail to stop and render aid. His total bond amount is $100,000.',
+            time=datetime.time(23, 19),
+        ),
+        'errors': None,
+    },
 ]
 
 deceased_tag_scenarios = [
