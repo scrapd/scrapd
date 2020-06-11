@@ -58,7 +58,9 @@ def flame_graph(c):
     """Create an interactive CPU flame graph."""
     _, venv_bin, _ = get_venv(VENV)
     pyspy = venv_bin / 'py-spy'
-    c.run(f'sudo {pyspy.resolve()} -d 20 --flame profile.svg -- {(venv_bin /project_name ).resolve()} -v --pages 5')
+    c.run(
+        f'sudo {pyspy.resolve()} record -i -F -o profile.svg -- {(venv_bin /project_name ).resolve()} -v --pages 5 --format count'
+    )
 
 
 @task
