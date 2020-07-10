@@ -61,7 +61,9 @@ def parse_deceased_tag(deceased_tag_p):
     deceased_text = deceased_tag_p.get_text()
     # NOTE(rgreinho): Where do the 20 and 100 numbers come from? There should not be magic numbers.
     if 20 < len(deceased_text) < 100 and "preliminary" not in deceased_text:
-        return re.split(r'Deceased(?: \d)?:', deceased_text, maxsplit=1)[1].strip()
+        split_text = re.split(r'Deceased(?: \d)?:', deceased_text, maxsplit=1)
+        if len(split_text) > 1:
+            return split_text[1].strip()
 
     deceased_field_str = ''
     starting_tag = deceased_tag_p.find("strong") or deceased_tag_p
