@@ -40,7 +40,7 @@ page_scenarios = [
         'errors': None,
     },
     {
-        'id': 'multi-fatalities',
+        'id': 'multi-fatalities-00',
         'page': 'traffic-fatality-50-3',
         'expected': model.Report(
             case='19-2291933',
@@ -142,6 +142,46 @@ page_scenarios = [
             time=datetime.time(23, 19),
         ),
         'errors': None,
+
+    },
+    {
+        'id': 'multi-fatalities-01',
+        'page': 'fatality-crash-15-2',
+        'expected': model.Report(
+            case='20-0420110',
+            crash=15,
+            date=datetime.date(2020, 2, 11),
+            fatalities=[
+                model.Fatality(
+                    age=21,
+                    dob=datetime.date(1998, 4, 28),
+                    ethnicity=model.Ethnicity.white,
+                    first='Owen',
+                    gender=model.Gender.male,
+                    last='Macki',
+                    middle='William',
+                ),
+                model.Fatality(
+                    age=24,
+                    dob=datetime.date(1995, 7, 26),
+                    ethnicity=model.Ethnicity.asian,
+                    first='Aamna',
+                    gender=model.Gender.female,
+                    last='Najam',
+                    middle='Gitane',
+                ),
+            ],
+            location='North Capital of Texas Hwy/North Mopac NB Svrd',
+            notes=' The preliminary investigation shows Owen William Macki was driving '
+            'a black, 2015 Toyota Camry eastbound in the inside lane of North Capital '
+            'of Texas Hwy at a high rate of speed when he struck the concrete barrier '
+            'wall of the North Mopac NB Svrd. Owen Macki was pronounced deceased on '
+            'scene. The passenger in the vehicle, Raquel Gitane Aveytia, was '
+            'transported to Saint David’s Round Rock Medical Center where she was '
+            'pronounced deceased shortly after her arrival.',
+            time=datetime.time(2, 2),
+        ),
+        'errors': None,
     },
     {
         'id': 'double-deceased',
@@ -181,7 +221,18 @@ deceased_tag_scenarios = [
             'Cedric Benson | Black male | 12/28/1982',
             'Aamna Najam | Asian female | 01/26/1992',
         ],
-        'id': 'multi-fatality',
+        'id': 'multi-fatality-00',
+    },
+    {
+        'input': '''
+        <strong>Deceased 1: </strong>Owen William Macki | White male | 04/28/1998</p>
+        <p>	<strong>Deceased 2: </strong>Raquel Gitane Aveytia | Asian female | 07/26/1995<br>
+        ''',
+        'expected': [
+            'Owen William Macki | White male | 04/28/1998',
+            'Raquel Gitane Aveytia | Asian female | 07/26/1995',
+        ],
+        'id': 'multi-fatality-01',
     },
     {
         'input': '',
