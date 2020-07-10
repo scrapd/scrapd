@@ -143,6 +143,22 @@ page_scenarios = [
         ),
         'errors': None,
     },
+    {
+        'id': 'double-deceased',
+        'page': 'fatality-crash-41-2',
+        'expected': model.Report(
+            case='20-1850221',
+            crash=41,
+            date=datetime.date(2020, 7, 3),
+            fatalities=[
+                model.Fatality(),
+            ],
+            location='9600 Block of E. U.S. 290 eastbound',
+            notes='',
+            time=datetime.time(5, 49),
+        ),
+        'errors': 2,
+    },
 ]
 
 deceased_tag_scenarios = [

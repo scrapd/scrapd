@@ -88,7 +88,7 @@ def pylint(session):
     run_pylint(session)
 
 
-@nox.session(python='python3.7')
+@nox.session(python='python3.8')
 def test(session):
     """Run all the tests."""
     session.install('-rrequirements-dev.txt')
@@ -96,7 +96,7 @@ def test(session):
     run_pytest(session)
 
 
-@nox.session(python='python3.7', name='test-units')
+@nox.session(python='python3.8', name='test-units')
 def test_units(session):
     """Run the unit tests."""
     session.install('-rrequirements-dev.txt')
@@ -104,7 +104,7 @@ def test_units(session):
     run_pytest_units(session)
 
 
-@nox.session(python='python3.7', name='test-integrations')
+@nox.session(python='python3.8', name='test-integrations')
 def test_integrations(session):
     """Run the integration tests."""
     session.install('-rrequirements-dev.txt')
