@@ -1,4 +1,4 @@
-aiohttp==3.6.1
+aiohttp==3.7.4
 beautifulsoup4==4.8.1
 click==7.0
 dateparser==0.7.2
